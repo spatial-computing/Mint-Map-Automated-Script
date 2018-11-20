@@ -46,7 +46,8 @@
 	- filename
 	- only use Json file instead of `metadata.json`
 	- layer name and source name, make them consistent
-
+- Map
+	- a new variable to fly to a new area
 
 ## Time series convention
 
