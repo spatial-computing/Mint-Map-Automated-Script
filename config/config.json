@@ -1,14 +1,9 @@
 {
     "options": {
         "paths": {
-            "root": "../",
-            "mbtiles": ""
+            "root": "/",
+            "mbtiles": "/data"
         },
-        "domains": [
-            "0.0.0.0:8082",
-            "localhost:8082",
-            "127.0.0.1:8082"
-        ],
         "formatQuality": {
             "png": 100,
             "jpeg": 80,

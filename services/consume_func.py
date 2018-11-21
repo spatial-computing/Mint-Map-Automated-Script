@@ -6,7 +6,8 @@ import sys, os
 from datetime import datetime
 
 #MINTCAST_PATH = os.environ.get('MINTCAST_PATH')
-MINTCAST_path = '/Users/ADV/Mint-Map-Automated-Script'
+MINTCAST_path = '/usr/share/mintcast'
+#'/Users/ADV/Mint-Map-Automated-Script'
 
 #def export_metadata(self, parsed):
 #       python3 $MINTCAST_PATH/python/macro_postgres_curd/main.py insert tileserverconfig \
@@ -60,8 +61,10 @@ def parse_message(msg):
 
 #event_type: {registration, update, delete), timestamp: just one date, dataset_id: , dataset: json that includes id, name, description, owner id, and another json w/ metadata (maybe contain uri), 
 def consume_func(resp, out_dir):
-    messages = resp['messages']
-    offset = resp['offset']
+    event_type = resp['event_type']
+    offset = 0
+    if event_type != 'diff':
+        offset = resp['offset']
     for message in messages:
         par = parse_message(message)
         dtype = parsed['data_type']

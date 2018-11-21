@@ -48,6 +48,10 @@
 	- layer name and source name, make them consistent
 - Map
 	- a new variable to fly to a new area
+	- remove metadata.json
+	- remove `show all dataset`
+	- move search to redis
+	
 
 ## Time series convention
 
