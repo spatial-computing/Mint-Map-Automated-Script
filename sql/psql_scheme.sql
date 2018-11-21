@@ -7,7 +7,6 @@
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
-SET idle_in_transaction_session_timeout = 0;
 SET client_encoding = 'UTF8';
 SET standard_conforming_strings = on;
 SELECT pg_catalog.set_config('search_path', '', false);
@@ -50,6 +49,8 @@ border_features	{"type":"FeatureCollection","features":[{"type":"Feature","prope
 ALTER TABLE ONLY mintcast.metadata
     ADD CONSTRAINT metadata_pkey PRIMARY KEY (k);
 
+CREATE SEQUENCE mintcast.original_seq;
+
 CREATE TABLE mintcast.original (
     id integer DEFAULT nextval('mintcast.original_seq'::regclass) NOT NULL,
     dataset_name character varying(255),
@@ -61,6 +62,8 @@ CREATE TABLE mintcast.original (
     modified_at timestamp(0) without time zone DEFAULT now()
 );
 
+ALTER SEQUENCE mintcast.original_seq
+    OWNED BY mintcast.original.id;
 --
 -- Name: original original_pkey; Type: CONSTRAINT; Schema: mintcast; Owner: vaccaro
 --
@@ -71,6 +74,8 @@ ALTER TABLE ONLY mintcast.original
 --
 -- Name: tileserverconfig; Type: TABLE; Schema: mintcast; Owner: vaccaro
 --
+CREATE SEQUENCE mintcast.tileserverconfig_seq;
+
 
 CREATE TABLE mintcast.tileserverconfig (
     id integer DEFAULT nextval('mintcast.tileserverconfig_seq'::regclass) NOT NULL,
@@ -79,7 +84,8 @@ CREATE TABLE mintcast.tileserverconfig (
     md5 character varying(255) NOT NULL
 );
 
-
+ALTER SEQUENCE mintcast.tileserverconfig_seq
+    OWNED BY mintcast.tileserverconfig.id;
 --
 -- Name: tileserverconfig tileserverconfig_pkey; Type: CONSTRAINT; Schema: mintcast; Owner: vaccaro
 --
@@ -90,6 +96,7 @@ ALTER TABLE ONLY mintcast.tileserverconfig
 --
 -- Name: layer; Type: TABLE; Schema: mintcast; Owner: vaccaro
 --
+CREATE SEQUENCE mintcast.layer_seq;
 
 CREATE TABLE mintcast.layer (
     id integer DEFAULT nextval('mintcast.layer_seq'::regclass) NOT NULL,
@@ -135,12 +142,11 @@ CREATE TABLE mintcast.layer (
     axis character varying(32) DEFAULT NULL::character varying
 );
 
-
-ALTER TABLE mintcast.layer OWNER TO vaccaro;
-
 --
 -- Name: layer layer_pkey; Type: CONSTRAINT; Schema: mintcast; Owner: vaccaro
 --
+ALTER SEQUENCE mintcast.layer_seq
+    OWNED BY mintcast.layer.id;
 
 ALTER TABLE ONLY mintcast.layer
     ADD CONSTRAINT layer_pkey PRIMARY KEY (id);
