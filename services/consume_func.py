@@ -3,11 +3,17 @@
 import wget
 import subprocess
 import sys, os
+import psycopg2
+
 from datetime import datetime
 
 #MINTCAST_PATH = os.environ.get('MINTCAST_PATH')
 MINTCAST_path = '/usr/share/mintcast'
 #'/Users/ADV/Mint-Map-Automated-Script'
+hostname = '52.90.74.236'
+username = 'mintcast'
+password = 'mintCast654321'
+database = 'mintcast'
 
 #def export_metadata(self, parsed):
 #       python3 $MINTCAST_PATH/python/macro_postgres_curd/main.py insert tileserverconfig \
@@ -36,11 +42,11 @@ def run_mintcast(sh_command):
         print(e)
         return(False)
 
-def parse_message(msg):
+def parse_dataset(msg):
     # all of this probably needs to be changed once we get the real resp format
     dv = msg['dataset_file']
     #json_meta = resp['dataset']['json_metadata']
-    parsed = {}
+    parsed = {'id': msg['dataset_file_id']}
     parsed['uri'] = dv['uri']
     parsed['data_type'] = dv['uri'].split('.')[-1]
     parsed['temporal_coverage'] = dv['temporal_coverage']
@@ -59,16 +65,69 @@ def parse_message(msg):
         parsed['time_stamp'] = startf
     return(parsed)
 
+def check_database(data_file_ids):
+    conn = psycopg2.connect( host=hostname, user=username, password=password, dbname=database )
+    cur = conn.cursor()
+    cur.execute('select id, original_id, layerid, isdiff from mintcast.layer where original_id in (%s)' % (",".join(map(str,data_file_ids))))
+#     cur.execute('select * from mintcast.metadata where k in (\'%s\')' % ("','".join(map(str,data_file_ids))))
+
+    rowCount = cur.rowcount
+    rows = cur.fetchall()
+    cur.close()
+    conn.close()
+    
+    if rowCount == 0:
+        return (rowCount, None, None)
+#     print(rows)
+#     return (rowCount, rows[0][1], rows[1][1])
+    return (rowCount, rows[0][2], rows[0][3])
+
 #event_type: {registration, update, delete), timestamp: just one date, dataset_id: , dataset: json that includes id, name, description, owner id, and another json w/ metadata (maybe contain uri), 
 def consume_func(resp, out_dir):
-    event_type = resp['event_type']
-    offset = 0
-    if event_type != 'diff':
-        offset = resp['offset']
+
+    messages = resp.get('messages', [])
+    acceptable_types = {'tif', 'nc', 'asc'}
+
     for message in messages:
-        par = parse_message(message)
-        dtype = parsed['data_type']
-        acceptable_types = ['tif', 'nc', 'asc']
+
+        event_type = message['event_type']
+        offset = -1
+        if event_type != 'diff':
+            offset = message.get('offset', [])
+
+        variables = message.get('variables', [])
+        datasets = message.get('datasets', [])
+        diff = message.get('diff', [])
+        variablesSize = len(variables)
+        datasetsSize = len(datasets)
+        par = {}
+
+        if event_type == 'single_dataset' and variablesSize == 1 and variablesSize == 1 and datasetsSize == 1:
+            dataset = datasets[0]
+            par = parse_dataset(dataset)
+            rowCount, layerid, isdiff = check_database([par['id']])
+            if isdiff == 1:
+
+                return 'INVALID SINGLE DATASET'
+
+            if rowCount == 0 and layerid is not None:
+                # mintcast create
+
+                pass
+            else:
+                # mintcast update
+
+                pass
+
+        elif event_type == 'diff' and 'diff' in resp:
+            # 
+            
+            pass
+        else: # event_type == 'time_series' :
+            pass
+        
+        dtype = par['data_type']
+        
         #out_dir = '/Users/ADV/Mint-Map-Automated-Script/dist/' # CHANGE/REMOVE THIS
         if dtype in acceptable_types:
             [dl_success, dl_path] = download_data(par['uri'], out_dir)

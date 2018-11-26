@@ -16,6 +16,10 @@ def main(argv):
 	_dir = sys.argv[1]
 	_wildcardStructure = sys.argv[2].replace('{year}','%Y').replace('{month}', '%m').replace('{day}','%d')
 	_structure = os.path.dirname(_wildcardStructure)
+	if len(sys.argv) == 6:
+		# if there are six parameter, then year and month
+		_structure = sys.argv[5].replace('{year}','%Y').replace('{month}', '%m').replace('{day}','%d')
+	# _structure = _wildcardStructure
 	__timeFormat = _structure.replace('/', '')
 	_start = datetime.strptime(sys.argv[3], __timeFormat)
 	_end = datetime.strptime(sys.argv[4], __timeFormat)
@@ -23,17 +27,25 @@ def main(argv):
 
 	files = []
 	_oldpath = ''
-	for single_date in daterange(_start, _end):
-		_folder = single_date.strftime(_structure)
-		_path = _dir + _folder
-		if _oldpath == _path:
-			continue
-
+	_path = _dir
+	if len(sys.argv) == 6:
 		for f in os.listdir(_path):
 			if isfile(join(_path,f)):
 				if os.path.splitext(f)[1]==_filetype:
 					print(join(_path,f))
 					# Then use xargs -I % cmd %
-		_oldpath = _path
+	else:
+		for single_date in daterange(_start, _end):
+			_folder = single_date.strftime(_structure)
+			_path = _dir + _folder
+			if _oldpath == _path:
+				continue
+
+			for f in os.listdir(_path):
+				if isfile(join(_path,f)):
+					if os.path.splitext(f)[1]==_filetype:
+						print(join(_path,f))
+						# Then use xargs -I % cmd %
+			_oldpath = _path
 if __name__ == '__main__':
 	main(sys.argv)

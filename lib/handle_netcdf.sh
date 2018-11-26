@@ -31,7 +31,6 @@ handle_netcdf(){
 			handle_tiff
 			index=$((index+1))
 		done
-
 		rm "$MINTCAST_PATH/tmp/*subset*"
 	done
 	# xargs -I % proc_getnetcdf_subdataset %

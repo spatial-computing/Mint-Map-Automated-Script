@@ -1,9 +1,14 @@
 {
     "options": {
         "paths": {
-            "root": "/",
-            "mbtiles": "/data"
+            "root": "../",
+            "mbtiles": ""
         },
+        "domains": [
+            "0.0.0.0:8080",
+            "localhost:8080",
+            "127.0.0.1:8080"
+        ],
         "formatQuality": {
             "png": 100,
             "jpeg": 80,
@@ -16,36 +21,23 @@
         "serveStaticMaps": false
     },
     "data": {
-        "59feb8015325307ba6e75078519c424a": {
-            "mbtiles": "./dist/landuse_raster_png.mbtiles"
+        "c19e02542fb87826a83eb7199857c286": {
+            "mbtiles": "./dist//2001/01/FLDAS_NOAH01_A_EA_D.A20010113.001.nc/rainf_f_tavg_2001_01_fldas_noah01_a_ea_d_a20010113_001_nc_vector_pbf.mbtiles"
         },
-        "6b32072136822b88b5ad906816b07c9f": {
-            "mbtiles": "./dist/soil_raster_png.mbtiles"
+        "663b9121836ba3dbf6187e1a5419f539": {
+            "mbtiles": "./dist//2001/01/FLDAS_NOAH01_A_EA_D.A20010113.001.nc/rainf_f_tavg_2001_01_fldas_noah01_a_ea_d_a20010113_001_nc_raster_png.mbtiles"
         },
-        "1475cedbae81c96c8c378deb28963ee7": {
-            "mbtiles": "./dist/landuse_vector_pbf.mbtiles"
+        "ac39e619ceb6e2bb436629b38d278da3": {
+            "mbtiles": "./dist//2001/02/FLDAS_NOAH01_A_EA_D.A20010226.001.nc/rainf_f_tavg_2001_02_fldas_noah01_a_ea_d_a20010226_001_nc_raster_png.mbtiles"
         },
-        "ba3482fe0f0ab580f7411605c65270d6": {
-            "mbtiles": "./dist/soil_vector_pbf.mbtiles"
+        "30558bc6a8826a4d905ee68642390b41": {
+            "mbtiles": "./dist//2001/02/FLDAS_NOAH01_A_EA_D.A20010226.001.nc/rainf_f_tavg_2001_02_fldas_noah01_a_ea_d_a20010226_001_nc_vector_pbf.mbtiles"
         },
-        "f00074d3934f35f32a48cbf22bb11c48": {
-            "mbtiles": "./dist/landuse_raster_png.mbtiles"
+        "6f5ecde47d5a3303cfe9463ad57d4dc8": {
+            "mbtiles": "./dist/fewschirps//fewschirps_fewsafrica_1-month-08-2018_mm_data.tiff/chirps.rainfall.precipitation_fewschirps_fewsafrica_1-month-08-2018_mm_data_tiff_vector_pbf.mbtiles"
         },
-        "83b6c740143c2b418a588ac458e7bf2b": {
-            "mbtiles": "./dist/soil_raster_png.mbtiles"
-        },
-        "f0ecaaa8d47cbbc391a5c1a807b2eca3": {
-            "mbtiles": "./dist/landuse_vector_pbf.mbtiles"
-        },
-        "4275a535a7c2612dfd5162092821d507": {
-            "mbtiles": "./dist/soil_vector_pbf.mbtiles"
-        },
-
-        "b860737163802cae5b22cbc9f14e3cea": {
-            "mbtiles": "./dist/precipitation_raster_png.mbtiles"
-        },
-        "594f8555a2ae43a5e8c566bed938afe6": {
-            "mbtiles": "./dist/precipitation_vector_pbf.mbtiles"
+        "8de8ec83dcecbd85a5ff599964c8dc65": {
+            "mbtiles": "./dist/fewschirps//fewschirps_fewsafrica_1-month-08-2018_mm_data.tiff/chirps.rainfall.precipitation_fewschirps_fewsafrica_1-month-08-2018_mm_data_tiff_raster_png.mbtiles"
         }
     }
 }

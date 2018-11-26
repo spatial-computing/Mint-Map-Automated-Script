@@ -50,6 +50,16 @@ helper_parameter(){
         shift 
         shift 
         ;;
+        --datatime-format)
+        DATATIME_FORMAT="$2"
+        shift
+        shift
+        ;;
+        --single-subdataset)
+        NETCDF_SINGLE_SUBDATASET="$2"
+        shift
+        shift
+        ;;
         -l|--layer-name)
         LAYER_NAME="$2"
         shift

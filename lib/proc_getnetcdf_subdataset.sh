@@ -4,7 +4,14 @@ proc_getnetcdf_subdataset(){
     SUBDATASETS_ARRAY=()
     SUBDATASET_LAYERS_ARRAY=()
     NETCDF_FILEPATH=$1
-    SUBDATASET_STRING="$(gdalinfo $NETCDF_FILEPATH | sed -nE 's/SUBDATASET_.{1,2}_NAME=(.*)/\1/p' | grep -o 'N.*')"
+
+    if [[ -z "$NETCDF_SINGLE_SUBDATASET" ]]; then
+        SUBDATASET_STRING="$(gdalinfo $NETCDF_FILEPATH | sed -nE 's/SUBDATASET_.{1,2}_NAME=(.*)/\1/p' | grep -o 'N.*')"  
+    else
+        pre="s/SUBDATASET_.{1,2}_NAME=(.*"
+        suc=")/\1/p"
+        SUBDATASET_STRING="$(gdalinfo $NETCDF_FILEPATH | sed -nE $pre$NETCDF_SINGLE_SUBDATASET$suc | grep -o 'N.*')"
+    fi
     
     # helper_create_array "SUBDATASETS" "SUBDATASET_STRING" '\n'
     # SUBDATASETS=($(echo "$SUBDATASET_STRING" | awk -F='\n' '{print $1}' ))

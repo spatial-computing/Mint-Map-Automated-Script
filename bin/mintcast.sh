@@ -10,6 +10,7 @@ source $MINTCAST_PATH/lib/helper_create_array.sh
 source $MINTCAST_PATH/lib/handle_tiff.sh
 source $MINTCAST_PATH/lib/handle_tiled_tiff.sh
 source $MINTCAST_PATH/lib/handle_tiff_time.sh
+source $MINTCAST_PATH/lib/handle_tiff_timeseries.sh
 source $MINTCAST_PATH/lib/handle_netcdf.sh
 source $MINTCAST_PATH/lib/handle_netcdf_single.sh
 source $MINTCAST_PATH/lib/handle_postgresql.sh
@@ -58,6 +59,10 @@ TIME_STAMP=""						# Time stamp for TIFF time series
 TIME_STEPS=""						# Time steps for TIFF time series
 TIME_FORMAT="YYYYMMDD"				# Time format for metadata JSON
 
+DATATIME_FORMAT=""
+
+NETCDF_SINGLE_SUBDATASET=""
+
 OUTPUT_DIR_STRUCTURE_FOR_TIMESERIES="" # how netcdf's timeseries mbtiles are stored
 
 
@@ -97,7 +102,11 @@ if [[ ! -d "$TARGET_JSON_PATH" ]]; then
 fi
 	
 if [[ $DATASET_TYPE == "tiff" ]]; then
-	handle_tiff
+	if [[ -z "$START_TIME" ]]; then
+		handle_tiff
+	else
+		handle_tiff_timeseries
+	fi
 elif [[ $DATASET_TYPE == "tiled" ]]; then
 	handle_tiled_tiff
 elif [[ $DATASET_TYPE == "netcdf" ]]; then
@@ -166,32 +175,33 @@ fi
 
 
 
-python3 $MINTCAST_PATH/python/macro_tileserver_config/main.py ../ 8082
+# python3 $MINTCAST_PATH/python/macro_tileserver_config/main.py ../ 8082
 
-# scp MBtiles and json to jonsnow
-if [[ "$DEV_MODE" != "YES" ]]; then
-	#JONSNOW_STR="$SSH_USER@jonsnow.usc.edu"
-	ROOT_STR="root@jonsnow.usc.edu"
-	JONSNOW_MBTILES="/home/mint-webmap/mbtiles/"
-	JONSNOW_JSON="/home/mint-webmap/json/"
-	HOME_DIR="/home/$SSH_USER/"
-	if [[ $NEW_SSH_KEY == "YES" ]]; then
-		#ssh-copy-id $JONSNOW_STR
-		ssh-copy-id -i $ROOT_STR
+# # scp MBtiles and json to jonsnow
+# if [[ "$DEV_MODE" != "YES" ]]; then
+# 	#JONSNOW_STR="$SSH_USER@jonsnow.usc.edu"
+# 	ROOT_STR="root@jonsnow.usc.edu"
+# 	JONSNOW_MBTILES="/home/mint-webmap/mbtiles/"
+# 	JONSNOW_JSON="/home/mint-webmap/json/"
+# 	HOME_DIR="/home/$SSH_USER/"
+# 	if [[ $NEW_SSH_KEY == "YES" ]]; then
+# 		#ssh-copy-id $JONSNOW_STR
+# 		ssh-copy-id -i $ROOT_STR
 
-	fi
-	#RASTER_NAME=$(basename $RASTER_MBTILES)
-	#VECTOR_NAME=$(basename $VECTOR_MBTILES)
-	#scp $RASTER_MBTILES $JONSNOW_STR:$HOME_DIR
-	scp $RASTER_MBTILES $ROOT_STR:$JONSNOW_MBTILES
-	scp $VECTOR_MBTILES $ROOT_STR:$JONSNOW_MBTILES
-	scp $TARGET_JSON_PATH/$COL_JSON_FILENAME $ROOT_STR:$JONSNOW_JSON
-	#ssh -t $JONSNOW_STR "sudo mv $RASTER_MBTILES $JONSNOW_MBTILES"
-fi
+# 	fi
+# 	#RASTER_NAME=$(basename $RASTER_MBTILES)
+# 	#VECTOR_NAME=$(basename $VECTOR_MBTILES)
+# 	#scp $RASTER_MBTILES $JONSNOW_STR:$HOME_DIR
+# 	scp $RASTER_MBTILES $ROOT_STR:$JONSNOW_MBTILES
+# 	scp $VECTOR_MBTILES $ROOT_STR:$JONSNOW_MBTILES
+# 	scp $TARGET_JSON_PATH/$COL_JSON_FILENAME $ROOT_STR:$JONSNOW_JSON
+# 	#ssh -t $JONSNOW_STR "sudo mv $RASTER_MBTILES $JONSNOW_MBTILES"
+# fi
 
-# restart tile server
-nohup $MINTCAST_PATH/bin/tileserver-daemon.sh restart $TILESEVER_PORT &
+# # restart tile server
+# nohup $MINTCAST_PATH/bin/tileserver-daemon.sh restart $TILESEVER_PORT &
 
 #remove intermediate files
 # rm -f $TEMP_DIR/*
+
 IFS=$oldIFS
