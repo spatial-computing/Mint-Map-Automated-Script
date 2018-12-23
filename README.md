@@ -15,6 +15,7 @@
 - Consistence
 	- filename
 	- only use Json file instead of `metadata.json`
+	- timeseries source-layer
 	- layer name and source name, make them consistent
 - Timeseries Play
 	- frame request
