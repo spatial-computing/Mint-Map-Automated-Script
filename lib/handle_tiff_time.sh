@@ -43,7 +43,6 @@ handle_tiff_time(){
 	#OUT_DIR=$MINTCAST_PATH/dist
 	#TEMP_DIR=$OUT_DIR
 	#TEMP_DIR=$MINTCAST_PATH/tmp
-	SS_BOUNDARY="$MINTCAST_PATH/shp/ss.shp"
 
 	# Remove path from inputs:
 	echo "INPUT: $INPUT"

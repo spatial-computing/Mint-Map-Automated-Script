@@ -53,6 +53,7 @@ GENERATE_VECTOR_TILE="YES"			# Generate vector MBTiles as output
 NEW_SSH_KEY="NO"					# Add ssh key 
 SSH_USER="vaccaro"					# User-name to ssh/scp into jonsnow (e.g. liboliu, vaccaro, shiwei)
 USE_SS_SHAPE="NO"					# Clip using South Sudan boundary shapefile
+SS_BOUNDARY="$MINTCAST_PATH/shp/ss.shp" # Default shape file is south sudan
 CLIP_BOUNDS="22.4 3.4 37.0 23.2"	# Coordinates for rectangular clipping boundary			
 FIRST_FILE="NO"						# Flag for timeseries files (YES for first in series, no otherwise)
 TIME_STAMP=""						# Time stamp for TIFF time series

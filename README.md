@@ -7,6 +7,7 @@
 
 ## TODO List:
 - Fix json problem √
+- Add shapefile √
 - Timeseries Json file
 	- with hotspot geojson object
 	- with a series data loading 

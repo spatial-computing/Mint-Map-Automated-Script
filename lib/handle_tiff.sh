@@ -42,7 +42,6 @@ handle_tiff(){
 	#OUT_DIR=$MINTCAST_PATH/dist
 	#TEMP_DIR=$OUT_DIR
 	#TEMP_DIR=$MINTCAST_PATH/tmp
-	SS_BOUNDARY="$MINTCAST_PATH/shp/ss.shp"
 
 	# Remove path from inpust:
 	echo "INPUT: $INPUT"
@@ -144,7 +143,7 @@ handle_tiff(){
 	echo "Clipping..."
 	echo "USE_SS_SHAPE: $USE_SS_SHAPE"
 	echo "CLIP_BOUNDS: $CLIP_BOUNDS"
-	if [[ USE_SS_SHAPE != "NO" ]]; then
+	if [[ "$USE_SS_SHAPE" != "NO" ]]; then
 		echo "Using SS shapefile..."
 		echo "SS_BOUNDARY: $SS_BOUNDARY"
 		proc_clip $INPUT $CLIP_OUT $SS_BOUNDARY #Clip to South Sudan boundary

@@ -119,6 +119,12 @@ helper_parameter(){
         shift
         shift
         ;;
+        --with-shape-file)
+        USE_SS_SHAPE="YES"
+        SS_BOUNDARY="$2"
+        shift
+        shift
+        ;;
         --dev-mode-off)
         DEV_MODE=NO
         shift

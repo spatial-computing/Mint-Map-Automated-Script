@@ -36,7 +36,7 @@ proc_clip () {
     echo "CLIP_BOUNDS_ARRAY: ${CLIP_BOUNDS_ARRAY[*]}"
     echo "NODATAFLAG: $NODATAFLAG"
 
-    if [[ USE_SS_SHAPE != "NO" ]]; then
+    if [[ "$USE_SS_SHAPE" != "NO" ]]; then
         echo "Using SS shapefile..."
         echo "SS_SHAPEFILE: $3"
         echo "gdalwarp -overwrite -te ${CLIP_BOUNDS_ARRAY[*]} $NODATAFLAG --config GDALWARP_IGNORE_BAD_CUTLINE YES -cutline $3 $1 $2"
