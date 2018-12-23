@@ -68,8 +68,8 @@ OUTPUT_DIR_STRUCTURE_FOR_TIMESERIES="" # how netcdf's timeseries mbtiles are sto
 
 DATAFILE_PATH=""            		# Single file path like tiff
 
-
-
+TILESERVER_ROOT="../"
+TILESERVER_PORT="80"
 # store mbtiles in a specific folder and read by website
 
 helper_parameter $@
@@ -175,7 +175,7 @@ fi
 
 
 
-# python3 $MINTCAST_PATH/python/macro_tileserver_config/main.py ../ 8082
+python3 $MINTCAST_PATH/python/macro_tileserver_config/main.py "$TILESERVER_ROOT" "$TILESERVER_PORT"
 
 # # scp MBtiles and json to jonsnow
 # if [[ "$DEV_MODE" != "YES" ]]; then

@@ -6,6 +6,15 @@
 
 
 ## TODO List:
+- Fix json problem √
+- Timeseries Json file
+	- with hotspot geojson object
+	- with a series data loading 
+	- time slide desc data
+- Consistence
+	- filename
+	- only use Json file instead of `metadata.json`
+	- layer name and source name, make them consistent
 - Timeseries Play
 	- frame request
 	- play/pause button
@@ -34,18 +43,10 @@
 	- without connect and join tables
 	- Json file structure
 		- move `metadata.json` to seperated json files
-- Timeseries Json file
-	- with hotspot geojson object
-	- with a series data loading 
-	- time slide desc data
 - Hotspot data generating
 	- Geojson object 
 	- store data into Postgresql for each file
 	- when generate json file merge them into one geojson object
-- Consistence
-	- filename
-	- only use Json file instead of `metadata.json`
-	- layer name and source name, make them consistent
 - Map
 	- a new variable to fly to a new area
 	- remove metadata.json
