@@ -5,6 +5,21 @@
 ![Contributor by Shiwei Huang](https://img.shields.io/badge/Shiwei%20Huang-Contributor-blue.svg)
 
 
+### Config/postgres_config.py
+
+```
+#!/usr/bin/env python3
+
+import sys, os, psycopg2
+
+MINTCAST_PATH = os.environ.get('MINTCAST_PATH')
+
+hostname = ''
+username = ''
+password = ''
+database = ''
+```
+
 ## TODO List:
 - Fix json problem √
 - Add shapefile √
