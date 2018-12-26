@@ -172,6 +172,7 @@ def main():
 		fldas_chirps_demo(fldas_jan_path, fldas_feb_path, fldas_var, chirps_path, csv_outpath, headers)
 
 if __name__ == '__main__':
+	num_args = len(sys.argv)
 	if num_args < 4:
 		print(usage, file = sys.stderr)
 		exit(0)
