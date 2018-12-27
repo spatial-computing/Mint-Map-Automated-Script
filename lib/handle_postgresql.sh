@@ -22,11 +22,12 @@ handle_postgresql() {
 	fi
 	COL_RASTER_OR_VECTOR_TYPE=$COL_RASTER_OR_VECTOR_TYPE
 
-	COL_MD5=$RASTER_LAYER_ID_MD5
+	COL_MD5=$FIRST_RASTER_LAYER_ID
 	COL_TILE_FORMAT='png'
 	if [[ $COL_RASTER_OR_VECTOR_TYPE = 'vector' ]]; then
 		COL_TILE_FORMAT='pbf'
-		COL_MD5=$VECTOR_LAYER_ID_MD5
+		# COL_MD5=$VECTOR_LAYER_ID_MD5
+		COL_MD5=$VECTOR_MD5
 	fi
 	echo "COL_MD5: $COL_MD5"
 	# echo "$MINTCAST_PATH/python/macro_string/main.py layer_name_to_layer_id $LAYER_NAME$LAYER_ID_SUFFIX $COL_RASTER_OR_VECTOR_TYPE $COL_TILE_FORMAT"
@@ -49,17 +50,24 @@ handle_postgresql() {
 	COL_STEP_OPTION_FORMAT=''
 	COL_STEP=''
 
+	if [[ -z "$TIME_STEPS" ]]; then
+		TIME_STEPS='[]'
+	fi
+
+
 	if [[ $DATASET_TYPE == "tiff-time" ]]; then
 		COL_AXIS="slider"
 		COL_STEP_TYPE="Time"
 		COL_STEP_OPTION_TYPE="string"
 		COL_STEP_OPTION_FORMAT=$TIME_FORMAT
-		COL_STEP=$TIME_STEPS
+		COL_STEP="$TIME_STEPS"
+	fi
+
+	if [[ -z "$COL_STEP" ]]; then
+		COL_STEP='[]'
 	fi
 
 	echo "COL_STEP: $COL_STEP"
-
-
 
 	COL_SERVER=''
 	COL_TILE_URL=''
@@ -116,24 +124,25 @@ handle_postgresql() {
 	# HAS_LAYER=$(python3 $MINTCAST_PATH/python/macro_sqlite_curd/main.py has_layer $COL_LAYER_ID)
 	HAS_LAYER=$(python3 $MINTCAST_PATH/python/macro_postgres_curd/main.py has_layer $COL_LAYER_ID)	
 	# echo "null, '$COL_LAYER_ID', '$COL_RASTER_OR_VECTOR_TYPE', '$COL_TILE_FORMAT', '$COL_LAYER_NAME', '$COL_SOURCE_LAYER', $COL_ORIGINAL_ID, $COL_HAS_DATA, $COL_HAS_TIMELINE, $COL_MAXZOOM, $COL_MINZOOM, '$COL_BOUNDS', '$COL_MBTILES_FILENAME', '$COL_DIRECTORY_FORMAT', '$COL_START_TIME', '$COL_END_TIME', '$COL_JSON_FILENAME', '$COL_SERVER', '$COL_TILE_URL', '$COL_STYLE_TYPE', '$COL_LEGEND_TYPE', '$COL_LEGEND', '$COL_VALUE_ARRAY', '$COL_VECTOR_JSON', '$COL_COLORMAP', '$COL_ORIGINAL_DATASET_BOUNDS', '$COL_MAPPING', '$COL_CKAN_URL', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP"
+	PSQL_TO_DATE=$(python3 $MINTCAST_PATH/python/macro_postgres_curd/main.py to_date $DATATIME_FORMAT)
+
 	if [[ "$HAS_LAYER" = "None" ]]; then
 		echo "DOES NOT HAVE LAYER"
 		echo "COL_LAYER_ID: $COL_LAYER_ID"
-		if [[ -z $START_TIME && $DATASET_TYPE != "tiff-time" ]]; then
-			echo "xhi"
+		if [[ -z "$START_TIME" && $DATASET_TYPE != "tiff-time" ]]; then
 			python3 $MINTCAST_PATH/python/macro_postgres_curd/main.py insert layer \
 				"layerid, type, tileformat, name, sourceLayer, hasData, hasTimeline, bounds, mbfilename, directory_format, json_filename, server, tileurl, legend_type, legend, valueArray, vector_json, colormap, original_dataset_bounds, mapping, stdname, md5, original_id , minzoom, maxzoom"\
 				"'$COL_LAYER_ID', '$COL_RASTER_OR_VECTOR_TYPE', '$COL_TILE_FORMAT', '$COL_LAYER_NAME', '$COL_SOURCE_LAYER', $COL_HAS_DATA, $COL_HAS_TIMELINE, '$COL_BOUNDS', '$COL_MBTILES_FILENAME', '$COL_DIRECTORY_FORMAT', '$COL_JSON_FILENAME', '$COL_SERVER','$COL_TILE_URL', '$COL_LEGEND_TYPE', '$COL_LEGEND', '$COL_VALUE_ARRAY', '$COL_VECTOR_JSON', '$COL_COLORMAP', '$COL_ORIGINAL_DATASET_BOUNDS', '$COL_MAPPING', '', '$COL_MD5', $COL_ORIGINAL_ID, $COL_MINZOOM, $COL_MAXZOOM"
 		elif [[ $DATASET_TYPE == "tiff-time" ]]; then
-			echo "hi"
-			echo "python3 $MINTCAST_PATH/python/macro_postgres_curd/main.py insert layer layerid, type, tileformat, name, sourceLayer, hasData, hasTimeline, bounds, mbfilename, directory_format, json_filename, server, tileurl, legend_type, legend, valueArray, vector_json, colormap, original_dataset_bounds, mapping, stdname, md5, original_id , minzoom, maxzoom, axis, stepType, stepOption_type, stepOption_format, step '$COL_LAYER_ID', '$COL_RASTER_OR_VECTOR_TYPE', '$COL_TILE_FORMAT', '$COL_LAYER_NAME', '$COL_SOURCE_LAYER', $COL_HAS_DATA, $COL_HAS_TIMELINE, '$COL_BOUNDS', '$COL_MBTILES_FILENAME', '$COL_DIRECTORY_FORMAT', '$COL_JSON_FILENAME', '$COL_SERVER','$COL_TILE_URL', '$COL_LEGEND_TYPE', '$COL_LEGEND', '$COL_VALUE_ARRAY', '$COL_VECTOR_JSON', '$COL_COLORMAP', '$COL_ORIGINAL_DATASET_BOUNDS', '$COL_MAPPING', '', '$COL_MD5', $COL_ORIGINAL_ID, $COL_MINZOOM, $COL_MAXZOOM, '$COL_AXIS', '$COL_STEP_TYPE', '$COL_STEP_OPTION_TYPE', '$COL_STEP_OPTION_FORMAT', '$COL_STEP'"
+ 			echo "python3 $MINTCAST_PATH/python/macro_postgres_curd/main.py insert layer layerid, type, tileformat, name, sourceLayer, hasData, hasTimeline, bounds, mbfilename, directory_format, json_filename, server, tileurl, legend_type, legend, valueArray, vector_json, colormap, original_dataset_bounds, mapping, stdname, md5, original_id , minzoom, maxzoom, axis, stepType, stepOption_type, stepOption_format, step '$COL_LAYER_ID', '$COL_RASTER_OR_VECTOR_TYPE', '$COL_TILE_FORMAT', '$COL_LAYER_NAME', '$COL_SOURCE_LAYER', $COL_HAS_DATA, $COL_HAS_TIMELINE, '$COL_BOUNDS', '$COL_MBTILES_FILENAME', '$COL_DIRECTORY_FORMAT', '$COL_JSON_FILENAME', '$COL_SERVER','$COL_TILE_URL', '$COL_LEGEND_TYPE', '$COL_LEGEND', '$COL_VALUE_ARRAY', '$COL_VECTOR_JSON', '$COL_COLORMAP', '$COL_ORIGINAL_DATASET_BOUNDS', '$COL_MAPPING', '', '$COL_MD5', $COL_ORIGINAL_ID, $COL_MINZOOM, $COL_MAXZOOM, '$COL_AXIS', '$COL_STEP_TYPE', '$COL_STEP_OPTION_TYPE', '$COL_STEP_OPTION_FORMAT', '$COL_STEP'"
 			python3 $MINTCAST_PATH/python/macro_postgres_curd/main.py insert layer \
 				"layerid, type, tileformat, name, sourceLayer, hasData, hasTimeline, bounds, mbfilename, directory_format, json_filename, server, tileurl, legend_type, legend, valueArray, vector_json, colormap, original_dataset_bounds, mapping, stdname, md5, original_id , minzoom, maxzoom, axis, stepType, stepOption_type, stepOption_format, step"\
 				"'$COL_LAYER_ID', '$COL_RASTER_OR_VECTOR_TYPE', '$COL_TILE_FORMAT', '$COL_LAYER_NAME', '$COL_SOURCE_LAYER', $COL_HAS_DATA, $COL_HAS_TIMELINE, '$COL_BOUNDS', '$COL_MBTILES_FILENAME', '$COL_DIRECTORY_FORMAT', '$COL_JSON_FILENAME', '$COL_SERVER','$COL_TILE_URL', '$COL_LEGEND_TYPE', '$COL_LEGEND', '$COL_VALUE_ARRAY', '$COL_VECTOR_JSON', '$COL_COLORMAP', '$COL_ORIGINAL_DATASET_BOUNDS', '$COL_MAPPING', '', '$COL_MD5', $COL_ORIGINAL_ID, $COL_MINZOOM, $COL_MAXZOOM, '$COL_AXIS', '$COL_STEP_TYPE', '$COL_STEP_OPTION_TYPE', '$COL_STEP_OPTION_FORMAT', '$COL_STEP'"
-		elif [[ ! -z $START_TIME ]]; then
+		elif [[ ! -z "$START_TIME" ]]; then
 			python3 $MINTCAST_PATH/python/macro_postgres_curd/main.py insert layer \
-				"layerid, type, tileformat, name, sourceLayer, hasData, hasTimeline, bounds, mbfilename, directory_format, json_filename, server, tileurl, legend_type, legend, valueArray, vector_json, colormap, original_dataset_bounds, mapping, stdname, md5, original_id , minzoom, maxzoom, bounds, valueArray, starttime, endtime"\
-				"'$COL_LAYER_ID', '$COL_RASTER_OR_VECTOR_TYPE', '$COL_TILE_FORMAT', '$COL_LAYER_NAME', '$COL_SOURCE_LAYER', $COL_HAS_DATA, $COL_HAS_TIMELINE, '$COL_BOUNDS', '$COL_MBTILES_FILENAME', '$COL_DIRECTORY_FORMAT', '$COL_JSON_FILENAME', '$COL_SERVER','$COL_TILE_URL', '$COL_LEGEND_TYPE', '$COL_LEGEND', '$COL_VALUE_ARRAY', '$COL_VECTOR_JSON', '$COL_COLORMAP', '$COL_ORIGINAL_DATASET_BOUNDS', '$COL_MAPPING', '', '$COL_MD5', $COL_ORIGINAL_ID, $COL_MINZOOM, $COL_MAXZOOM, '$COL_BOUNDS', '$COL_VALUE_ARRAY', '$COL_START_TIME', '$COL_END_TIME'"
+				"layerid, type, tileformat, name, sourceLayer, hasData, hasTimeline, mbfilename, directory_format, json_filename, server, tileurl, legend_type, legend, valueArray, vector_json, colormap, original_dataset_bounds, mapping, stdname, md5, original_id, minzoom, maxzoom, bounds, starttime, endtime, axis, stepType, stepOption_type, stepOption_format, step"\
+				"'$COL_LAYER_ID', '$COL_RASTER_OR_VECTOR_TYPE', '$COL_TILE_FORMAT', '$COL_LAYER_NAME', '$COL_SOURCE_LAYER', $COL_HAS_DATA, $COL_HAS_TIMELINE, '$COL_MBTILES_FILENAME', '$COL_DIRECTORY_FORMAT', '$COL_JSON_FILENAME', '$COL_SERVER','$COL_TILE_URL', '$COL_LEGEND_TYPE', '$COL_LEGEND', '$COL_VALUE_ARRAY', '$COL_VECTOR_JSON', '$COL_COLORMAP', '$COL_ORIGINAL_DATASET_BOUNDS', '$COL_MAPPING', '', '$COL_MD5', $COL_ORIGINAL_ID, $COL_MINZOOM, $COL_MAXZOOM, '$COL_BOUNDS', to_date('$COL_START_TIME', '$PSQL_TO_DATE'), to_date('$COL_END_TIME','$PSQL_TO_DATE'), '$COL_AXIS', '$COL_STEP_TYPE', '$COL_STEP_OPTION_TYPE', '$COL_STEP_OPTION_FORMAT', '$COL_STEP'"
+
 		fi
 	else
 		echo "HAS LAYER"
@@ -147,7 +156,7 @@ handle_postgresql() {
 				"id=$HAS_LAYER"
 		elif [[ ! -z $START_TIME ]]; then
 			python3 $MINTCAST_PATH/python/macro_postgres_curd/main.py update layer \
-				"layerid='$COL_LAYER_ID', type='$COL_RASTER_OR_VECTOR_TYPE', tileformat='$COL_TILE_FORMAT', name='$COL_LAYER_NAME', sourceLayer='$COL_SOURCE_LAYER', original_id=$COL_ORIGINAL_ID, hasData=$COL_HAS_DATA, hasTimeline=$COL_HAS_TIMELINE, bounds='$COL_BOUNDS', mbfilename='$COL_MBTILES_FILENAME', directory_format='$COL_DIRECTORY_FORMAT', starttime='$COL_START_TIME', endtime='$COL_END_TIME', json_filename='$COL_JSON_FILENAME', server='$COL_SERVER', tileurl='$COL_TILE_URL', styleType='$COL_STYLE_TYPE', legend_type='$COL_LEGEND_TYPE', legend='$COL_LEGEND', valueArray='$COL_VALUE_ARRAY', vector_json='$COL_VECTOR_JSON', colormap='$COL_COLORMAP', original_dataset_bounds='$COL_ORIGINAL_DATASET_BOUNDS', mapping='$COL_MAPPING', create_at=CURRENT_TIMESTAMP, modified_at=CURRENT_TIMESTAMP, minzoom=$COL_MINZOOM, maxzoom=$COL_MAXZOOM, md5='$COL_MD5'" \
+				"layerid='$COL_LAYER_ID', type='$COL_RASTER_OR_VECTOR_TYPE', tileformat='$COL_TILE_FORMAT', name='$COL_LAYER_NAME', sourceLayer='$COL_SOURCE_LAYER', original_id=$COL_ORIGINAL_ID, hasData=$COL_HAS_DATA, hasTimeline=$COL_HAS_TIMELINE, bounds='$COL_BOUNDS', mbfilename='$COL_MBTILES_FILENAME', directory_format='$COL_DIRECTORY_FORMAT', starttime=to_date('$COL_START_TIME', '$PSQL_TO_DATE'), endtime=to_date('$COL_END_TIME', '$PSQL_TO_DATE'), json_filename='$COL_JSON_FILENAME', server='$COL_SERVER', tileurl='$COL_TILE_URL', styleType='$COL_STYLE_TYPE', legend_type='$COL_LEGEND_TYPE', legend='$COL_LEGEND', valueArray='$COL_VALUE_ARRAY', vector_json='$COL_VECTOR_JSON', colormap='$COL_COLORMAP', original_dataset_bounds='$COL_ORIGINAL_DATASET_BOUNDS', mapping='$COL_MAPPING', create_at=CURRENT_TIMESTAMP, modified_at=CURRENT_TIMESTAMP, minzoom=$COL_MINZOOM, maxzoom=$COL_MAXZOOM, md5='$COL_MD5'" \
 				"id=$HAS_LAYER"
 		fi
 

@@ -209,22 +209,22 @@ handle_tiff_time(){
 		proc_geojson2mbtiles $POLY_OUT $VECTOR_MBTILES $LAYER_NAME #Make .mbtiles
 	fi
 
-	if [[ $FIRST_FILE == "YES" ]]; then
-		#save raster
-		COL_RASTER_OR_VECTOR_TYPE="raster"
-		MBTILES_FILEPATH=$RASTER_MBTILES
-		handle_postgresql
+	# if [[ $FIRST_FILE == "YES" ]]; then
+	# 	#save raster
+	# 	COL_RASTER_OR_VECTOR_TYPE="raster"
+	# 	MBTILES_FILEPATH=$RASTER_MBTILES
+	# 	handle_postgresql
 
-		#save vector
-		COL_RASTER_OR_VECTOR_TYPE="vector"
-		MBTILES_FILEPATH=$VECTOR_MBTILES
-		handle_postgresql
+	# 	#save vector
+	# 	COL_RASTER_OR_VECTOR_TYPE="vector"
+	# 	MBTILES_FILEPATH=$VECTOR_MBTILES
+	# 	handle_postgresql
 
-		python3 $MINTCAST_PATH/python/macro_gen_web_json/main.py update-all 
+	# 	python3 $MINTCAST_PATH/python/macro_gen_web_json/main.py update-all 
 
-	fi
+	# fi
 
-	python3 $MINTCAST_PATH/python/macro_gen_web_json/main.py update-config
+	# python3 $MINTCAST_PATH/python/macro_gen_web_json/main.py update-config
 
 	#TODO by Libo
 	# if [[ $DEV_MODE != 'NO' ]]; then

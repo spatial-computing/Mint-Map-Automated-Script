@@ -60,6 +60,8 @@ def main():
                 print("None")
             else:
                 print(row[0])
+        elif method == 'to_date':
+            print(sys.argv[2].replace('{year}','YYYY').replace('{month}', 'MM').replace('{day}','DD'))
     except Exception as e:
         print(e,file=sys.stderr)
     finally:
@@ -95,6 +97,8 @@ delete
     ./python/macro_postgres_curd/main.py delete metadata [where]
         ./python/macro_postgres_curd/main.py delete metadata "v='bar2'"
 
+to_date
+    ./python/macro_postgres_curd/main.py to_date date_format
 
 @RETURN
     if return are data it will be made by tab

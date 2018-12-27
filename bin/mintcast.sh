@@ -124,7 +124,8 @@ else
 	exit 1
 fi
 
-if [[ $DATASET_TYPE == "tiff" || $DATASET_TYPE == "tiled" ]]; then 
+# if [[ $DATASET_TYPE == "single-netcdf" ]]; then 
+
 	# save raster
 	COL_RASTER_OR_VECTOR_TYPE="raster"
 	MBTILES_FILEPATH=$RASTER_MBTILES
@@ -134,6 +135,7 @@ if [[ $DATASET_TYPE == "tiff" || $DATASET_TYPE == "tiled" ]]; then
 	# save vector
 	COL_RASTER_OR_VECTOR_TYPE="vector"
 	MBTILES_FILEPATH=$VECTOR_MBTILES
+
 	#handle_sqlite
 	handle_postgresql
 
@@ -148,32 +150,32 @@ if [[ $DATASET_TYPE == "tiff" || $DATASET_TYPE == "tiled" ]]; then
 	#"layerid='$Cmacro_tileserver_config/main.pyOL_LAYER_ID'"
 	python3 $MINTCAST_PATH/python/macro_gen_web_json/main.py update-config
 
-# elif [[ $DATASET_TYPE == "netcdf" || $DATASET_TYPE == "single-netcdf" ]]; then
-# 	MBTILES_DIR=$(dirname "${RASTER_MBTILES}")
-# 	echo "MBTILES_DIR: $MBTILES_DIR"
-# 	MBTILES_ARRAY=($MBTILES_DIR/*.mbtiles)
-# 	for ((i=0; i<${#MBTILES_ARRAY[@]}; i++)); do
-# 		MBTILES_FILEPATH=${MBTILES_ARRAY[i]}
-# 		echo "MBTILES_FILEPATH: $MBTILES_FILEPATH"
-# 		if [[ $MBTILES_FILEPATH = *raster* ]]; then
-# 			COL_RASTER_OR_VECTOR_TYPE="raster"
-# 		elif [[ $MBTILES_FILEPATH = *vector* ]]; then
-# 			COL_RASTER_OR_VECTOR_TYPE="vector"
-# 		fi
-# 		handle_sqlite
-# 		python3 $MINTCAST_PATH/python/macro_gen_web_json/main.py update-all 
-# 		CKAN_URL=$(python3 $MINTCAST_PATH/python/macro_upload_ckan/main.py "$TARGET_JSON_PATH/$COL_JSON_FILENAME")
-# 		echo $CKAN_URL
-# 		# update database
-# 		python3 $MINTCAST_PATH/python/macro_sqlite_curd/main.py update layer \
-# 		"ckan_url='$CKAN_URL'" \
-# 		"layerid='$COL_LAYER_ID'"
-# 		python3 $MINTCAST_PATH/python/macro_gen_web_json/main.py update-config
-# 	done	
-fi
+	# elif [[ $DATASET_TYPE == "netcdf" || $DATASET_TYPE == "single-netcdf" ]]; then
+	# 	MBTILES_DIR=$(dirname "${RASTER_MBTILES}")
+	# 	echo "MBTILES_DIR: $MBTILES_DIR"
+	# 	MBTILES_ARRAY=($MBTILES_DIR/*.mbtiles)
+	# 	for ((i=0; i<${#MBTILES_ARRAY[@]}; i++)); do
+	# 		MBTILES_FILEPATH=${MBTILES_ARRAY[i]}
+	# 		echo "MBTILES_FILEPATH: $MBTILES_FILEPATH"
+	# 		if [[ $MBTILES_FILEPATH = *raster* ]]; then
+	# 			COL_RASTER_OR_VECTOR_TYPE="raster"
+	# 		elif [[ $MBTILES_FILEPATH = *vector* ]]; then
+	# 			COL_RASTER_OR_VECTOR_TYPE="vector"
+	# 		fi
+	# 		handle_sqlite
+	# 		python3 $MINTCAST_PATH/python/macro_gen_web_json/main.py update-all 
+	# 		CKAN_URL=$(python3 $MINTCAST_PATH/python/macro_upload_ckan/main.py "$TARGET_JSON_PATH/$COL_JSON_FILENAME")
+	# 		echo $CKAN_URL
+	# 		# update database
+	# 		python3 $MINTCAST_PATH/python/macro_sqlite_curd/main.py update layer \
+	# 		"ckan_url='$CKAN_URL'" \
+	# 		"layerid='$COL_LAYER_ID'"
+	# 		python3 $MINTCAST_PATH/python/macro_gen_web_json/main.py update-config
+	# 	done	
+# fi
 
 
-
+# rm -f "$MINTCAST_PATH/tmp/*"
 
 
 python3 $MINTCAST_PATH/python/macro_tileserver_config/main.py "$TILESERVER_ROOT" "$TILESERVER_PORT"

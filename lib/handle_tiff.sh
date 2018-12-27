@@ -21,7 +21,7 @@ source $MINTCAST_PATH/lib/proc_geojson2mbtiles.sh
 handle_tiff(){
 	# Parse arguments from mintcast.sh:
 	INPUT=$DATAFILE_PATH
-	LAYER_NAME=$LAYER_NAME
+	LAYER_NAME="$LAYER_NAME"
 
 	# Hard-coded paths (passed from mintcast.sh?):
 	if [[ -z "$OUT_DIR" ]]; then
@@ -57,6 +57,13 @@ handle_tiff(){
 		LAYER_ID_SUFFIX=''
 	fi
 
+	if [[ -z "$LAYER_INDEX" ]]; then
+		LAYER_INDEX=''
+	fi
+
+	if [[ -z "$FIRST_RASTER_LAYER_ID" ]]; then
+		FIRST_RASTER_LAYER_ID=''
+	fi
 	echo "VECTOR_MD5: $VECTOR_MD5"
 	VECTOR_LAYER_ID=$(python3 $MINTCAST_PATH/python/macro_string/main.py layer_name_to_layer_id $LAYER_NAME$LAYER_ID_SUFFIX vector pbf)
 	### CHANGE THE LINE BELOW TO GET THE PROPER MD5 (AFTER INTEGRATING WITH THE DATA CATALOG)
@@ -65,6 +72,7 @@ handle_tiff(){
 	elif [[ ! -z $VECTOR_MD5 ]]; then
 		export VECTOR_LAYER_ID_MD5=$VECTOR_MD5
 	fi
+
 	#echo "VECTOR_LAYER_ID_MD5: $VECTOR_LAYER_ID_MD5"
 	VECTOR_MBTILES=$OUT_DIR/$VECTOR_LAYER_ID.mbtiles
 	echo "VECTOR_MBTILES: $VECTOR_MBTILES"
@@ -72,18 +80,24 @@ handle_tiff(){
 		rm -f $VECTOR_MBTILES
 	fi
 
+	if [[ ! -z "$LAYER_INDEX" ]]; then
+		VECTOR_LAYER_ID_MD5="$VECTOR_LAYER_ID_MD5""_""$LAYER_INDEX"
+	fi
+
+	
 	RASTER_LAYER_ID=$(python3 $MINTCAST_PATH/python/macro_string/main.py layer_name_to_layer_id $LAYER_NAME$LAYER_ID_SUFFIX raster png)
 	#echo "RASTER_LAYER_ID: $RASTER_LAYER_ID"
 	### CHANGE THE LINE BELOW TO GET THE PROPER MD5 (AFTER INTEGRATING WITH THE DATA CATALOG)
 	if [[ -z $VECTOR_MD5 ]]; then
 		export RASTER_LAYER_ID_MD5=$(python3 $MINTCAST_PATH/python/macro_md5/main.py $RASTER_LAYER_ID)
 	elif [[ ! -z $VECTOR_MD5 ]]; then
-		export RASTER_LAYER_ID_MD5=$(python3 $MINTCAST_PATH/python/macro_md5/main.py $VECTOR_MD5)
+		export RASTER_LAYER_ID_MD5=$(python3 $MINTCAST_PATH/python/macro_md5/main.py $VECTOR_LAYER_ID_MD5)
 		echo "RASTER_LAYER_ID_MD5: $RASTER_LAYER_ID_MD5"
 	fi
 
-
-
+	if [[ -z "$LAYER_INDEX" ]]; then
+		export FIRST_RASTER_LAYER_ID="$RASTER_LAYER_ID_MD5"
+	fi
 	#echo "RASTER_LAYER_ID_MD5: $RASTER_LAYER_ID_MD5"
 	RASTER_MBTILES=$OUT_DIR/$RASTER_LAYER_ID.mbtiles
 	echo "RASTER_MBTILES: $RASTER_MBTILES"
@@ -106,9 +120,6 @@ handle_tiff(){
 			"id=$HAS_LAYER"
 	fi
 
-
-
-
 	#HAS_LAYER=$(python3 $MINTCAST_PATH/python/macro_sqlite_curd/main.py has_tileserver_config $VECTOR_LAYER_ID)
 	HAS_LAYER=$(python3 $MINTCAST_PATH/python/macro_postgres_curd/main.py has_tileserver_config $VECTOR_LAYER_ID)
 	if [[ "$HAS_LAYER" = "None" ]]; then
@@ -122,6 +133,13 @@ handle_tiff(){
 			"layerid='$VECTOR_LAYER_ID', mbtiles='$VECTOR_MBTILES', md5='$VECTOR_LAYER_ID_MD5'" \
 			"id=$HAS_LAYER"
 	fi
+
+	echo "LAYER_ID_SUFFIX: $LAYER_ID_SUFFIX"
+	echo "VECTOR_LAYER_ID: $VECTOR_LAYER_ID"
+	echo "VECTOR_LAYER_ID_MD5: $VECTOR_LAYER_ID_MD5"
+	echo "RASTER_LAYER_ID: $RASTER_LAYER_ID"
+	echo "RASTER_LAYER_ID_MD5: $RASTER_LAYER_ID_MD5"
+
 	# Check for QML file:
 	echo "QML_FILE: $QML_FILE"
 	if [[ -z "$QML_FILE" ]]; then
@@ -132,6 +150,7 @@ handle_tiff(){
 		echo "COLOR_TABLE: $COLOR_TABLE"
 		python3 $QML_EXTRACT_PATH $QML_FILE $COLOR_TABLE #Make colortable
 	fi
+
 	# CheckType for Already Byted file and add nodata flag
 	NODATAFLAG=''
 	POLYGONIZE_FLOAT_FLAG=''
@@ -182,12 +201,19 @@ handle_tiff(){
 	### TO DO: read MBTiles metadata table/store to database
 	fi
 
+	VECTOR_SOURCE_LAYER_NAME="$LAYER_NAME"
+
+	if [[ ! -z "$LAYER_INDEX" ]]; then
+		VECTOR_SOURCE_LAYER_NAME="$LAYER_NAME""#""$LAYER_INDEX"
+	fi
+
+	echo "%%%%%%%% $VECTOR_SOURCE_LAYER_NAME"
 	if [[ $GENERATE_VECTOR_TILE == "YES" ]]; then
 		# Generate vector tiles:
 		echo "Generating polygonized GeoJSON..."
-		proc_polygonize $PROJ_OUT $POLY_OUT $LAYER_NAME #Make GeoJSON
+		proc_polygonize $PROJ_OUT $POLY_OUT $VECTOR_SOURCE_LAYER_NAME #Make GeoJSON
 		echo "Making vector tiles..."
-		proc_geojson2mbtiles $POLY_OUT $VECTOR_MBTILES $LAYER_NAME #Make .mbtiles
+		proc_geojson2mbtiles $POLY_OUT $VECTOR_MBTILES $VECTOR_SOURCE_LAYER_NAME #Make .mbtiles
 	fi
 
 	#TODO by Libo
