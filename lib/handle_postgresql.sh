@@ -108,22 +108,22 @@ handle_postgresql() {
 	fi
 
 	COL_JSON_FILENAME="$COL_LAYER_ID.json"
-
-	if [[ -z "$QML_FILE" ]]; then
-		# ------TODO-------Apply to different occassion like: netcdf??or only tiff
-		# MAX_VAL=$(python3 $MINTCAST_PATH/python/macro_gdal max-value $DATAFILE_PATH)
-		# MIN_VAL=$(python3 $MINTCAST_PATH/python/macro_gdal min-value $DATAFILE_PATH)
-		MAX_VAL=$(python3 $MINTCAST_PATH/python/macro_gdal max-value $CLIP_OUT $NETCDF_SINGLE_SUBDATASET)
-		MIN_VAL=$(python3 $MINTCAST_PATH/python/macro_gdal min-value $CLIP_OUT $NETCDF_SINGLE_SUBDATASET)
-		COL_LEGEND_TYPE=$(python3 $MINTCAST_PATH/python/macro_extract_legend legend-type noqml $MIN_VAL $MAX_VAL)
-		COL_LEGEND=$(python3 $MINTCAST_PATH/python/macro_extract_legend legend noqml $MIN_VAL $MAX_VAL)
-		COL_COLORMAP=$(python3 $MINTCAST_PATH/python/macro_extract_legend colormap noqml $MIN_VAL $MAX_VAL)
-	else
-		COL_LEGEND_TYPE=$(python3 $MINTCAST_PATH/python/macro_extract_legend legend-type $QML_FILE)
-		COL_LEGEND=$(python3 $MINTCAST_PATH/python/macro_extract_legend legend $QML_FILE)
-		COL_COLORMAP=$(python3 $MINTCAST_PATH/python/macro_extract_legend colormap $QML_FILE)
+	if [[ -z "$MAX_VAL" ]]; then
+		if [[ -z "$QML_FILE" ]]; then
+			# ------TODO-------Apply to different occassion like: netcdf??or only tiff
+			# MAX_VAL=$(python3 $MINTCAST_PATH/python/macro_gdal max-value $DATAFILE_PATH)
+			# MIN_VAL=$(python3 $MINTCAST_PATH/python/macro_gdal min-value $DATAFILE_PATH)
+			MAX_VAL=$(python3 $MINTCAST_PATH/python/macro_gdal max-value $CLIP_OUT $NETCDF_SINGLE_SUBDATASET)
+			MIN_VAL=$(python3 $MINTCAST_PATH/python/macro_gdal min-value $CLIP_OUT $NETCDF_SINGLE_SUBDATASET)
+			COL_LEGEND_TYPE=$(python3 $MINTCAST_PATH/python/macro_extract_legend legend-type noqml $MIN_VAL $MAX_VAL)
+			COL_LEGEND=$(python3 $MINTCAST_PATH/python/macro_extract_legend legend noqml $MIN_VAL $MAX_VAL)
+			COL_COLORMAP=$(python3 $MINTCAST_PATH/python/macro_extract_legend colormap noqml $MIN_VAL $MAX_VAL)		
+		else
+			COL_LEGEND_TYPE=$(python3 $MINTCAST_PATH/python/macro_extract_legend legend-type $QML_FILE)
+			COL_LEGEND=$(python3 $MINTCAST_PATH/python/macro_extract_legend legend $QML_FILE)
+			COL_COLORMAP=$(python3 $MINTCAST_PATH/python/macro_extract_legend colormap $QML_FILE)
+		fi
 	fi
-
 	COL_ORIGINAL_DATASET_BOUNDS=$(python3 $MINTCAST_PATH/python/macro_gdal bounds-geojson-format $DATAFILE_PATH)
 
 	# HAS_LAYER=$(python3 $MINTCAST_PATH/python/macro_sqlite_curd has_layer $COL_LAYER_ID)

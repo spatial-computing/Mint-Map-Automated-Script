@@ -194,11 +194,37 @@ handle_tiff(){
 			echo "COLOR_TABLE: $COLOR_TABLE"
 			proc_gdaldem $PROJ_OUT $COLOR_TABLE $COLOR_OUT
 		fi
-	echo "Making raster tiles..."
-	proc_tif2mbtiles $COLOR_OUT $RASTER_MBTILES #Make .mbtiles
-	echo "Generating zoom levels..."
-	proc_gdaladdo $RASTER_MBTILES #Generate zoom levels
-	### TO DO: read MBTiles metadata table/store to database
+		if [[ ! -z "$START_TIME" ]]; then
+			if [[ $GENERATE_NEW_RES == "YES" ]]; then
+				# with new res proc
+				MAX_VAL=$(python3 $MINTCAST_PATH/python/macro_gdal max-value $RES_OUT $NETCDF_SINGLE_SUBDATASET)
+		    	MIN_VAL=$(python3 $MINTCAST_PATH/python/macro_gdal min-value $RES_OUT $NETCDF_SINGLE_SUBDATASET)
+		    	COL_LEGEND_TYPE=$(python3 $MINTCAST_PATH/python/macro_extract_legend legend-type noqml $MIN_VAL $MAX_VAL)
+		    	if [[ -z "$COL_LEGEND" ]]; then
+		    		COL_LEGEND=$(python3 $MINTCAST_PATH/python/macro_extract_legend legend noqml $MIN_VAL $MAX_VAL)	
+		    		COL_COLORMAP=$(python3 $MINTCAST_PATH/python/macro_extract_legend colormap noqml $MIN_VAL $MAX_VAL)	
+		    	else
+		    		COL_LEGEND=$COL_LEGEND"|"$(python3 $MINTCAST_PATH/python/macro_extract_legend legend noqml $MIN_VAL $MAX_VAL)
+			    	COL_COLORMAP=$COL_COLORMAP"|"$(python3 $MINTCAST_PATH/python/macro_extract_legend colormap noqml $MIN_VAL $MAX_VAL)	
+		    	fi
+			else
+				MAX_VAL=$(python3 $MINTCAST_PATH/python/macro_gdal max-value $PROJ_OUT $NETCDF_SINGLE_SUBDATASET)
+		    	MIN_VAL=$(python3 $MINTCAST_PATH/python/macro_gdal min-value $PROJ_OUT $NETCDF_SINGLE_SUBDATASET)
+		    	COL_LEGEND_TYPE=$(python3 $MINTCAST_PATH/python/macro_extract_legend legend-type noqml $MIN_VAL $MAX_VAL)
+		    	if [[ -z "$COL_LEGEND" ]]; then
+		    		COL_LEGEND=$(python3 $MINTCAST_PATH/python/macro_extract_legend legend noqml $MIN_VAL $MAX_VAL)
+		    		COL_COLORMAP=$(python3 $MINTCAST_PATH/python/macro_extract_legend colormap noqml $MIN_VAL $MAX_VAL)
+		    	else
+		    		COL_LEGEND=$COL_LEGEND"|"$(python3 $MINTCAST_PATH/python/macro_extract_legend legend noqml $MIN_VAL $MAX_VAL)
+		    		COL_COLORMAP=$COL_COLORMAP"|"$(python3 $MINTCAST_PATH/python/macro_extract_legend colormap noqml $MIN_VAL $MAX_VAL)
+		    	fi
+			fi
+		fi
+		echo "Making raster tiles..."
+		proc_tif2mbtiles $COLOR_OUT $RASTER_MBTILES #Make .mbtiles
+		echo "Generating zoom levels..."
+		proc_gdaladdo $RASTER_MBTILES #Generate zoom levels
+		### TO DO: read MBTiles metadata table/store to database
 	fi
 
 	VECTOR_SOURCE_LAYER_NAME="$LAYER_NAME"
