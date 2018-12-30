@@ -61,7 +61,7 @@ def main():
             else:
                 print(row[0])
         elif method == 'to_date':
-            print(sys.argv[2].replace('{year}','YYYY').replace('{month}', 'MM').replace('{day}','DD'))
+            print(sys.argv[2].replace('{year}','yyyy').replace('{month}', 'MM').replace('{day}','dd'))
     except Exception as e:
         print(e,file=sys.stderr)
     finally:

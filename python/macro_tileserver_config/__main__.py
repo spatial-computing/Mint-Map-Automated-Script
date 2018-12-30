@@ -10,8 +10,8 @@ from postgres_config import hostname, username, password, database
 
 #DATABASE_PATH = '/sql/database.sqlite'
 
-def main(root = '../', port='8080', server='0.0.0.0'):
-    config = {'options': {'paths': {'root': root, 'mbtiles': ''}, 'domains': ['%s:%s'%(server, port),'localhost:%s'%port, '127.0.0.1:%s'%port], 'formatQuality': {'png': 100, 'jpeg': 80, 'webp': 90}, 'maxScaleFactor': 3, 'maxSize': 2048, 'pbfAlias': 'pbf', 'serveAllFonts': False, 'serveStaticMaps': False}, 'data': {}}
+def main(root = '../', port='80', server='0.0.0.0'):
+    config = {'options': {'paths': {'root': root, 'mbtiles': ''}, 'domains': ['%s:%s'%(server, port),'localhost:%s'%port, '127.0.0.1:%s'%port, '52.90.74.236:65533'], 'formatQuality': {'png': 100, 'jpeg': 80, 'webp': 90}, 'maxScaleFactor': 3, 'maxSize': 2048, 'pbfAlias': 'pbf', 'serveAllFonts': False, 'serveStaticMaps': False}, 'data': {}}
     #conn = sqlite3.connect(MINTCAST_PATH + DATABASE_PATH)
     #from postgres_config import conn
     conn = psycopg2.connect( host=hostname, user=username, password=password, dbname=database )

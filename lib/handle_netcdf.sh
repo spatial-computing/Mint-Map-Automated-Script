@@ -4,9 +4,11 @@ source $MINTCAST_PATH/lib/proc_getnetcdf_subdataset.sh
 source $MINTCAST_PATH/lib/handle_tiff.sh
 
 handle_netcdf(){
-	# python3 $MINTCAST_PATH/python/macro_traversal/main.py "/Users/liber/Documents/South_Sudan/RawData/Forcing/FLDAS_NOAH01_A_EA_D/" "{year}/{month}/*.nc" "2001 01" "2001 03"
-	NETCDF_FILES_STRING=$(python3 $MINTCAST_PATH/python/macro_traversal/main.py "$DATASET_DIR/" "$DATASET_DIR_STRUCTURE" "$START_TIME" "$END_TIME" "$DATATIME_FORMAT")
+	# python3 $MINTCAST_PATH/python/macro_traversal "/Users/liber/Documents/South_Sudan/RawData/Forcing/FLDAS_NOAH01_A_EA_D/" "{year}/{month}/*.nc" "2001 01" "2001 03"
+	NETCDF_FILES_STRING=$(python3 $MINTCAST_PATH/python/macro_traversal path "$DATASET_DIR/" "$DATASET_DIR_STRUCTURE" "$START_TIME" "$END_TIME" "$DATATIME_FORMAT")
 
+
+	TIME_STEPS=$(python3 $MINTCAST_PATH/python/macro_traversal step "$DATASET_DIR/" "$DATASET_DIR_STRUCTURE" "$START_TIME" "$END_TIME" "$DATATIME_FORMAT")
     # printf "%s\n" "$NETCDF_FILES_STRING" | {
     # 	while IFS=$'\n' read -r line_data; do
     #         NETCDF_FILES+=("$line_data")
@@ -21,7 +23,7 @@ handle_netcdf(){
 	for netcdf_file in "${NETCDF_FILES[@]}"; do
 		# echo $netcdf_file
 		proc_getnetcdf_subdataset "$netcdf_file"
-		PARTIAL_PATH=$(python3 $MINTCAST_PATH/python/macro_path/main.py diff "$netcdf_file" "$DATASET_DIR")
+		PARTIAL_PATH=$(python3 $MINTCAST_PATH/python/macro_path diff "$netcdf_file" "$DATASET_DIR")
 		echo "PARTIAL_PATH: $PARTIAL_PATH"
 		let index=0
 
@@ -31,7 +33,7 @@ handle_netcdf(){
 			LAYER_NAME="${SUBDATASET_LAYERS_ARRAY[$index]}"
 			OUT_DIR="$MINTCAST_PATH/dist/$PARTIAL_PATH"
 			echo "OUT_DIR: $OUT_DIR"
-			LAYER_ID_SUFFIX=$(python3 $MINTCAST_PATH/python/macro_string/main.py path_to_suffix $PARTIAL_PATH)
+			LAYER_ID_SUFFIX=$(python3 $MINTCAST_PATH/python/macro_string path_to_suffix $PARTIAL_PATH)
 			echo "LAYER_ID_SUFFIX: $LAYER_ID_SUFFIX"
 
 			handle_tiff

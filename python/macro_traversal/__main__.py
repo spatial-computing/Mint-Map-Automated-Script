@@ -7,6 +7,8 @@ import os
 import re
 from os.path import isfile, join, expanduser
 from datetime import datetime, date, time, timedelta
+import json
+
 monthdelta_dict = {
 	0: timedelta(days=0),
 	1: timedelta(days=31),
@@ -58,11 +60,12 @@ def daterange(start_date, end_date, delta):
 	 #        yield start_date + timedelta(n)
 	   
 def main(argv):
-	_dir = expanduser(sys.argv[1])
+	method = sys.argv[1]
+	_dir = expanduser(sys.argv[2])
 
-	_wildcardPathStructure = sys.argv[2].replace('{year}','%Y').replace('{month}', '%m').replace('{day}','%d')
+	_wildcardPathStructure = sys.argv[3].replace('{year}','%Y').replace('{month}', '%m').replace('{day}','%d')
 	
-	__timeFormat = sys.argv[5].replace('{year}','%Y').replace('{month}', '%m').replace('{day}','%d')
+	__timeFormat = sys.argv[6].replace('{year}','%Y').replace('{month}', '%m').replace('{day}','%d')
 	# _structure = os.path.dirname(_wildcardStructure)
 	# if len(sys.argv) == 6:
 	# 	# if there are six parameter, then year and month
@@ -71,13 +74,13 @@ def main(argv):
 	_structure = _wildcardPathStructure
 
 	#_structure.replace('/', '')
-	_start = datetime.strptime(sys.argv[3], __timeFormat)
-	_end = datetime.strptime(sys.argv[4], __timeFormat)
+	_start = datetime.strptime(sys.argv[4], __timeFormat)
+	_end = datetime.strptime(sys.argv[5], __timeFormat)
 
-	_filetype = os.path.splitext(sys.argv[2])[1]
+	_filetype = os.path.splitext(sys.argv[3])[1]
 
 	files = []
-	_oldpath = ''
+	_oldpath = set()
 	_path = _dir
 
 	_delta = 'days'
@@ -88,24 +91,29 @@ def main(argv):
 	elif __timeFormat.find('%Y') != -1:
 		_delta = 'years'
 
+	ret = []
 
 	for single_date in daterange(_start, _end, delta=_delta):
 		_file = single_date.strftime(_structure)
 		_path = join(_dir, _file)
 
-		if _oldpath == _path:
+		if _path in _oldpath :
 			continue
 
 		if isfile(_path):
-			print(_path)
-
+			if method == "path":			
+				print(_path)
+			elif method == "step":
+				ret.append(single_date.strftime(__timeFormat))
 		# for f in os.listdir(_path):
 		# 	if isfile(join(_path,f)):
 		# 		if os.path.splitext(f)[1]==_filetype:
 		# 			print(join(_path,f))
 		# 			# Then use xargs -I % cmd %
-		_oldpath = _path
+		_oldpath.add(_path)
 
+	if method == "step":
+		print(json.dumps(ret))
 	# if len(sys.argv) == 6:
 	# 	for f in os.listdir(_path):
 	# 		if isfile(join(_path,f)):

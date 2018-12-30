@@ -69,7 +69,7 @@ OUTPUT_DIR_STRUCTURE_FOR_TIMESERIES="" # how netcdf's timeseries mbtiles are sto
 
 DATAFILE_PATH=""            		# Single file path like tiff
 
-TILESERVER_ROOT="../"
+TILESERVER_ROOT="./"
 TILESERVER_PORT="80"
 # store mbtiles in a specific folder and read by website
 
@@ -139,16 +139,16 @@ fi
 	#handle_sqlite
 	handle_postgresql
 
-	python3 $MINTCAST_PATH/python/macro_gen_web_json/main.py update-all 
-	#CKAN_URL=$(python3 $MINTCAST_PATH/python/macro_upload_ckan/main.py get "$TARGET_JSON_PATH/$COL_JSON_FILENAME")
+	python3 $MINTCAST_PATH/python/macro_gen_web_json update-all 
+	#CKAN_URL=$(python3 $MINTCAST_PATH/python/macro_upload_ckan get "$TARGET_JSON_PATH/$COL_JSON_FILENAME")
 	#echo $CKAN_URL
 	# update database
 	#echo "TARGET_JSON_PATH: $TARGET_JSON_PATH"
 	#CKAN_URL=""
-	#python3 $MINTCAST_PATH/python/macro_postgres_curd/main.py update layer \
+	#python3 $MINTCAST_PATH/python/macro_postgres_curd update layer \
 	#"ckan_url='$CKAN_URL'" \
-	#"layerid='$Cmacro_tileserver_config/main.pyOL_LAYER_ID'"
-	python3 $MINTCAST_PATH/python/macro_gen_web_json/main.py update-config
+	#"layerid='$Cmacro_tileserver_configOL_LAYER_ID'"
+	python3 $MINTCAST_PATH/python/macro_gen_web_json update-config
 
 	# elif [[ $DATASET_TYPE == "netcdf" || $DATASET_TYPE == "single-netcdf" ]]; then
 	# 	MBTILES_DIR=$(dirname "${RASTER_MBTILES}")
@@ -163,14 +163,14 @@ fi
 	# 			COL_RASTER_OR_VECTOR_TYPE="vector"
 	# 		fi
 	# 		handle_sqlite
-	# 		python3 $MINTCAST_PATH/python/macro_gen_web_json/main.py update-all 
-	# 		CKAN_URL=$(python3 $MINTCAST_PATH/python/macro_upload_ckan/main.py "$TARGET_JSON_PATH/$COL_JSON_FILENAME")
+	# 		python3 $MINTCAST_PATH/python/macro_gen_web_json update-all 
+	# 		CKAN_URL=$(python3 $MINTCAST_PATH/python/macro_upload_ckan "$TARGET_JSON_PATH/$COL_JSON_FILENAME")
 	# 		echo $CKAN_URL
 	# 		# update database
-	# 		python3 $MINTCAST_PATH/python/macro_sqlite_curd/main.py update layer \
+	# 		python3 $MINTCAST_PATH/python/macro_sqlite_curd update layer \
 	# 		"ckan_url='$CKAN_URL'" \
 	# 		"layerid='$COL_LAYER_ID'"
-	# 		python3 $MINTCAST_PATH/python/macro_gen_web_json/main.py update-config
+	# 		python3 $MINTCAST_PATH/python/macro_gen_web_json update-config
 	# 	done	
 # fi
 
@@ -178,7 +178,7 @@ fi
 # rm -f "$MINTCAST_PATH/tmp/*"
 
 
-python3 $MINTCAST_PATH/python/macro_tileserver_config/main.py "$TILESERVER_ROOT" "$TILESERVER_PORT"
+python3 $MINTCAST_PATH/python/macro_tileserver_config "$TILESERVER_ROOT" "$TILESERVER_PORT"
 
 # # scp MBtiles and json to jonsnow
 # if [[ "$DEV_MODE" != "YES" ]]; then

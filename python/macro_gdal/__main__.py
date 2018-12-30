@@ -100,13 +100,22 @@ def main():
             print("\033[31mERROR", file=sys.stderr)
             exit(1)
     elif method == 'max-value':
-        srcband = src.GetRasterBand(1)
-        stats = srcband.GetStatistics(True, True)
-        print(stats[1])
+        if len(sys.argv) > 3 and len(sys.argv[3]) > 0:
+            md = src.GetMetadata_Dict()
+            print(md[sys.argv[3] +"#vmax"])
+        else:
+            srcband = src.GetRasterBand(1)
+            stats = srcband.GetStatistics(True, True)
+            print(stats[1])
     elif method == 'min-value':
-        srcband = src.GetRasterBand(1)
-        stats = srcband.GetStatistics(True, True)
-        print(stats[0])
+        if len(sys.argv) > 3 and len(sys.argv[3]) > 0:
+            md = src.GetMetadata_Dict()
+            print(md[sys.argv[3] +"#vmin"])
+        else:
+            srcband = src.GetRasterBand(1)
+            stats = srcband.GetStatistics(True, True)
+            print(stats[0])
+
         
 usage = '''
 USAGE:
