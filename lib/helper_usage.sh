@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/env sh
 helper_usage(){
     read -r -d '' USAGE  << __EOF__
     USAGE:  mintcast [OPTIONS] filename      

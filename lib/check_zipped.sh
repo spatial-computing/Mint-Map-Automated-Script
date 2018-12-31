@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/env sh
 
 ### check_zipped.sh
 # Checks to see if a directory of tiled files is zipped and needs to be 

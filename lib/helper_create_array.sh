@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/env sh
 
 # helper_create_array "ARRAY_NAME" "STRING_NAME" "TOKEN"
 helper_create_array() {

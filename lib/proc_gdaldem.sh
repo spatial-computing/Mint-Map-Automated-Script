@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/env sh
 
 ### proc_gdaldem.sh
 # Adds color from color table to raster tiles

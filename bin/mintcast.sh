@@ -1,8 +1,12 @@
-#!/usr/bin/env bash
+#!/usr/bin/env sh
 
 # export MINTCAST_PATH='/usr/local/bin/mintcast'
 oldIFS=$IFS
-export MINTCAST_PATH='.'
+if [[ -z "$MINTCAST_PATH" ]]; then
+	echo "\033[31;5;148mFirst\033[39m export MINTCAST_PATH=/path/to/mintcast"
+	exit 0
+fi
+# export MINTCAST_PATH='.'
 
 source $MINTCAST_PATH/lib/helper_usage.sh
 source $MINTCAST_PATH/lib/helper_parameter.sh
@@ -59,6 +63,9 @@ FIRST_FILE="NO"						# Flag for timeseries files (YES for first in series, no ot
 TIME_STAMP=""						# Time stamp for TIFF time series
 TIME_STEPS=""						# Time steps for TIFF time series
 TIME_FORMAT="YYYYMMDD"				# Time format for metadata JSON
+SCP_TO_SERVER=""
+SCP_TO_SERVER_DEFAULT="root@52.90.74.236:/data"
+RESTART_TILESERVER="NO"
 
 DATATIME_FORMAT=""
 
@@ -180,6 +187,25 @@ fi
 
 python3 $MINTCAST_PATH/python/macro_tileserver_config "$TILESERVER_ROOT" "$TILESERVER_PORT"
 
+
+# --dev-mode-off --tile-server-root="./" --scp-to-default-server
+# --dev-mode-off --target-mbtiles-path=/data/dist --tile-server-root=""
+if [[ "$DEV_MODE" != "YES" ]]; then
+	if [[ ! -z "$SCP_TO_SERVER" ]]; then
+		scp -r $OUT_DIR $SCP_TO_SERVER
+		scp config/config.json $SCP_TO_SERVER
+	fi
+	
+	rm -rf "$MINTCAST_PATH/tmp/"*
+
+	if [[ "$RESTART_TILESERVER" == "YES" ]]; then
+		sh $MINTCAST_PATH/bin/tileserver.sh restart
+	fi
+fi
+
+if [[ "$RESTART_TILESERVER" != "YES" ]]; then
+	echo "\033[31;5;148mRun on server needed\033[39m: $MINTCAST_PATH/bin/tileserver.sh restart"
+fi
 # # scp MBtiles and json to jonsnow
 # if [[ "$DEV_MODE" != "YES" ]]; then
 # 	#JONSNOW_STR="$SSH_USER@jonsnow.usc.edu"

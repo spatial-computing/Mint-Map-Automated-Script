@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/env sh
 
 ### proc_newres.sh
 # Sets raster tile resolution to 10x10

@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/env sh
 
 ### handle_tiff_time.sh
 # Complete workflow for generating raster and vector tiles from TIFFs.

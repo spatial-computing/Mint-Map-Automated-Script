@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/env sh
 
 ### check_projection.sh
 # Checks to see if a data file is projected into WGS 84 / Pseudo-Mercator

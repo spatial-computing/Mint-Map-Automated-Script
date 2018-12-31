@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/env sh
 
 ### proc_gdaladdo.sh
 # Generates zoom levels for raster tiles

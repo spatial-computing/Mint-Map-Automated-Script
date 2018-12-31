@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/env sh
 
 ### handle_tiled_tif.sh
 # Complete workflow for generating raster and vector tiles from tiled TIFFs.

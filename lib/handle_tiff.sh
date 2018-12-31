@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/env sh
 
 ### handle_tiff.sh
 # Complete workflow for generating raster and vector tiles from TIFFs.
@@ -37,7 +37,9 @@ handle_tiff(){
 		mkdir -p "$TEMP_DIR"
 	fi
 	if [[ $DEV_MODE != 'YES' ]]; then
-		OUT_DIR=$TARGET_MBTILES_PATH
+		if [[ ! -z $TARGET_MBTILES_PATH ]]; then
+			OUT_DIR=$TARGET_MBTILES_PATH
+		fi
 	fi
 	#OUT_DIR=$MINTCAST_PATH/dist
 	#TEMP_DIR=$OUT_DIR
