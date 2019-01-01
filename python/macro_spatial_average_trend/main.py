@@ -8,6 +8,10 @@ from matplotlib import pyplot as plt
 from copy import copy
 import csv
 
+MINTCAST_PATH = os.environ.get('MINTCAST_PATH')
+dist_path = MINTCAST_PATH + '/dist/'
+temp_path = MINTCAST_PATH + '/tmp/'
+
 # Calculate spatial average trend and export as csv
 
 class raster:
@@ -71,6 +75,76 @@ def write_csv_timeseries(csv_outpath, headers, list_day_dicts):
 		        day_row.append(f_entry)
 	        #print(jan_entry, feb_entry)
 	        fc_writer.writerow(day_row)
+
+def make_intersection(raster1, raster2):
+	# Find intersection
+	int_lrx = min(raster1.lrx, raster2.lrx)
+	int_lry = max(raster1.lry, raster2.lry)
+	int_ulx = max(raster1.ulx, raster2.ulx)
+	int_uly = min(raster1.uly, raster2.uly)
+	intersection = [int_ulx, int_uly, int_lrx, int_lry]
+
+	# Get new coordinates
+	r1 = [raster1.ulx, raster1.uly, raster1.lrx, raster1.lry]
+	r2 = [raster2.ulx, raster2.uly, raster2.lrx, raster2.lry]
+
+	gt1 = raster1.geo_trans
+	gt2 = raster2.geo_trans
+
+	left1 = int(round((intersection[0]-r1[0])/gt1[1])) # difference divided by pixel dimension
+	top1 = int(round((intersection[1]-r1[1])/gt1[5]))
+	col1 = int(round((intersection[2]-r1[0])/gt1[1])) - left1 # difference minus offset left
+	row1 = int(round((intersection[3]-r1[1])/gt1[5])) - top1
+
+	left2 = int(round((intersection[0]-r2[0])/gt2[1])) # difference divided by pixel dimension
+	top2 = int(round((intersection[1]-r2[1])/gt2[5]))
+	col2 = int(round((intersection[2]-r2[0])/gt2[1])) - left2 # difference minus new left offset
+	row2 = int(round((intersection[3]-r2[1])/gt2[5])) - top2
+
+	# Make subsets
+	subset1 = raster1.raster.ReadAsArray(left1,top1,col1,row1)
+	subset2 = raster2.raster.ReadAsArray(left2,top2,col2,row2)
+
+	return([subset1, subset2, intersection])
+
+def parse_tiff_tar(tiff_tar):
+	tiff_list = []
+	if ',' in tiff_tar:
+		tiff_tar_list = tiff_tar.split(',')
+		for tar in tiff_tar_list:
+			if os.path.isdir(tar):
+				files = os.listdir(tar)
+				for file in files:
+					filepath = tar + '/' + file
+					tiff_list.append(filepath)
+			elif os.path.isfile(tar):
+				tiff_list.append(tar)
+	return(tiff_list)
+
+def parse_time(timestr, start_or_end):
+	if len(timestr) == 8:
+		'''YYYYMMDD'''
+		yearstr = timestr[0:4]
+		monstr = timestr[4:6]
+		daystr = timestr[6:]
+	elif len(timestr) == 6:
+		'''YYYYMM'''
+		yearstr = timestr[0:4]
+		monstr = timestr[4:]
+		if start_or_end == 'start':
+			daystr = '01'
+		elif start_or_end == 'end':
+			daystr = '31'
+	elif len(timestr) == 4:
+		'''YYYYY'''
+		yearstr = timestr
+		if start_or_end == 'start':
+			monstr = '01'
+			daystr = '01'
+		elif start_or_end == 'end':
+			monstr = '12'
+			daystr = '31'
+	return([yearstr, monstr, daystr])
 
 
 #predefine daily time axis
@@ -156,6 +230,35 @@ def fldas_chirps_demo(fldas_jan_path, fldas_feb_path, fldas_var, chirps_path, cs
 	list_day_dicts = [fd, cd] #combine dicts in list
 	write_csv_timeseries(csv_outpath, headers, list_day_dicts):
 
+def run_tiff2(tiff_tar1, tiff_tar2, headers, start_time, end_time, csv_outpath):
+	# Parse start and end times
+	[start_year, start_mon, start_day] = parse_time(start_time, 'start')
+	[end_year, end_mon, end_day] = parse_time(end_time, 'end')
+	
+
+	# Parse tiff_tar1 (single file, list of files, directory, or list of directories)
+	tiff1_list = parse_tiff_tar(tiff_tar1)
+	if len(tiff1_list) == 1:
+	elif len(tiff1_list) > 1:
+	else:
+		print("No TIFFs found in tiff_tar1", file = sys.stderr)
+		exit(0)
+
+	# Parse tiff_tar2 (single file, list of files, directory, or list of directories)
+	tiff2_list = parse_tiff_tar(tiff_tar2)
+	if len(tiff2_list) == 1:
+	elif len(tiff2_list) > 1:
+	else:
+		print("No TIFFs found in tiff_tar2", file = sys.stderr)
+		exit(0)
+	return(None)
+
+def run_netcdf(tiff_var, netcdf_tar, netcdf_var, headers, start_time, end_time, csv_outpath):
+	return(None)
+
+def run_netcdf2(netcdf_tar1, netcdf_var1, netcdf_tar2, netcdf_var2, headers, start_time, end_time, csv_outpath):
+	return(None)
+
 usage = '''
 USAGE
 	main.py [method] [directory1] ... [directoryx] [netcdf_var] [csv_outpath] [headers]'''
@@ -170,7 +273,55 @@ def main():
 		csv_outpath = sys.argv[6] #'./dist/fldas_chirps_2001_timeseries_chart.csv'
 		headers = sys.argv[7].split(',') #['Day Index', 'FLDAS', 'Chirps']
 		fldas_chirps_demo(fldas_jan_path, fldas_feb_path, fldas_var, chirps_path, csv_outpath, headers)
+	elif method == "tiff2":
+		'''Comparison between two TIFF files/directories/list'''
+		tiff_tar1 = sys.argv[2]
+		tiff_tar2 = sys.argv[3]
+		headers = sys.argv[4].split(',')
+		start_time = sys.argv[5]
+		end_time = sys.argv[6]
+		try:
+			csv_outpath = sys.argv[7]
+		except:
+			csv_outpath = dist_path
+		run_tiff2(tiff_tar1, tiff_tar2, headers, start_time, end_time, csv_outpath)
+	elif method == "netcdf":
+		'''Comparison between one netCDF and other files/directories/lists'''
+		tiff_tar = sys.argv[2]
+		netcdf_tar = sys.argv[3]
+		netcdf_var = sys.argv[4]
+		headers = sys.argv[5].split('.')
+		start_time = sys.argv[6]
+		end_time = sys.argv[7]
+		try:
+			csv_outpath = sys.argv[8]
+		except:
+			csv_outpath = dist_path
+		run_netcdf(tiff_var, netcdf_tar, netcdf_var, headers, start_time, end_time, csv_outpath)
 
+	elif method == "netcdf2":
+		'''Comparison between two netCDF files/directories/lists'''
+		netcdf_tar1 = sys.argv[2]
+		netcdf_var1 = sys.argv[3]
+		netcdf_tar2 = sys.argv[4]
+		netcdf_var2 = sys.argv[5]
+		headers = sys.argv[6].split(',')
+		start_time = sys.argv[7]
+		end_time = sys.argv[8]
+		try:
+			csv_outpath = sys.argv[9]
+		except:
+			csv_outpath = dist_path
+		run_netcdf2(netcdf_tar1, netcdf_var1, netcdf_tar2, netcdf_var2, headers, start_time, end_time, csv_outpath)
+
+	else:
+		print('No method specified.', file = sys.stderr)
+		print(usage, file = sys.stderr)
+		exit(0)
+
+
+
+	elif method == ""
 if __name__ == '__main__':
 	num_args = len(sys.argv)
 	if num_args < 4:

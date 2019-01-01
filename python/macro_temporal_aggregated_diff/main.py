@@ -15,6 +15,11 @@ import numpy as np
 from matplotlib import pyplot as plt
 from copy import copy
 
+MINTCAST_PATH = os.environ.get('MINTCAST_PATH')
+dist_path = MINTCAST_PATH + '/dist/'
+temp_path = MINTCAST_PATH + '/tmp/'
+
+
 class raster:
     def __init__(self, filepath, var=""):
         self.filepath = filepath
@@ -186,6 +191,17 @@ def fldas_chirps_demo(fldas_directory, netcdf_var, chirps_path, out_path):
 	mint_command = "mintcast " + dstfile2 + " -t tiff -l Rainf_f_tavg_diff_CHIRPS01_FLDAS01 --disable-clip" 
 	subprocess.call(mint_command, shell=True)
 
+def run_tiff2(tiff_tar1, tiff_tar2, names, outpath):
+	return(None)
+def run_netcdf(tiff_tar, netcdf_tar, netcdf_var, names, outpath):
+	return(None)
+
+def run_netcdf2(netcdf_tar1, netcdf_var1, netcdf_tar2, netcdf_var2, names, outpath):
+	return(None)
+
+usage = '''
+USAGE
+	main.py [method] [directory1] [directory2] [netcdf_var] '''
 
 def main():
 	method = sys.argv[1]
@@ -195,11 +211,44 @@ def main():
 		chirps_path = sys.argv[4]
 		outpath = sys.argv[5]
 		fldas_chirps_demo(fldas_directory, netcdf_var, chirps_path, outpath)
+	elif method == "tiff2":
+		'''TIFF vs TIFF'''
+		tiff_tar1 = sys.argv[2]
+		tiff_tar2 = sys.argv[3]
+		names = sys.argv[4].split(',')
+		try:
+			outpath = sys.argv[5]
+		except:
+			outpath = dist_path
+		run_tiff2(tiff_tar1, tiff_tar2, names, outpath)
+	elif method == "netcdf":
+		'''TIFF vs NetCDF'''
+		tiff_tar = sys.argv[2]
+		netcdf_tar = sys.argv[3]
+		netcdf_var = sys.argv[4]
+		names = sys.argv[5].split(',')
+		try:
+			outpath = sys.argv[6]
+		except:
+			outpath = dist_path
+		run_netcdf(tiff_tar, netcdf_tar, netcdf_var, names, outpath)
 
-
-usage = '''
-USAGE
-	main.py [method] [directory1] [directory2] [netcdf_var] '''
+	elif method == "netcdf2":
+		'''NetCDF vs NetCDF'''
+		netcdf_tar1 = sys.argv[2]
+		netcdf_var1 = sys.argv[3]
+		netcdf_tar2 = sys.argv[4]
+		netcdf_var2 = sys.argv[5]
+		names = sys.argv[6].split(',')
+		try:
+			outpath = sys.argv[7]
+		except:
+			outpath = dist_path
+		run_netcdf2(netcdf_tar1, netcdf_var1, netcdf_tar2, netcdf_var2, names, outpath)
+	else:
+		print('No method specified.', file = sys.stderr)
+		print(usage, file = sys.stderr)
+		exit(0)
 
 if __name__ == "__main__":
 	num_args = len(sys.argv)
