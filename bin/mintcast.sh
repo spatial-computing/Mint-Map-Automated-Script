@@ -1,8 +1,12 @@
-#!/usr/bin/env bash
+#!/usr/bin/env sh
 
 # export MINTCAST_PATH='/usr/local/bin/mintcast'
 oldIFS=$IFS
-export MINTCAST_PATH='.'
+if [[ -z "$MINTCAST_PATH" ]]; then
+	echo "\033[31;5;148mFirst\033[39m export MINTCAST_PATH=/path/to/mintcast"
+	exit 0
+fi
+# export MINTCAST_PATH='.'
 
 source $MINTCAST_PATH/lib/helper_usage.sh
 source $MINTCAST_PATH/lib/helper_parameter.sh
@@ -59,6 +63,9 @@ FIRST_FILE="NO"						# Flag for timeseries files (YES for first in series, no ot
 TIME_STAMP=""						# Time stamp for TIFF time series
 TIME_STEPS=""						# Time steps for TIFF time series
 TIME_FORMAT="YYYYMMDD"				# Time format for metadata JSON
+SCP_TO_SERVER=""
+SCP_TO_SERVER_DEFAULT="root@52.90.74.236:/data"
+RESTART_TILESERVER="NO"
 
 DATATIME_FORMAT=""
 
@@ -69,7 +76,7 @@ OUTPUT_DIR_STRUCTURE_FOR_TIMESERIES="" # how netcdf's timeseries mbtiles are sto
 
 DATAFILE_PATH=""            		# Single file path like tiff
 
-TILESERVER_ROOT="../"
+TILESERVER_ROOT="./"
 TILESERVER_PORT="80"
 # store mbtiles in a specific folder and read by website
 
@@ -124,7 +131,8 @@ else
 	exit 1
 fi
 
-if [[ $DATASET_TYPE == "tiff" || $DATASET_TYPE == "tiled" ]]; then 
+# if [[ $DATASET_TYPE == "single-netcdf" ]]; then 
+
 	# save raster
 	COL_RASTER_OR_VECTOR_TYPE="raster"
 	MBTILES_FILEPATH=$RASTER_MBTILES
@@ -134,50 +142,70 @@ if [[ $DATASET_TYPE == "tiff" || $DATASET_TYPE == "tiled" ]]; then
 	# save vector
 	COL_RASTER_OR_VECTOR_TYPE="vector"
 	MBTILES_FILEPATH=$VECTOR_MBTILES
+
 	#handle_sqlite
 	handle_postgresql
 
-	python3 $MINTCAST_PATH/python/macro_gen_web_json/main.py update-all 
-	#CKAN_URL=$(python3 $MINTCAST_PATH/python/macro_upload_ckan/main.py get "$TARGET_JSON_PATH/$COL_JSON_FILENAME")
+	python3 $MINTCAST_PATH/python/macro_gen_web_json update-all 
+	#CKAN_URL=$(python3 $MINTCAST_PATH/python/macro_upload_ckan get "$TARGET_JSON_PATH/$COL_JSON_FILENAME")
 	#echo $CKAN_URL
 	# update database
 	#echo "TARGET_JSON_PATH: $TARGET_JSON_PATH"
 	#CKAN_URL=""
-	#python3 $MINTCAST_PATH/python/macro_postgres_curd/main.py update layer \
+	#python3 $MINTCAST_PATH/python/macro_postgres_curd update layer \
 	#"ckan_url='$CKAN_URL'" \
-	#"layerid='$Cmacro_tileserver_config/main.pyOL_LAYER_ID'"
-	python3 $MINTCAST_PATH/python/macro_gen_web_json/main.py update-config
+	#"layerid='$Cmacro_tileserver_configOL_LAYER_ID'"
+	python3 $MINTCAST_PATH/python/macro_gen_web_json update-config
 
-# elif [[ $DATASET_TYPE == "netcdf" || $DATASET_TYPE == "single-netcdf" ]]; then
-# 	MBTILES_DIR=$(dirname "${RASTER_MBTILES}")
-# 	echo "MBTILES_DIR: $MBTILES_DIR"
-# 	MBTILES_ARRAY=($MBTILES_DIR/*.mbtiles)
-# 	for ((i=0; i<${#MBTILES_ARRAY[@]}; i++)); do
-# 		MBTILES_FILEPATH=${MBTILES_ARRAY[i]}
-# 		echo "MBTILES_FILEPATH: $MBTILES_FILEPATH"
-# 		if [[ $MBTILES_FILEPATH = *raster* ]]; then
-# 			COL_RASTER_OR_VECTOR_TYPE="raster"
-# 		elif [[ $MBTILES_FILEPATH = *vector* ]]; then
-# 			COL_RASTER_OR_VECTOR_TYPE="vector"
-# 		fi
-# 		handle_sqlite
-# 		python3 $MINTCAST_PATH/python/macro_gen_web_json/main.py update-all 
-# 		CKAN_URL=$(python3 $MINTCAST_PATH/python/macro_upload_ckan/main.py "$TARGET_JSON_PATH/$COL_JSON_FILENAME")
-# 		echo $CKAN_URL
-# 		# update database
-# 		python3 $MINTCAST_PATH/python/macro_sqlite_curd/main.py update layer \
-# 		"ckan_url='$CKAN_URL'" \
-# 		"layerid='$COL_LAYER_ID'"
-# 		python3 $MINTCAST_PATH/python/macro_gen_web_json/main.py update-config
-# 	done	
+	# elif [[ $DATASET_TYPE == "netcdf" || $DATASET_TYPE == "single-netcdf" ]]; then
+	# 	MBTILES_DIR=$(dirname "${RASTER_MBTILES}")
+	# 	echo "MBTILES_DIR: $MBTILES_DIR"
+	# 	MBTILES_ARRAY=($MBTILES_DIR/*.mbtiles)
+	# 	for ((i=0; i<${#MBTILES_ARRAY[@]}; i++)); do
+	# 		MBTILES_FILEPATH=${MBTILES_ARRAY[i]}
+	# 		echo "MBTILES_FILEPATH: $MBTILES_FILEPATH"
+	# 		if [[ $MBTILES_FILEPATH = *raster* ]]; then
+	# 			COL_RASTER_OR_VECTOR_TYPE="raster"
+	# 		elif [[ $MBTILES_FILEPATH = *vector* ]]; then
+	# 			COL_RASTER_OR_VECTOR_TYPE="vector"
+	# 		fi
+	# 		handle_sqlite
+	# 		python3 $MINTCAST_PATH/python/macro_gen_web_json update-all 
+	# 		CKAN_URL=$(python3 $MINTCAST_PATH/python/macro_upload_ckan "$TARGET_JSON_PATH/$COL_JSON_FILENAME")
+	# 		echo $CKAN_URL
+	# 		# update database
+	# 		python3 $MINTCAST_PATH/python/macro_sqlite_curd update layer \
+	# 		"ckan_url='$CKAN_URL'" \
+	# 		"layerid='$COL_LAYER_ID'"
+	# 		python3 $MINTCAST_PATH/python/macro_gen_web_json update-config
+	# 	done	
+# fi
+
+
+# rm -f "$MINTCAST_PATH/tmp/*"
+
+
+python3 $MINTCAST_PATH/python/macro_tileserver_config "$TILESERVER_ROOT" "$TILESERVER_PORT"
+
+
+# --dev-mode-off --tile-server-root="./" --scp-to-default-server
+# --dev-mode-off --target-mbtiles-path=/data/dist --tile-server-root=""
+if [[ "$DEV_MODE" != "YES" ]]; then
+	if [[ ! -z "$SCP_TO_SERVER" ]]; then
+		scp -r $OUT_DIR $SCP_TO_SERVER
+		scp config/config.json $SCP_TO_SERVER
+	fi
+	
+	rm -rf "$MINTCAST_PATH/tmp/"*
+
+	if [[ "$RESTART_TILESERVER" == "YES" ]]; then
+		sh $MINTCAST_PATH/bin/tileserver.sh restart
+	fi
 fi
 
-
-
-
-
-python3 $MINTCAST_PATH/python/macro_tileserver_config/main.py "$TILESERVER_ROOT" "$TILESERVER_PORT"
-
+if [[ "$RESTART_TILESERVER" != "YES" ]]; then
+	echo "\033[31;5;148mRun on server needed\033[39m: $MINTCAST_PATH/bin/tileserver.sh restart"
+fi
 # # scp MBtiles and json to jonsnow
 # if [[ "$DEV_MODE" != "YES" ]]; then
 # 	#JONSNOW_STR="$SSH_USER@jonsnow.usc.edu"

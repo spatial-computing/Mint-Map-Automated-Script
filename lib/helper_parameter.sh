@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/env sh
 helper_parameter(){
     POSITIONAL=()
     while [[ $# -gt 0 ]]
@@ -94,11 +94,6 @@ helper_parameter(){
         shift
         shift
         ;;
-        --target-mbtiles-path)
-        TARGET_MBTILES_PATH="$2"
-        shift
-        shift
-        ;;
         --target-json-path)
         TARGET_JSON_PATH="$2"
         shift
@@ -127,6 +122,29 @@ helper_parameter(){
         ;;
         --dev-mode-off)
         DEV_MODE=NO
+        shift
+        ;;
+        --tile-server-root)
+        TILESERVER_ROOT="$2"
+        shift
+        shift
+        ;;
+        --force-restart-tileserver)
+        RESTART_TILESERVER="YES"
+        shift
+        ;;
+        --target-mbtiles-path)
+        TARGET_MBTILES_PATH="$2"
+        shift
+        shift
+        ;;
+        --scp-to-default-server)
+        SCP_TO_SERVER="$SCP_TO_SERVER_DEFAULT"
+        shift
+        ;;
+        --scp-to-server)
+        SCP_TO_SERVER="$2"
+        shift
         shift
         ;;
         --without-website)

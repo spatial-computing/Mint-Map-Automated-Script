@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/env sh
 
 ### proc_clip.sh
 # Clips data layer to South Sudan boundary as defined by input shapefile, 
@@ -50,7 +50,7 @@ proc_clip () {
         # echo $(which gdalwarp)
         eval "gdalwarp -overwrite --config GDALWARP_IGNORE_BAD_CUTLINE YES $NODATAFLAG -te ${CLIP_BOUNDS_ARRAY[*]} $1 $2"
     fi
-        
+
     if [[ $? != 0 ]]; then
         echo "gdalwarp failed in proc_clip.sh Exiting script."
         exit 1

@@ -2,7 +2,7 @@
 
 ![Published by Libo Liu](https://img.shields.io/badge/Libo%20Liu-Author-blue.svg)
 ![Published by Adam Vaccaro](https://img.shields.io/badge/Adam%20Vaccaro-Author-blue.svg)
-![Contributor by Shiwei Huang](https://img.shields.io/badge/Shiwei%20Huang-Contributor-blue.svg)
+
 
 
 ### Config/postgres_config.py
@@ -147,7 +147,7 @@ brew reinstall gdal --with-armadillo --with-complete --with-libkml --with-unsupp
 	- All functions will be called in `bin/mintcast.sh`
 	- Important info should show in different color https://misc.flogisoft.com/bash/tip_colors_and_formatting
 
-- Names of `python` scripts should be `macro_` or `handle_` like `python/handle_grid_csv/main.py` or `python/macro_extract_lnglat/main.py`
+- Names of `python` scripts should be `macro_` or `handle_` like `python/handle_grid_csv/__main__.py` or `python/macro_extract_lnglat/__main__.py`
 	- Python script should get paramter from `promot`
 	- Python script should output every thing in `stdout`
 	- Python script should show process message in `stderr` in a different colors as bash

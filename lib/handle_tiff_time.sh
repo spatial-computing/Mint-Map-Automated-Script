@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/env sh
 
 ### handle_tiff_time.sh
 # Complete workflow for generating raster and vector tiles from TIFFs.
@@ -64,11 +64,11 @@ handle_tiff_time(){
 
 	#if [[ $FIRST_FILE == "YES" ]]; then
 	echo "VECTOR_MD5: $VECTOR_MD5"
-	VECTOR_LAYER_ID=$(python3 $MINTCAST_PATH/python/macro_string/main.py layer_name_to_layer_id $LAYER_NAME$LAYER_ID_SUFFIX vector pbf)
+	VECTOR_LAYER_ID=$(python3 $MINTCAST_PATH/python/macro_string layer_name_to_layer_id $LAYER_NAME$LAYER_ID_SUFFIX vector pbf)
 	echo "VECTOR_LAYER_ID: $VECTOR_LAYER_ID"
 	### CHANGE THE LINE BELOW TO GET THE PROPER MD5 (AFTER INTEGRATING WITH THE DATA CATALOG)
 	if [[ -z $VECTOR_MD5 ]]; then
-		export VECTOR_LAYER_ID_MD5=$(python3 $MINTCAST_PATH/python/macro_md5/main.py $VECTOR_LAYER_ID)
+		export VECTOR_LAYER_ID_MD5=$(python3 $MINTCAST_PATH/python/macro_md5 $VECTOR_LAYER_ID)
 	elif [[ ! -z $VECTOR_MD5 ]]; then
 		export VECTOR_LAYER_ID_MD5=$VECTOR_MD5
 	fi
@@ -79,14 +79,14 @@ handle_tiff_time(){
 		rm -f $VECTOR_MBTILES
 	fi
 
-	RASTER_LAYER_ID=$(python3 $MINTCAST_PATH/python/macro_string/main.py layer_name_to_layer_id $LAYER_NAME$LAYER_ID_SUFFIX raster png)
+	RASTER_LAYER_ID=$(python3 $MINTCAST_PATH/python/macro_string layer_name_to_layer_id $LAYER_NAME$LAYER_ID_SUFFIX raster png)
 	echo "RASTER_LAYER_ID: $RASTER_LAYER_ID"
 	#echo "RASTER_LAYER_ID: $RASTER_LAYER_ID"
 	### CHANGE THE LINE BELOW TO GET THE PROPER MD5 (AFTER INTEGRATING WITH THE DATA CATALOG)
 	if [[ -z $VECTOR_MD5 ]]; then
-		export RASTER_LAYER_ID_MD5=$(python3 $MINTCAST_PATH/python/macro_md5/main.py $RASTER_LAYER_ID)
+		export RASTER_LAYER_ID_MD5=$(python3 $MINTCAST_PATH/python/macro_md5 $RASTER_LAYER_ID)
 	elif [[ ! -z $VECTOR_MD5 ]]; then
-		export RASTER_LAYER_ID_MD5=$(python3 $MINTCAST_PATH/python/macro_md5/main.py $VECTOR_MD5)
+		export RASTER_LAYER_ID_MD5=$(python3 $MINTCAST_PATH/python/macro_md5 $VECTOR_MD5)
 		echo "RASTER_LAYER_ID_MD5: $RASTER_LAYER_ID_MD5"
 	fi
 
@@ -97,33 +97,33 @@ handle_tiff_time(){
 		rm -f $RASTER_MBTILES
 	fi
 
-	#HAS_LAYER=$(python3 $MINTCAST_PATH/python/macro_sqlite_curd/main.py has_tileserver_config $RASTER_LAYER_ID)
-	HAS_LAYER=$(python3 $MINTCAST_PATH/python/macro_postgres_curd/main.py has_tileserver_config ${RASTER_LAYER_ID}_$TIME_STAMP)
+	#HAS_LAYER=$(python3 $MINTCAST_PATH/python/macro_sqlite_curd has_tileserver_config $RASTER_LAYER_ID)
+	HAS_LAYER=$(python3 $MINTCAST_PATH/python/macro_postgres_curd has_tileserver_config ${RASTER_LAYER_ID}_$TIME_STAMP)
 	echo "HAS_LAYER (RASTER): $HAS_LAYER"
 	if [[ "$HAS_LAYER" = "None" ]]; then
-		#python3 $MINTCAST_PATH/python/macro_sqlite_curd/main.py insert tileserverconfig \
-		python3 $MINTCAST_PATH/python/macro_postgres_curd/main.py insert tileserverconfig \
+		#python3 $MINTCAST_PATH/python/macro_sqlite_curd insert tileserverconfig \
+		python3 $MINTCAST_PATH/python/macro_postgres_curd insert tileserverconfig \
 			"layerid, mbtiles, md5" \
 			"'${RASTER_LAYER_ID}_$TIME_STAMP', '$RASTER_MBTILES', '$RASTER_LAYER_ID_MD5'"
 
 	else
-		#python3 $MINTCAST_PATH/python/macro_sqlite_curd/main.py update tileserverconfig \
-		python3 $MINTCAST_PATH/python/macro_postgres_curd/main.py update tileserverconfig \
+		#python3 $MINTCAST_PATH/python/macro_sqlite_curd update tileserverconfig \
+		python3 $MINTCAST_PATH/python/macro_postgres_curd update tileserverconfig \
 			"layerid='${RASTER_LAYER_ID}_$TIME_STAMP', mbtiles='$RASTER_MBTILES', md5='$RASTER_LAYER_ID_MD5'" \
 			"id=$HAS_LAYER"
 	fi
 
-	#HAS_LAYER=$(python3 $MINTCAST_PATH/python/macro_sqlite_curd/main.py has_tileserver_config $VECTOR_LAYER_ID)
-	HAS_LAYER=$(python3 $MINTCAST_PATH/python/macro_postgres_curd/main.py has_tileserver_config ${VECTOR_LAYER_ID}_$TIME_STAMP)
+	#HAS_LAYER=$(python3 $MINTCAST_PATH/python/macro_sqlite_curd has_tileserver_config $VECTOR_LAYER_ID)
+	HAS_LAYER=$(python3 $MINTCAST_PATH/python/macro_postgres_curd has_tileserver_config ${VECTOR_LAYER_ID}_$TIME_STAMP)
 	echo "HAS_LAYER (VECTOR): $HAS_LAYER"
 	if [[ "$HAS_LAYER" = "None" ]]; then
-		#python3 $MINTCAST_PATH/python/macro_sqlite_curd/main.py insert tileserverconfig \
-		python3 $MINTCAST_PATH/python/macro_postgres_curd/main.py insert tileserverconfig \
+		#python3 $MINTCAST_PATH/python/macro_sqlite_curd insert tileserverconfig \
+		python3 $MINTCAST_PATH/python/macro_postgres_curd insert tileserverconfig \
 			"layerid, mbtiles, md5" \
 			"'${VECTOR_LAYER_ID}_$TIME_STAMP', '$VECTOR_MBTILES', '$VECTOR_LAYER_ID_MD5'"
 	else
-		#python3 $MINTCAST_PATH/python/macro_sqlite_curd/main.py update tileserverconfig \
-		python3 $MINTCAST_PATH/python/macro_postgres_curd/main.py update tileserverconfig \
+		#python3 $MINTCAST_PATH/python/macro_sqlite_curd update tileserverconfig \
+		python3 $MINTCAST_PATH/python/macro_postgres_curd update tileserverconfig \
 			"layerid='${VECTOR_LAYER_ID}_$TIME_STAMP', mbtiles='$VECTOR_MBTILES', md5='$VECTOR_LAYER_ID_MD5'" \
 			"id=$HAS_LAYER"
 	fi
@@ -132,7 +132,7 @@ handle_tiff_time(){
 	if [[ -z "$QML_FILE" ]]; then
 		COLOR_TABLE="$MINTCAST_PATH/shp/colortable.txt"
 	else
-		QML_EXTRACT_PATH="$MINTCAST_PATH/python/macro_extract_colors/main.py"
+		QML_EXTRACT_PATH="$MINTCAST_PATH/python/macro_extract_colors"
 		COLOR_TABLE=$TEMP_DIR/${FILENAME%.*}_color.txt
 		echo "COLOR_TABLE: $COLOR_TABLE"
 		python3 $QML_EXTRACT_PATH $QML_FILE $COLOR_TABLE #Make colortable
@@ -209,22 +209,22 @@ handle_tiff_time(){
 		proc_geojson2mbtiles $POLY_OUT $VECTOR_MBTILES $LAYER_NAME #Make .mbtiles
 	fi
 
-	if [[ $FIRST_FILE == "YES" ]]; then
-		#save raster
-		COL_RASTER_OR_VECTOR_TYPE="raster"
-		MBTILES_FILEPATH=$RASTER_MBTILES
-		handle_postgresql
+	# if [[ $FIRST_FILE == "YES" ]]; then
+	# 	#save raster
+	# 	COL_RASTER_OR_VECTOR_TYPE="raster"
+	# 	MBTILES_FILEPATH=$RASTER_MBTILES
+	# 	handle_postgresql
 
-		#save vector
-		COL_RASTER_OR_VECTOR_TYPE="vector"
-		MBTILES_FILEPATH=$VECTOR_MBTILES
-		handle_postgresql
+	# 	#save vector
+	# 	COL_RASTER_OR_VECTOR_TYPE="vector"
+	# 	MBTILES_FILEPATH=$VECTOR_MBTILES
+	# 	handle_postgresql
 
-		python3 $MINTCAST_PATH/python/macro_gen_web_json/main.py update-all 
+	# 	python3 $MINTCAST_PATH/python/macro_gen_web_json update-all 
 
-	fi
+	# fi
 
-	python3 $MINTCAST_PATH/python/macro_gen_web_json/main.py update-config
+	# python3 $MINTCAST_PATH/python/macro_gen_web_json update-config
 
 	#TODO by Libo
 	# if [[ $DEV_MODE != 'NO' ]]; then

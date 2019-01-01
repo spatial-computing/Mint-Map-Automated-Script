@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/env sh
 
 source $MINTCAST_PATH/lib/proc_getnetcdf_subdataset.sh
 #source $MINTCAST_PATH/lib/handle_tiff.sh
@@ -13,7 +13,7 @@ handle_netcdf_single(){
 	proc_getnetcdf_subdataset "$NETCDF_FILE"
 	#echo "NETCDF_FILE: $NETCDF_FILE"
 	#echo "DATASET_DIR: $DATASET_DIR"
-	PARTIAL_PATH=$(python3 $MINTCAST_PATH/python/macro_path/main.py diff "$NETCDF_FILE" "$DATASET_DIR")
+	PARTIAL_PATH=$(python3 $MINTCAST_PATH/python/macro_path diff "$NETCDF_FILE" "$DATASET_DIR")
 	#echo "PARTIAL_PATH: $PARTIAL_PATH"
 	#DIRNAME=$(dirname $NETCDF_FILE)
 	#echo "DIRNAME: $DIRNAME"
@@ -25,7 +25,7 @@ handle_netcdf_single(){
 	if [[ ! -z $SINGLE_SUBSET_PATH ]]; then
 		DATAFILE_PATH=$SINGLE_SUBSET_PATH
 		LAYER_NAME=$SINGLE_SUBSET_LAYER_NAME
-		LAYER_ID_SUFFIX=$(python3 $MINTCAST_PATH/python/macro_string/main.py path_to_suffix $PARTIAL_PATH)
+		LAYER_ID_SUFFIX=$(python3 $MINTCAST_PATH/python/macro_string path_to_suffix $PARTIAL_PATH)
 		handle_tiff
 		MBTILES_ARRAY=($RASTER_MBTILES $VECTOR_MBTILES)
 		for ((i=0; i<${#MBTILES_ARRAY[@]}; i++)); do
@@ -39,36 +39,36 @@ handle_netcdf_single(){
 				fi
 				#echo "Handling SQLite..."
 				#handle_sqlite
-				echo "Handling PostgreSQL"
-				handle_postgresql
-				echo "Generating web JSON..."
-				python3 $MINTCAST_PATH/python/macro_gen_web_json/main.py update-all 
+					# echo "Handling PostgreSQL"
+					# handle_postgresql
+					# echo "Generating web JSON..."
+					# python3 $MINTCAST_PATH/python/macro_gen_web_json update-all 
 				#echo "Getting CKAN_URL"
 				#echo "TARGET_JSON_PATH: $TARGET_JSON_PATH"
 				#echo "COL_JSON_FILENAME: $COL_JSON_FILENAME"
-				#CKAN_URL=$(python3 $MINTCAST_PATH/python/macro_upload_ckan/main.py get "$TARGET_JSON_PATH/$COL_JSON_FILENAME")
+				#CKAN_URL=$(python3 $MINTCAST_PATH/python/macro_upload_ckan get "$TARGET_JSON_PATH/$COL_JSON_FILENAME")
 				#echo "COL_JSON_FILENAME: $COL_JSON_FILENAME"
 				#CKAN_URL="blahblahblah.com"
 				#echo "CKAN_URL: $CKAN_URL"
-				# update database
-				echo "Updating database..."
-				echo "COL_LAYER_ID: $COL_LAYER_ID"
-				echo "LAYER_ID_SUFFIX: $LAYER_ID_SUFFIX"
-				#python3 $MINTCAST_PATH/python/macro_sqlite_curd/main.py update layer \
-				#python3 $MINTCAST_PATH/python/macro_postgres_curd/main.py update layer \
+					# # update database
+					# echo "Updating database..."
+					# echo "COL_LAYER_ID: $COL_LAYER_ID"
+					# echo "LAYER_ID_SUFFIX: $LAYER_ID_SUFFIX"
+				#python3 $MINTCAST_PATH/python/macro_sqlite_curd update layer \
+				#python3 $MINTCAST_PATH/python/macro_postgres_curd update layer \
 				#"ckan_url='$CKAN_URL'" \
 				#"layerid='$COL_LAYER_ID'"
 				
 				
-				echo "Updating config..."
-				python3 $MINTCAST_PATH/python/macro_gen_web_json/main.py update-config
+					# echo "Updating config..."
+					# python3 $MINTCAST_PATH/python/macro_gen_web_json update-config
 			fi
 		done
 	else
 		for subset_tiff in "${SUBDATASETS_ARRAY[@]}"; do
 			DATAFILE_PATH="$subset_tiff"
 			LAYER_NAME="${SUBDATASET_LAYERS_ARRAY[$index]}"
-			LAYER_ID_SUFFIX=$(python3 $MINTCAST_PATH/python/macro_string/main.py path_to_suffix $PARTIAL_PATH)
+			LAYER_ID_SUFFIX=$(python3 $MINTCAST_PATH/python/macro_string path_to_suffix $PARTIAL_PATH)
 			handle_tiff
 			echo "FINISHED HANDLE TIFF"
 			echo "RASTER_MBTILES: $RASTER_MBTILES"
@@ -88,12 +88,12 @@ handle_netcdf_single(){
 					fi
 					#echo "Handling SQLite..."
 					#handle_sqlite
-					echo "Handling PostgreSQL"
-					handle_postgresql
-					echo "Generating web JSON..."
-					python3 $MINTCAST_PATH/python/macro_gen_web_json/main.py update-all 
+						# echo "Handling PostgreSQL"
+						# handle_postgresql
+						# echo "Generating web JSON..."
+						# python3 $MINTCAST_PATH/python/macro_gen_web_json update-all 
 					#echo "Getting CKAN_URL"
-					#CKAN_URL=$(python3 $MINTCAST_PATH/python/macro_upload_ckan/main.py get "$TARGET_JSON_PATH/$COL_JSON_FILENAME")
+					#CKAN_URL=$(python3 $MINTCAST_PATH/python/macro_upload_ckan get "$TARGET_JSON_PATH/$COL_JSON_FILENAME")
 					#echo "COL_JSON_FILENAME: $COL_JSON_FILENAME"
 					#CKAN_URL="blahblahblah.com"
 					#echo "CKAN_URL: $CKAN_URL"
@@ -101,14 +101,14 @@ handle_netcdf_single(){
 					#echo "Updating database..."
 					#echo "COL_LAYER_ID: $COL_LAYER_ID"
 					#echo "LAYER_ID_SUFFIX: $LAYER_ID_SUFFIX"
-					#python3 $MINTCAST_PATH/python/macro_sqlite_curd/main.py update layer \
-					#python3 $MINTCAST_PATH/python/macro_postgres_curd/main.py update layer \
+					#python3 $MINTCAST_PATH/python/macro_sqlite_curd update layer \
+					#python3 $MINTCAST_PATH/python/macro_postgres_curd update layer \
 					#"ckan_url='$CKAN_URL'" \
 					#"layerid='$COL_LAYER_ID'"
 					
 					
-					echo "Updating config..."
-					python3 $MINTCAST_PATH/python/macro_gen_web_json/main.py update-config
+						# echo "Updating config..."
+						# python3 $MINTCAST_PATH/python/macro_gen_web_json update-config
 				fi
 			done
 			index=$((index+1))

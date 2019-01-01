@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/env sh
 
 ### handle_tiff.sh
 # Complete workflow for generating raster and vector tiles from TIFFs.
@@ -21,7 +21,7 @@ source $MINTCAST_PATH/lib/proc_geojson2mbtiles.sh
 handle_tiff(){
 	# Parse arguments from mintcast.sh:
 	INPUT=$DATAFILE_PATH
-	LAYER_NAME=$LAYER_NAME
+	LAYER_NAME="$LAYER_NAME"
 
 	# Hard-coded paths (passed from mintcast.sh?):
 	if [[ -z "$OUT_DIR" ]]; then
@@ -37,7 +37,9 @@ handle_tiff(){
 		mkdir -p "$TEMP_DIR"
 	fi
 	if [[ $DEV_MODE != 'YES' ]]; then
-		OUT_DIR=$TARGET_MBTILES_PATH
+		if [[ ! -z $TARGET_MBTILES_PATH ]]; then
+			OUT_DIR=$TARGET_MBTILES_PATH
+		fi
 	fi
 	#OUT_DIR=$MINTCAST_PATH/dist
 	#TEMP_DIR=$OUT_DIR
@@ -57,14 +59,22 @@ handle_tiff(){
 		LAYER_ID_SUFFIX=''
 	fi
 
+	if [[ -z "$LAYER_INDEX" ]]; then
+		LAYER_INDEX=''
+	fi
+
+	if [[ -z "$FIRST_RASTER_LAYER_ID" ]]; then
+		FIRST_RASTER_LAYER_ID=''
+	fi
 	echo "VECTOR_MD5: $VECTOR_MD5"
-	VECTOR_LAYER_ID=$(python3 $MINTCAST_PATH/python/macro_string/main.py layer_name_to_layer_id $LAYER_NAME$LAYER_ID_SUFFIX vector pbf)
+	VECTOR_LAYER_ID=$(python3 $MINTCAST_PATH/python/macro_string layer_name_to_layer_id $LAYER_NAME$LAYER_ID_SUFFIX vector pbf)
 	### CHANGE THE LINE BELOW TO GET THE PROPER MD5 (AFTER INTEGRATING WITH THE DATA CATALOG)
 	if [[ -z $VECTOR_MD5 ]]; then
-		export VECTOR_LAYER_ID_MD5=$(python3 $MINTCAST_PATH/python/macro_md5/main.py $VECTOR_LAYER_ID)
+		export VECTOR_LAYER_ID_MD5=$(python3 $MINTCAST_PATH/python/macro_md5 $VECTOR_LAYER_ID)
 	elif [[ ! -z $VECTOR_MD5 ]]; then
 		export VECTOR_LAYER_ID_MD5=$VECTOR_MD5
 	fi
+
 	#echo "VECTOR_LAYER_ID_MD5: $VECTOR_LAYER_ID_MD5"
 	VECTOR_MBTILES=$OUT_DIR/$VECTOR_LAYER_ID.mbtiles
 	echo "VECTOR_MBTILES: $VECTOR_MBTILES"
@@ -72,18 +82,24 @@ handle_tiff(){
 		rm -f $VECTOR_MBTILES
 	fi
 
-	RASTER_LAYER_ID=$(python3 $MINTCAST_PATH/python/macro_string/main.py layer_name_to_layer_id $LAYER_NAME$LAYER_ID_SUFFIX raster png)
+	if [[ ! -z "$LAYER_INDEX" ]]; then
+		VECTOR_LAYER_ID_MD5="$VECTOR_LAYER_ID_MD5""_""$LAYER_INDEX"
+	fi
+
+	
+	RASTER_LAYER_ID=$(python3 $MINTCAST_PATH/python/macro_string layer_name_to_layer_id $LAYER_NAME$LAYER_ID_SUFFIX raster png)
 	#echo "RASTER_LAYER_ID: $RASTER_LAYER_ID"
 	### CHANGE THE LINE BELOW TO GET THE PROPER MD5 (AFTER INTEGRATING WITH THE DATA CATALOG)
 	if [[ -z $VECTOR_MD5 ]]; then
-		export RASTER_LAYER_ID_MD5=$(python3 $MINTCAST_PATH/python/macro_md5/main.py $RASTER_LAYER_ID)
+		export RASTER_LAYER_ID_MD5=$(python3 $MINTCAST_PATH/python/macro_md5 $RASTER_LAYER_ID)
 	elif [[ ! -z $VECTOR_MD5 ]]; then
-		export RASTER_LAYER_ID_MD5=$(python3 $MINTCAST_PATH/python/macro_md5/main.py $VECTOR_MD5)
+		export RASTER_LAYER_ID_MD5=$(python3 $MINTCAST_PATH/python/macro_md5 $VECTOR_LAYER_ID_MD5)
 		echo "RASTER_LAYER_ID_MD5: $RASTER_LAYER_ID_MD5"
 	fi
 
-
-
+	if [[ -z "$LAYER_INDEX" ]]; then
+		export FIRST_RASTER_LAYER_ID="$RASTER_LAYER_ID_MD5"
+	fi
 	#echo "RASTER_LAYER_ID_MD5: $RASTER_LAYER_ID_MD5"
 	RASTER_MBTILES=$OUT_DIR/$RASTER_LAYER_ID.mbtiles
 	echo "RASTER_MBTILES: $RASTER_MBTILES"
@@ -91,47 +107,52 @@ handle_tiff(){
 		rm -f $RASTER_MBTILES
 	fi
 
-	#HAS_LAYER=$(python3 $MINTCAST_PATH/python/macro_sqlite_curd/main.py has_tileserver_config $RASTER_LAYER_ID)
-	HAS_LAYER=$(python3 $MINTCAST_PATH/python/macro_postgres_curd/main.py has_tileserver_config $RASTER_LAYER_ID)
+	#HAS_LAYER=$(python3 $MINTCAST_PATH/python/macro_sqlite_curd has_tileserver_config $RASTER_LAYER_ID)
+	HAS_LAYER=$(python3 $MINTCAST_PATH/python/macro_postgres_curd has_tileserver_config $RASTER_LAYER_ID)
 	if [[ "$HAS_LAYER" = "None" ]]; then
-		#python3 $MINTCAST_PATH/python/macro_sqlite_curd/main.py insert tileserverconfig \
-		python3 $MINTCAST_PATH/python/macro_postgres_curd/main.py insert tileserverconfig \
+		#python3 $MINTCAST_PATH/python/macro_sqlite_curd insert tileserverconfig \
+		python3 $MINTCAST_PATH/python/macro_postgres_curd insert tileserverconfig \
 			"layerid, mbtiles, md5" \
 			"'$RASTER_LAYER_ID', '$RASTER_MBTILES', '$RASTER_LAYER_ID_MD5'"
 
 	else
-		#python3 $MINTCAST_PATH/python/macro_sqlite_curd/main.py update tileserverconfig \
-		python3 $MINTCAST_PATH/python/macro_postgres_curd/main.py update tileserverconfig \
+		#python3 $MINTCAST_PATH/python/macro_sqlite_curd update tileserverconfig \
+		python3 $MINTCAST_PATH/python/macro_postgres_curd update tileserverconfig \
 			"layerid='$RASTER_LAYER_ID', mbtiles='$RASTER_MBTILES', md5='$RASTER_LAYER_ID_MD5'" \
 			"id=$HAS_LAYER"
 	fi
 
-
-
-
-	#HAS_LAYER=$(python3 $MINTCAST_PATH/python/macro_sqlite_curd/main.py has_tileserver_config $VECTOR_LAYER_ID)
-	HAS_LAYER=$(python3 $MINTCAST_PATH/python/macro_postgres_curd/main.py has_tileserver_config $VECTOR_LAYER_ID)
+	#HAS_LAYER=$(python3 $MINTCAST_PATH/python/macro_sqlite_curd has_tileserver_config $VECTOR_LAYER_ID)
+	HAS_LAYER=$(python3 $MINTCAST_PATH/python/macro_postgres_curd has_tileserver_config $VECTOR_LAYER_ID)
 	if [[ "$HAS_LAYER" = "None" ]]; then
-		#python3 $MINTCAST_PATH/python/macro_sqlite_curd/main.py insert tileserverconfig \
-		python3 $MINTCAST_PATH/python/macro_postgres_curd/main.py insert tileserverconfig \
+		#python3 $MINTCAST_PATH/python/macro_sqlite_curd insert tileserverconfig \
+		python3 $MINTCAST_PATH/python/macro_postgres_curd insert tileserverconfig \
 			"layerid, mbtiles, md5" \
 			"'$VECTOR_LAYER_ID', '$VECTOR_MBTILES', '$VECTOR_LAYER_ID_MD5'"
 	else
-		#python3 $MINTCAST_PATH/python/macro_sqlite_curd/main.py update tileserverconfig \
-		python3 $MINTCAST_PATH/python/macro_postgres_curd/main.py update tileserverconfig \
+		#python3 $MINTCAST_PATH/python/macro_sqlite_curd update tileserverconfig \
+		python3 $MINTCAST_PATH/python/macro_postgres_curd update tileserverconfig \
 			"layerid='$VECTOR_LAYER_ID', mbtiles='$VECTOR_MBTILES', md5='$VECTOR_LAYER_ID_MD5'" \
 			"id=$HAS_LAYER"
 	fi
+
+	echo "LAYER_ID_SUFFIX: $LAYER_ID_SUFFIX"
+	echo "VECTOR_LAYER_ID: $VECTOR_LAYER_ID"
+	echo "VECTOR_LAYER_ID_MD5: $VECTOR_LAYER_ID_MD5"
+	echo "RASTER_LAYER_ID: $RASTER_LAYER_ID"
+	echo "RASTER_LAYER_ID_MD5: $RASTER_LAYER_ID_MD5"
+
 	# Check for QML file:
 	echo "QML_FILE: $QML_FILE"
 	if [[ -z "$QML_FILE" ]]; then
 		COLOR_TABLE="$MINTCAST_PATH/shp/colortable.txt"
 	else
-		QML_EXTRACT_PATH="$MINTCAST_PATH/python/macro_extract_colors/main.py"
+		QML_EXTRACT_PATH="$MINTCAST_PATH/python/macro_extract_colors"
 		COLOR_TABLE=$TEMP_DIR/${FILENAME%.*}_color.txt
 		echo "COLOR_TABLE: $COLOR_TABLE"
 		python3 $QML_EXTRACT_PATH $QML_FILE $COLOR_TABLE #Make colortable
 	fi
+
 	# CheckType for Already Byted file and add nodata flag
 	NODATAFLAG=''
 	POLYGONIZE_FLOAT_FLAG=''
@@ -175,19 +196,52 @@ handle_tiff(){
 			echo "COLOR_TABLE: $COLOR_TABLE"
 			proc_gdaldem $PROJ_OUT $COLOR_TABLE $COLOR_OUT
 		fi
-	echo "Making raster tiles..."
-	proc_tif2mbtiles $COLOR_OUT $RASTER_MBTILES #Make .mbtiles
-	echo "Generating zoom levels..."
-	proc_gdaladdo $RASTER_MBTILES #Generate zoom levels
-	### TO DO: read MBTiles metadata table/store to database
+		if [[ ! -z "$START_TIME" ]]; then
+			if [[ $GENERATE_NEW_RES == "YES" ]]; then
+				# with new res proc
+				MAX_VAL=$(python3 $MINTCAST_PATH/python/macro_gdal max-value $RES_OUT $NETCDF_SINGLE_SUBDATASET)
+		    	MIN_VAL=$(python3 $MINTCAST_PATH/python/macro_gdal min-value $RES_OUT $NETCDF_SINGLE_SUBDATASET)
+		    	COL_LEGEND_TYPE=$(python3 $MINTCAST_PATH/python/macro_extract_legend legend-type noqml $MIN_VAL $MAX_VAL)
+		    	if [[ -z "$COL_LEGEND" ]]; then
+		    		COL_LEGEND=$(python3 $MINTCAST_PATH/python/macro_extract_legend legend noqml $MIN_VAL $MAX_VAL)	
+		    		COL_COLORMAP=$(python3 $MINTCAST_PATH/python/macro_extract_legend colormap noqml $MIN_VAL $MAX_VAL)	
+		    	else
+		    		COL_LEGEND=$COL_LEGEND"|"$(python3 $MINTCAST_PATH/python/macro_extract_legend legend noqml $MIN_VAL $MAX_VAL)
+			    	COL_COLORMAP=$COL_COLORMAP"|"$(python3 $MINTCAST_PATH/python/macro_extract_legend colormap noqml $MIN_VAL $MAX_VAL)	
+		    	fi
+			else
+				MAX_VAL=$(python3 $MINTCAST_PATH/python/macro_gdal max-value $PROJ_OUT $NETCDF_SINGLE_SUBDATASET)
+		    	MIN_VAL=$(python3 $MINTCAST_PATH/python/macro_gdal min-value $PROJ_OUT $NETCDF_SINGLE_SUBDATASET)
+		    	COL_LEGEND_TYPE=$(python3 $MINTCAST_PATH/python/macro_extract_legend legend-type noqml $MIN_VAL $MAX_VAL)
+		    	if [[ -z "$COL_LEGEND" ]]; then
+		    		COL_LEGEND=$(python3 $MINTCAST_PATH/python/macro_extract_legend legend noqml $MIN_VAL $MAX_VAL)
+		    		COL_COLORMAP=$(python3 $MINTCAST_PATH/python/macro_extract_legend colormap noqml $MIN_VAL $MAX_VAL)
+		    	else
+		    		COL_LEGEND=$COL_LEGEND"|"$(python3 $MINTCAST_PATH/python/macro_extract_legend legend noqml $MIN_VAL $MAX_VAL)
+		    		COL_COLORMAP=$COL_COLORMAP"|"$(python3 $MINTCAST_PATH/python/macro_extract_legend colormap noqml $MIN_VAL $MAX_VAL)
+		    	fi
+			fi
+		fi
+		echo "Making raster tiles..."
+		proc_tif2mbtiles $COLOR_OUT $RASTER_MBTILES #Make .mbtiles
+		echo "Generating zoom levels..."
+		proc_gdaladdo $RASTER_MBTILES #Generate zoom levels
+		### TO DO: read MBTiles metadata table/store to database
 	fi
 
+	VECTOR_SOURCE_LAYER_NAME="$LAYER_NAME"
+
+	if [[ ! -z "$LAYER_INDEX" ]]; then
+		VECTOR_SOURCE_LAYER_NAME="$LAYER_NAME""#""$LAYER_INDEX"
+	fi
+
+	echo "%%%%%%%% $VECTOR_SOURCE_LAYER_NAME"
 	if [[ $GENERATE_VECTOR_TILE == "YES" ]]; then
 		# Generate vector tiles:
 		echo "Generating polygonized GeoJSON..."
-		proc_polygonize $PROJ_OUT $POLY_OUT $LAYER_NAME #Make GeoJSON
+		proc_polygonize $PROJ_OUT $POLY_OUT $VECTOR_SOURCE_LAYER_NAME #Make GeoJSON
 		echo "Making vector tiles..."
-		proc_geojson2mbtiles $POLY_OUT $VECTOR_MBTILES $LAYER_NAME #Make .mbtiles
+		proc_geojson2mbtiles $POLY_OUT $VECTOR_MBTILES $VECTOR_SOURCE_LAYER_NAME #Make .mbtiles
 	fi
 
 	#TODO by Libo

@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/env sh
 
 ### proc_newres.sh
 # Sets raster tile resolution to 10x10
@@ -11,7 +11,7 @@
 
 # Set raster tile resolution:
 proc_newres () {
-	NEWRES=$(python3 $MINTCAST_PATH/python/macro_gdal/main.py newres $1)
+	NEWRES=$(python3 $MINTCAST_PATH/python/macro_gdal newres $1)
 
 	IFS=$' '
 	NEWRES_A=($NEWRES)

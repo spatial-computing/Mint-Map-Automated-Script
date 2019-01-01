@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/env sh
 
 ### proc_polygonize.sh
 # Polygonize TIFF and add layer and value names using gdal_polygonize.py

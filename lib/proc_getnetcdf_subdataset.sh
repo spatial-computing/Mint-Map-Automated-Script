@@ -1,4 +1,4 @@
- #!/usr/bin/env bash
+ #!/usr/bin/env sh
 
 proc_getnetcdf_subdataset(){
     SUBDATASETS_ARRAY=()

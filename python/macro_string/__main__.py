@@ -12,7 +12,7 @@ def main():
 		theType = sys.argv[3]
 		tileFormat = sys.argv[4]
 		output = "%s_%s_%s" % (string, theType, tileFormat)
-		print(output.lower().replace(' ', '_'))
+		print(output.lower().replace('/','_').replace(' ', '_').replace('.','_'))
 	elif method == 'path_to_suffix':
 		print(string.lower().replace('/','_').replace(' ', '_').replace('.','_'))
 	elif method == 'lowercase':
