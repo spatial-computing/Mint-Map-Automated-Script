@@ -187,18 +187,23 @@ fi
 
 python3 $MINTCAST_PATH/python/macro_tileserver_config "$TILESERVER_ROOT" "$TILESERVER_PORT"
 
-
-# --dev-mode-off --tile-server-root="./" --scp-to-default-server
-# --dev-mode-off --target-mbtiles-path=/data/dist --tile-server-root=""
+# run mintcast on **local** and copy to server
+	# --dev-mode-off --tile-server-root "./" --scp-to-default-server  
+# run mintcast on server and restart tileserver
+	# --dev-mode-off --target-mbtiles-path "/data/dist" --tile-server-root ""
 if [[ "$DEV_MODE" != "YES" ]]; then
 	if [[ ! -z "$SCP_TO_SERVER" ]]; then
+		echo "Running scp -r $OUT_DIR $SCP_TO_SERVER ..."
 		scp -r $OUT_DIR $SCP_TO_SERVER
+		echo "Running scp config/config.json $SCP_TO_SERVER ..."
 		scp config/config.json $SCP_TO_SERVER
 	fi
 	
+	echo "Deleting $MINTCAST_PATH/tmp/* ..."
 	rm -rf "$MINTCAST_PATH/tmp/"*
 
 	if [[ "$RESTART_TILESERVER" == "YES" ]]; then
+		echo "Restarting tileserver ..." 
 		sh $MINTCAST_PATH/bin/tileserver.sh restart
 	fi
 fi

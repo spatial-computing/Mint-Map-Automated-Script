@@ -22,17 +22,17 @@
         "serveStaticMaps": false
     },
     "data": {
-        "8de8ec83dcecbd85a5ff599964c8dc65": {
-            "mbtiles": "./dist/fewschirps//fewschirps_fewsafrica_1-month-01-2018_mm_data.tiff/chirps_rainfall_precipitation_fewschirps_fewsafrica_1-month-01-2018_mm_data_tiff_raster_png.mbtiles"
-        },
-        "6f5ecde47d5a3303cfe9463ad57d4dc8_1": {
-            "mbtiles": "./dist/fewschirps//fewschirps_fewsafrica_1-month-02-2018_mm_data.tiff/chirps_rainfall_precipitation_fewschirps_fewsafrica_1-month-02-2018_mm_data_tiff_vector_pbf.mbtiles"
-        },
         "663b9121836ba3dbf6187e1a5419f539": {
             "mbtiles": "./dist//2001/01/FLDAS_NOAH01_A_EA_D.A20010102.001.nc/rainf_f_tavg_2001_01_fldas_noah01_a_ea_d_a20010102_001_nc_raster_png.mbtiles"
         },
         "c19e02542fb87826a83eb7199857c286_1": {
             "mbtiles": "./dist//2001/01/FLDAS_NOAH01_A_EA_D.A20010103.001.nc/rainf_f_tavg_2001_01_fldas_noah01_a_ea_d_a20010103_001_nc_vector_pbf.mbtiles"
+        },
+        "8de8ec83dcecbd85a5ff599964c8dc65": {
+            "mbtiles": "./dist/fewschirps//fewschirps_fewsafrica_1-month-01-2018_mm_data.tiff/chirps_rainfall_precipitation_fewschirps_fewsafrica_1-month-01-2018_mm_data_tiff_raster_png.mbtiles"
+        },
+        "6f5ecde47d5a3303cfe9463ad57d4dc8_1": {
+            "mbtiles": "./dist/fewschirps//fewschirps_fewsafrica_1-month-02-2018_mm_data.tiff/chirps_rainfall_precipitation_fewschirps_fewsafrica_1-month-02-2018_mm_data_tiff_vector_pbf.mbtiles"
         },
         "c19e02542fb87826a83eb7199857c286": {
             "mbtiles": "./dist//2001/01/FLDAS_NOAH01_A_EA_D.A20010102.001.nc/rainf_f_tavg_2001_01_fldas_noah01_a_ea_d_a20010102_001_nc_vector_pbf.mbtiles"
@@ -43,14 +43,14 @@
         "f5b110774afb49c9c6776a3373ce914c": {
             "mbtiles": "./dist/fewschirps//fewschirps_fewsafrica_1-month-03-2018_mm_data.tiff/chirps_rainfall_precipitation_fewschirps_fewsafrica_1-month-03-2018_mm_data_tiff_raster_png.mbtiles"
         },
+        "6a81b51cac39a922cb06ad782f6ddd2c": {
+            "mbtiles": "./dist//2001/01/FLDAS_NOAH01_A_EA_D.A20010103.001.nc/rainf_f_tavg_2001_01_fldas_noah01_a_ea_d_a20010103_001_nc_raster_png.mbtiles"
+        },
         "1e6c1e44ca2e1cfd83081ec3e71d0ac6": {
             "mbtiles": "./dist/fewschirps//fewschirps_fewsafrica_1-month-02-2018_mm_data.tiff/chirps_rainfall_precipitation_fewschirps_fewsafrica_1-month-02-2018_mm_data_tiff_raster_png.mbtiles"
         },
         "6f5ecde47d5a3303cfe9463ad57d4dc8_2": {
             "mbtiles": "./dist/fewschirps//fewschirps_fewsafrica_1-month-03-2018_mm_data.tiff/chirps_rainfall_precipitation_fewschirps_fewsafrica_1-month-03-2018_mm_data_tiff_vector_pbf.mbtiles"
-        },
-        "6a81b51cac39a922cb06ad782f6ddd2c": {
-            "mbtiles": "./dist//2001/01/FLDAS_NOAH01_A_EA_D.A20010103.001.nc/rainf_f_tavg_2001_01_fldas_noah01_a_ea_d_a20010103_001_nc_raster_png.mbtiles"
         }
     }
 }
