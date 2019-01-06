@@ -116,6 +116,7 @@ def main():
             stats = srcband.GetStatistics(True, True)
             print(stats[0])
 
+    src = None
         
 usage = '''
 USAGE:
