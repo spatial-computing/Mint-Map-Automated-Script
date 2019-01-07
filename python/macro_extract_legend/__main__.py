@@ -15,6 +15,43 @@ def main():
             print('[ {"label":"%s", "value":%s, "color":"#000"}, {"label":"%s", "value": %s, "color":"#fff"}]' % (minValue, minValue, maxValue, maxValue))
         elif method == 'legend-type':
             print('linear')
+    elif qmlfile == 'colormap':
+        minValue = float(sys.argv[3])
+        maxValue = float(sys.argv[4])
+        filepath = sys.argv[5]
+        colormap_file = open(filepath, "r")
+        colormap_index = []
+        colormap_color = []
+        for line in colormap_file:
+            color_data = line.split(' ')
+            colormap_index.append(color_data[0])
+            colormap_color.append('#%02x%02x%02x' % (int(color_data[1]), int(color_data[2]), int(color_data[3])))
+
+        colormap_value = [0]
+        colormap_value.extend(minValue + (maxValue-minValue) * (float(v.strip('%'))/100.0) for i,v in enumerate(colormap_index) if v != 'nv')
+
+        if method == 'colormap':
+            ret = '["interpolate", ["linear"],["get", "value"], '
+            for i, v in enumerate(colormap_index):
+                if v == 'nv':
+                    continue
+                ret += '%s,"%s",' % (colormap_value[i], colormap_color[i])
+            ret.strip(',')
+            ret += ']'
+            print(ret)
+        elif method == 'legend':
+            ret = '['
+            for i, v in enumerate(colormap_index):
+                if v == 'nv':
+                    continue
+                if i != 1 and i != len(colormap_index) - 1 and i != len(colormap_index)//2:
+                    continue
+                ret += '{"label":"%s", "value":%s, "color":"%s"},' % (colormap_value[i], v, colormap_color[i])
+            ret.strip(',')
+            ret += ']'
+            print(ret)
+        elif method == 'legend-type':
+            print('linear')
     else:
         qml = open(qmlfile, "r")
         # Prepare regex strings for extracting info:
