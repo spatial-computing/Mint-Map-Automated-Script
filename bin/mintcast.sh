@@ -2,6 +2,7 @@
 
 # export MINTCAST_PATH='/usr/local/bin/mintcast'
 oldIFS=$IFS
+set +x
 if [[ -z "$MINTCAST_PATH" ]]; then
 	echo "\033[31;5;148mFirst\033[39m export MINTCAST_PATH=/path/to/mintcast"
 	exit 0
@@ -64,23 +65,34 @@ TIME_STAMP=""						# Time stamp for TIFF time series
 TIME_STEPS=""						# Time steps for TIFF time series
 TIME_FORMAT="YYYYMMDD"				# Time format for metadata JSON
 SCP_TO_SERVER=""
-SCP_TO_SERVER_DEFAULT="root@52.90.74.236:/data"
+SCP_TO_SERVER_DEFAULT="root@52.90.74.236:/data/"
 RESTART_TILESERVER="NO"
 
+CHART_TYPE=""
 DATATIME_FORMAT=""
 
 NETCDF_SINGLE_SUBDATASET=""
 
 OUTPUT_DIR_STRUCTURE_FOR_TIMESERIES="" # how netcdf's timeseries mbtiles are stored
 
-
+COLOR_TABLE=""
+COLORMAP_USE_LOADED="NO"
 DATAFILE_PATH=""            		# Single file path like tiff
 
 TILESERVER_ROOT="./"
 TILESERVER_PORT="80"
 # store mbtiles in a specific folder and read by website
+VERBOSE="NO"
+
+TILESERVER_DEFAULT_SERVER="root@52.90.74.236"
+TILESERVER_RESTART_CMD="/mintcast/bin/tileserver.sh restart"
+TILESERVER_CHECK_CMD="docker ps"
 
 helper_parameter $@
+
+if [[ "$VERBOSE" == "YES" ]]; then
+	set -x
+fi
 
 echo $START_TIME
 
@@ -120,11 +132,14 @@ elif [[ $DATASET_TYPE == "tiled" ]]; then
 elif [[ $DATASET_TYPE == "netcdf" ]]; then
 	# proc_getnetcdf_subdataset $DATAFILE_PATH
 	handle_netcdf
+	# echo "hi"
 	# exit
 elif [[ $DATASET_TYPE == "single-netcdf" ]]; then
 	handle_netcdf_single
 elif [[ $DATASET_TYPE == "tiff-time" ]]; then
 	handle_tiff_time
+elif [[ $DATASET_TYPE == "csv" ]]; then
+	python3 $MINTCAST_PATH/python/macro_store_csv $CHART_TYPE $LAYER_NAME $DATAFILE_PATH
 else
 	echo "$DATASET_TYPE is an invalid dataset type." 
 	echo "Valid choices include: tiff, tiled, tiff-time, netcdf, and single-netcdf"
@@ -186,7 +201,7 @@ fi
 
 
 python3 $MINTCAST_PATH/python/macro_tileserver_config "$TILESERVER_ROOT" "$TILESERVER_PORT"
-
+IFS=$oldIFS
 # run mintcast on **local** and copy to server
 	# --dev-mode-off --tile-server-root "./" --scp-to-default-server  
 # run mintcast on server and restart tileserver
@@ -194,7 +209,7 @@ python3 $MINTCAST_PATH/python/macro_tileserver_config "$TILESERVER_ROOT" "$TILES
 if [[ "$DEV_MODE" != "YES" ]]; then
 	if [[ ! -z "$SCP_TO_SERVER" ]]; then
 		echo "Running scp -r $OUT_DIR $SCP_TO_SERVER ..."
-		scp -r $OUT_DIR $SCP_TO_SERVER
+		scp -r $OUT_DIR $SCP_TO_SERVER"/dist/"
 		echo "Running scp config/config.json $SCP_TO_SERVER ..."
 		scp config/config.json $SCP_TO_SERVER
 	fi
@@ -204,12 +219,21 @@ if [[ "$DEV_MODE" != "YES" ]]; then
 
 	if [[ "$RESTART_TILESERVER" == "YES" ]]; then
 		echo "Restarting tileserver ..." 
-		sh $MINTCAST_PATH/bin/tileserver.sh restart
+		if [[ ! -z "$SCP_TO_SERVER" ]]; then
+			ssh $TILESERVER_DEFAULT_SERVER "$TILESERVER_RESTART_CMD"
+			ssh $TILESERVER_DEFAULT_SERVER "$TILESERVER_CHECK_CMD"
+		else
+			sh $MINTCAST_PATH/bin/tileserver.sh restart
+		fi
 	fi
 fi
 
 if [[ "$RESTART_TILESERVER" != "YES" ]]; then
-	echo "\033[31;5;148mRun on server needed\033[39m: $MINTCAST_PATH/bin/tileserver.sh restart"
+	if [[ "$DEV_MODE" != "YES" ]]; then
+		echo "\033[31;5;148mRun on server needed\033[39m: /mintcast/bin/tileserver.sh restart"
+	else
+		echo "\033[31;5;148mRun on local needed\033[39m: $MINTCAST_PATH/bin/tileserver.sh restart"
+	fi
 fi
 # # scp MBtiles and json to jonsnow
 # if [[ "$DEV_MODE" != "YES" ]]; then
@@ -237,5 +261,8 @@ fi
 
 #remove intermediate files
 # rm -f $TEMP_DIR/*
+if [[ "$VERBOSE" == "YES" ]]; then
+	set +x
+fi
 
 IFS=$oldIFS

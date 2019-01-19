@@ -31,12 +31,12 @@ def main():
         colormap_value.extend(minValue + (maxValue-minValue) * (float(v.strip('%'))/100.0) for i,v in enumerate(colormap_index) if v != 'nv')
 
         if method == 'colormap':
-            ret = '["interpolate", ["linear"],["get", "value"], '
+            ret = '["interpolate", ["linear"],["get", "value"],'
             for i, v in enumerate(colormap_index):
                 if v == 'nv':
                     continue
                 ret += '%s,"%s",' % (colormap_value[i], colormap_color[i])
-            ret.strip(',')
+            ret = ret.rstrip(',')
             ret += ']'
             print(ret)
         elif method == 'legend':
@@ -46,8 +46,8 @@ def main():
                     continue
                 if i != 1 and i != len(colormap_index) - 1 and i != len(colormap_index)//2:
                     continue
-                ret += '{"label":"%s", "value":%s, "color":"%s"},' % (colormap_value[i], v, colormap_color[i])
-            ret.strip(',')
+                ret += '{"label":"%s", "value":%s, "color":"%s"},' % (colormap_value[i], colormap_value[i], colormap_color[i])
+            ret = ret.rstrip(',')
             ret += ']'
             print(ret)
         elif method == 'legend-type':

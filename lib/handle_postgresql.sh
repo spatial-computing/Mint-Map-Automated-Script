@@ -4,7 +4,7 @@
 
 handle_postgresql() {
 
-	if [[ -z "$LAYER_ID_SUFFIX" ]]; then
+	if [[ ! -z "$LAYER_ID_SUFFIX" ]]; then
 		LAYER_ID_SUFFIX=''
 	fi
 	echo "Handle postgresql"
@@ -49,16 +49,17 @@ handle_postgresql() {
 	COL_STEP_OPTION_TYPE=''
 	COL_STEP_OPTION_FORMAT=''
 	COL_STEP=''
+	PSQL_TO_DATE=''
+	TIME_FORMAT=''
 
 	if [[ -z "$TIME_STEPS" ]]; then
 		TIME_STEPS='[]'
 	fi
-
-	PSQL_TO_DATE=$(python3 $MINTCAST_PATH/python/macro_postgres_curd to_date $DATATIME_FORMAT)
-
-	TIME_FORMAT="$PSQL_TO_DATE"
+ 
 
 	if [[ ! -z "$START_TIME" ]]; then
+		PSQL_TO_DATE=$(python3 $MINTCAST_PATH/python/macro_postgres_curd to_date $DATATIME_FORMAT)
+		TIME_FORMAT="$PSQL_TO_DATE"
 		COL_AXIS="slider"
 		COL_STEP_TYPE="Time"
 		COL_STEP_OPTION_TYPE="string"

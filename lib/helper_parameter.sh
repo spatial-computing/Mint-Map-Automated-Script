@@ -60,6 +60,12 @@ helper_parameter(){
         shift
         shift
         ;;
+        --load-colormap)
+        COLORMAP_USE_LOADED="YES"
+        COLOR_TABLE="$2"
+        shift
+        shift
+        ;;
         -l|--layer-name)
         LAYER_NAME="$2"
         shift
@@ -86,6 +92,11 @@ helper_parameter(){
         ;;
         --time-steps)
         TIME_STEPS="$2"
+        shift
+        shift
+        ;;
+        --chart-type)
+        CHART_TYPE="$2"
         shift
         shift
         ;;
@@ -166,6 +177,10 @@ helper_parameter(){
         ;;
         --disable-new-res)
         GENERATE_NEW_RES="NO"
+        shift
+        ;;
+        --verbose)
+        VERBOSE="YES"
         shift
         ;;
         --disable-raster-tile)

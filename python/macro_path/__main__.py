@@ -15,6 +15,12 @@ def main():
 			path2 = path
 			path = sys.argv[3]
 		print(path2[len(path):])
+	elif method == 'toplevel':
+		path_split = path.split('/')
+		if len(path_split) == 0:
+			print("/")
+			return
+		print("/" + (path_split[0] or (path_split[1] if len(path_split) > 1 else "")), file=sys.stdout)
 
 usage = '''
 main.py basename [path]

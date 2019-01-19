@@ -173,9 +173,9 @@ def toJson(row):
             }
 
     elif row[13] == 0:
-        metadataJson['layers'].append({
+        layerJson['layers'] = {
             'mapping':''
-            })
+            }
 
     layerJsonStr = json.dumps(layerJson, indent=4)
     # print(layerJsonStr)
@@ -186,10 +186,9 @@ def toJson(row):
     else:
         mongo_metadata.insert_one(autoComplete)
 
-    ftmp = mongo_col.find_one({'id': row[0]})
+    ftmp = mongo_col.find_one({'md5vector': row[10]})
     if ftmp:
-
-        mongo_col.update_one({'id': row[0]}, { '$set': layerJson })
+        mongo_col.update_one({'md5vector': row[10]}, { '$set': layerJson })
     else:
         
         mongo_col.insert_one(layerJson)
