@@ -140,6 +140,12 @@ elif [[ $DATASET_TYPE == "tiff-time" ]]; then
 	handle_tiff_time
 elif [[ $DATASET_TYPE == "csv" ]]; then
 	python3 $MINTCAST_PATH/python/macro_store_csv $CHART_TYPE $LAYER_NAME $DATAFILE_PATH
+	if [[ "$VERBOSE" == "YES" ]]; then
+		set +x
+	fi
+
+	IFS=$oldIFS
+	exit 0
 else
 	echo "$DATASET_TYPE is an invalid dataset type." 
 	echo "Valid choices include: tiff, tiled, tiff-time, netcdf, and single-netcdf"
