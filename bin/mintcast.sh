@@ -153,7 +153,7 @@ else
 fi
 
 # if [[ $DATASET_TYPE == "single-netcdf" ]]; then 
-
+if [[ "$DEV_MODE" != "YES" ]]; then
 	# save raster
 	COL_RASTER_OR_VECTOR_TYPE="raster"
 	MBTILES_FILEPATH=$RASTER_MBTILES
@@ -200,18 +200,21 @@ fi
 	# 		"layerid='$COL_LAYER_ID'"
 	# 		python3 $MINTCAST_PATH/python/macro_gen_web_json update-config
 	# 	done	
-# fi
+	# fi
 
 
-# rm -f "$MINTCAST_PATH/tmp/*"
+	# rm -f "$MINTCAST_PATH/tmp/*"
 
 
-python3 $MINTCAST_PATH/python/macro_tileserver_config "$TILESERVER_ROOT" "$TILESERVER_PORT"
-IFS=$oldIFS
+	python3 $MINTCAST_PATH/python/macro_tileserver_config "$TILESERVER_ROOT" "$TILESERVER_PORT"
+
+fi
+
 # run mintcast on **local** and copy to server
 	# --dev-mode-off --tile-server-root "./" --scp-to-default-server  
 # run mintcast on server and restart tileserver
 	# --dev-mode-off --target-mbtiles-path "/data/dist" --tile-server-root ""
+IFS=$oldIFS
 if [[ "$DEV_MODE" != "YES" ]]; then
 	if [[ ! -z "$SCP_TO_SERVER" ]]; then
 		echo "Running scp -r $OUT_DIR $SCP_TO_SERVER ..."
