@@ -139,11 +139,11 @@ elif [[ $DATASET_TYPE == "single-netcdf" ]]; then
 elif [[ $DATASET_TYPE == "tiff-time" ]]; then
 	handle_tiff_time
 elif [[ $DATASET_TYPE == "csv" ]]; then
-	python3 $MINTCAST_PATH/python/macro_store_csv $CHART_TYPE $LAYER_NAME $DATAFILE_PATH
+	python3 $MINTCAST_PATH/python/macro_store_csv "$CHART_TYPE" "$LAYER_NAME" "$VECTOR_MD5" "$DATAFILE_PATH"
+
 	if [[ "$VERBOSE" == "YES" ]]; then
 		set +x
 	fi
-
 	IFS=$oldIFS
 	exit 0
 else
