@@ -97,7 +97,7 @@ fi
 echo $START_TIME
 
 
-if [[ -z "$START_TIME" && $DATASET_TYPE != "single-netcdf" ]]; then
+if [[ "$DATASET_TYPE" != "single-netcdf" ]]; then
 	if [[ -z "$LAYER_NAME" ]]; then
 		echo "Please set up -l|--layer-name which is the LAYER_NAME and also part of Layer ID"
 		exit 1
@@ -120,7 +120,9 @@ fi
 if [[ ! -d "$TARGET_JSON_PATH" ]]; then
 	mkdir -p $TARGET_JSON_PATH
 fi
-	
+
+COL_LAYER_NAME=$(python3 $MINTCAST_PATH/python/macro_string gen_layer_name $LAYER_NAME)
+
 if [[ $DATASET_TYPE == "tiff" ]]; then
 	if [[ -z "$START_TIME" ]]; then
 		handle_tiff

@@ -12,7 +12,9 @@ handle_postgresql() {
 	if [[ $INSERT_LAYER_WITHOUT_DATA -eq 1 ]]; then
 		echo "Inserting layer without data..."
 		COL_LAYER_ID=$(python3 $MINTCAST_PATH/python/macro_string layer_name_to_layer_id $LAYER_NAME$LAYER_ID_SUFFIX vector pbf)
-		COL_LAYER_NAME=$(python3 $MINTCAST_PATH/python/macro_string gen_layer_name $LAYER_NAME)
+		if [[ -z "$COL_LAYER_NAME" ]]; then
+			COL_LAYER_NAME=$(python3 $MINTCAST_PATH/python/macro_string gen_layer_name $LAYER_NAME)
+		fi
 		COL_MAPPING=''
 		#python3 $MINTCAST_PATH/python/sqlite3_curd insert layer \
 		python3 $MINTCAST_PATH/python/macro_postgres_curd insert layer \
@@ -35,7 +37,9 @@ handle_postgresql() {
 	echo "COL_LAYER_ID: $COL_LAYER_ID"
 	# This layer name is not the layer name we are using.
 	# Source Layer is the actual layer name
-	COL_LAYER_NAME=$(python3 $MINTCAST_PATH/python/macro_string gen_layer_name $LAYER_NAME)
+	if [[ -z "$COL_LAYER_NAME" ]]; then
+		COL_LAYER_NAME=$(python3 $MINTCAST_PATH/python/macro_string gen_layer_name $LAYER_NAME)
+	fi
 	#echo "COL_LAYER_NAME: $COL_LAYER_NAME"
 	COL_SOURCE_LAYER=$LAYER_NAME
 	COL_ORIGINAL_ID=0
