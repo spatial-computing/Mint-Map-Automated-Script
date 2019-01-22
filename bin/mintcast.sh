@@ -79,7 +79,7 @@ COLOR_TABLE=""
 COLORMAP_USE_LOADED="NO"
 DATAFILE_PATH=""            		# Single file path like tiff
 
-TILESERVER_ROOT="./"
+TILESERVER_ROOT="/data"
 TILESERVER_PORT="80"
 # store mbtiles in a specific folder and read by website
 VERBOSE="NO"
@@ -208,7 +208,8 @@ if [[ "$DEV_MODE" != "YES" ]]; then
 	# rm -f "$MINTCAST_PATH/tmp/*"
 
 
-	python3 $MINTCAST_PATH/python/macro_tileserver_config "$TILESERVER_ROOT" "$TILESERVER_PORT"
+	# python3 $MINTCAST_PATH/python/macro_tileserver_config "$TILESERVER_ROOT" "$TILESERVER_PORT"
+	python3 $MINTCAST_PATH/python/macro_tilestache_config "$TILESERVER_ROOT" "yes"
 
 fi
 
@@ -222,7 +223,7 @@ if [[ "$DEV_MODE" != "YES" ]]; then
 		echo "Running scp -r $OUT_DIR $SCP_TO_SERVER ..."
 		scp -r $OUT_DIR $SCP_TO_SERVER"/dist/"
 		echo "Running scp config/config.json $SCP_TO_SERVER ..."
-		scp config/config.json $SCP_TO_SERVER
+		scp config/tilestache.json $SCP_TO_SERVER
 	fi
 	
 	echo "Deleting $MINTCAST_PATH/tmp/* ..."

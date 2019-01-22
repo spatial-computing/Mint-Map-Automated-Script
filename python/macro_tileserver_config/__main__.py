@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 import sys, json, os, psycopg2
-
+import psycopg2.extras
 MINTCAST_PATH = os.environ.get('MINTCAST_PATH')
 config_path = MINTCAST_PATH + "/config/"
 sys.path.append(config_path)
@@ -15,11 +15,11 @@ def main(root = '../', port='80', server='0.0.0.0'):
     #conn = sqlite3.connect(MINTCAST_PATH + DATABASE_PATH)
     #from postgres_config import conn
     conn = psycopg2.connect( host=hostname, user=username, password=password, dbname=database )
-    c = conn.cursor()
+    c = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
     try:
         c.execute('SELECT * FROM mintcast.tileserverconfig where layer_name in (select name from mintcast.layer) or layer_name = \'\'')
         for row in c.fetchall():
-            config['data'][row[3]] = {'mbtiles':row[2]}
+            config['data'][row['md5']] = {'mbtiles':row['mbtiles']}
         jsonStr = json.dumps(config, indent=4)
         # print(layerJsonStr)
         f = open(MINTCAST_PATH + "/config/config.json",'w')

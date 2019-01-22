@@ -3,6 +3,7 @@
 import sys, os
 #import sqlite3
 import psycopg2
+import psycopg2.extras
 import json
 import ast
 import pymongo
@@ -42,12 +43,12 @@ def getConn():
 
 def getMetadata():
     conn = getConn()
-    c = conn.cursor()
+    c = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
     try:
         #import pdb; pdb.set_trace()
         c.execute('SELECT * FROM mintcast.metadata')
         for row in c.fetchall():
-            METADATA['%s' % row[0]] = row[1]
+            METADATA['%s' % row['k']] = row['v']
         # print(METADATA)
     except Exception as e:
         raise e
@@ -61,62 +62,11 @@ def updateMetadata():
     metadataJson['server'] = METADATA['server']
     metadataJson['tiles'] = METADATA['tileurl']
     metadataJson['originalDataset'] = METADATA['border_features']
-    # metadataJson['md5raster'] = []
-    # metadataJson['md5vector'] = []
-    # metadataJson['layerNames'] = []
-    # metadataJson['layerIds'] = []
-    # metadataJson['sourceLayers'] = []
-    # metadataJson['hasData'] = []
-    # metadataJson['hasTimeline'] = []
-    # metadataJson['layers'] = []
-    # try:
-    #     c.execute('SELECT * FROM mintcast.layer')
-    #     for row in c.fetchall():
-    #         if row[6] == 'raster':
-    #             #metadataJson['md5raster'].append(row[6])
-    #             continue
-    # print(row)
-    # metadataJson['layerNames'].append(row[8])
-    # metadataJson['layerIds'].append(row[1])
-    # metadataJson['sourceLayers'].append(row[11])
-    # metadataJson['hasData'].append(False if row[12] == 0 else True)
-    # metadataJson['hasTimeline'].append(False if row[13] == 0 else True)
-    # metadataJson['md5vector'].append(row[10])
-    # metadataJson['md5raster'].append(md5(row[10].encode('utf-8')).hexdigest())
-    # if row[13] == 1:
-    #     # import pdb; pdb.set_trace()
-    #     step_array = ast.literal_eval(row[-2])
-    #     step_array = [str(i).strip() for i in step_array]
-    #     metadataJson['layers'].append({
-    #         'id':row[0], 
-    #         'source-layer': row[11], 
-    #         'minzoom': row[14], 
-    #         'maxzoom':row[15], 
-    #         'type':row[6], 
-    #         'mapping':'', 
-    #         "axis":"slider",
-    #         "stepType":"Time",
-    #         "stepOption":{"type":"string", "format":"yyyyMM"}, #change this
-    #         "step": step_array
-    #         })
-    # elif row[13] == 0:
-    #     metadataJson['layers'].append({
-    #         'id':row[0], 
-    #         'source-layer': row[11], 
-    #         'minzoom': row[14], 
-    #         'maxzoom':row[15], 
-    #         'type':row[6], 
-    #         'mapping':''
-    #         })
-    # except Exception as e:
-    #     raise e
-    # finally:
-    #     conn.close()
     return metadataJson
 
 def update(identifier):
     conn = getConn()
-    c = conn.cursor()
+    c = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
     try:
         c.execute("SELECT * FROM mintcast.layer WHERE layerid = '%s'" % identifier)
         for row in c.fetchall():
@@ -130,53 +80,53 @@ def toJson(row):
 
     layerJson = {}
     autoComplete = {'type': 'mintmap-autocomplete'}
-    if row[6] == 'raster':
+    if row['type'] == 'raster':
         # TODO
         return
 
 
-    layerJson['id'] = row[0]
+    layerJson['id'] = row['id']
 
-    layerJson['type'] = row[6]
-    layerJson['sourceLayer'] = row[11]
+    layerJson['type'] = row['type']
+    layerJson['sourceLayer'] = row['sourcelayer']
     layerJson['propertyName'] = 'value'
-    layerJson['minzoom'] = row[14]
-    layerJson['maxzoom'] = row[15]
-    layerJson['bounds'] = row[16] #not being inserted
-    layerJson['originalDatasetCoordinate'] = row[32]
-    layerJson['values'] = row[29] #not being inserted
-    layerJson['colormap'] = row[30]
-    layerJson['legend-type'] = row[25]
-    layerJson['legend'] = row[26]
+    layerJson['minzoom'] = row['minzoom']
+    layerJson['maxzoom'] = row['maxzoom']
+    layerJson['bounds'] = row['bounds'] #not being inserted
+    layerJson['originalDatasetCoordinate'] = row['original_dataset_bounds']
+    layerJson['values'] = row['valuearray'] #not being inserted
+    layerJson['colormap'] = row['colormap']
+    layerJson['legend-type'] = row['legend_type']
+    layerJson['legend'] = row['legend']
 
-    layerJson['layerName'] = row[8]
-    layerJson['layerId'] = row[1]
-    layerJson['hasData'] = False if row[12] == 0 else True
-    layerJson['hasTimeline'] = False if row[13] == 0 else True
-    layerJson['md5vector'] = row[10]
-    layerJson['md5raster'] = md5(row[10].encode('utf-8')).hexdigest()
-    layerJson['dcid'] = row[-1]
+    layerJson['layerName'] = row['name']
+    layerJson['layerId'] = row['layerid']
+    layerJson['hasData'] = False if row['hasdata'] == 0 else True
+    layerJson['hasTimeline'] = False if row['hastimeline'] == 0 else True
+    layerJson['md5vector'] = row['md5']
+    layerJson['md5raster'] = md5(row['md5'].encode('utf-8')).hexdigest()
+    layerJson['dcid'] = row['dcid']
 
-    autokey = row[11].replace('/','_').replace(' ', '_').replace('.','_')
-    autoComplete[autokey] = row[10]
+    autokey = row['sourcelayer'].replace('/','_').replace(' ', '_').replace('.','_')
+    autoComplete[autokey] = row['md5']
 
-    if row[13] == 1:
+    if row['hastimeline'] == 1:
         # import pdb; pdb.set_trace()
-        step_array = ast.literal_eval(row[-3])
+        step_array = ast.literal_eval(row['step'])
         step_array = [str(i).strip() for i in step_array]
         layerJson['layers'] = {
             'mapping':'', 
             "axis":"slider",
             "stepType":"Time",
-            "stepOption":{"type":"string", "format": row[-4]}, #change this
+            "stepOption":{"type":"string", "format": row['stepoption_type']}, #change this
             "step": step_array
             }
 
-    elif row[13] == 0:
+    elif row['hastimeline'] == 0:
         layerJson['layers'] = {
             'mapping':''
             }
-
+    # print(layerJson)
     layerJsonStr = json.dumps(layerJson, indent=4)
     # print(layerJsonStr)
     mongo_metadata = mongo_db["metadata"]
@@ -186,25 +136,25 @@ def toJson(row):
     else:
         mongo_metadata.insert_one(autoComplete)
 
-    ftmp = mongo_col.find_one({'md5vector': row[10]})
+    ftmp = mongo_col.find_one({'md5vector': row['md5']})
     if ftmp:
-        mongo_col.update_one({'md5vector': row[10]}, { '$set': layerJson })
+        mongo_col.update_one({'md5vector': row['md5']}, { '$set': layerJson })
     else:
         
         mongo_col.insert_one(layerJson)
     
     try:
-        f = open(JSON_FILEPATH + "/%s.json" % row[1],'w')
+        f = open(JSON_FILEPATH + "/%s.json" % row['layerid'],'w')
         f.write(layerJsonStr)
         f.close()
-        print(JSON_FILEPATH + "/%s.json" % row[1])    
+        print(JSON_FILEPATH + "/%s.json" % row['layerid'])    
     except Exception as e:
         print("NOT A BUG: ",e)
     
 
 def updateAll():
     conn = getConn()
-    c = conn.cursor()
+    c = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
     try:
         c.execute('SELECT * FROM mintcast.layer')
         for row in c.fetchall():
