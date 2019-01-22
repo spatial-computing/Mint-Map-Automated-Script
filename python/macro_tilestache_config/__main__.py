@@ -57,14 +57,14 @@ def main(base_dir="/data", enable_mongo=True):
                       "cache lifespan": "604800"
                 }
             
-        jsonStr = json.dumps(config)#, indent=4
+        # jsonStr = json.dumps(config)#, indent=4
         # print(jsonStr)
         if enable_mongo:
             ftmp = mongo_metadata.find_one({'type': 'tilestache-config'})
             if ftmp:
-                mongo_metadata.update_one({'type': 'tilestache-config'}, { '$set': jsonStr })
+                mongo_metadata.update_one({'type': 'tilestache-config'}, { '$set': config })
             else:
-                mongo_metadata.insert_one(jsonStr)
+                mongo_metadata.insert_one(config)
         # f = open(MINTCAST_PATH + "/config/tilestache.json",'w')
         # f.write(jsonStr)
         # f.close()

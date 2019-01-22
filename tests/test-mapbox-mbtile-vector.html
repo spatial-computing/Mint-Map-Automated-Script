@@ -45,26 +45,6 @@ map.on('load', function() {
                 "fill-color": ["interpolate", ["linear"],["get", "value"],0.0,"#2ffcfd",56.6206420898436,"#18ecf4",113.2412841796872,"#5bd3e6",169.86192626953078,"#3abcda",226.4825683593744,"#2896c6",283.103210449218,"#286bb1",339.72385253906157,"#24419d",396.3444946289052,"#1d0f7c",471.83868408203,"#07004b"]
             }
         });
-    // map.addLayer({
-    //     "id": "mapillary",
-    //     "type": "line",
-    //     "source": {
-    //         "type": "vector",
-    //         "tiles": ["https://d25uarhxywzl1j.cloudfront.net/v0.1/{z}/{x}/{y}.mvt"],
-    //         "minzoom": 6,
-    //         "maxzoom": 14
-    //     },
-    //     "source-layer": "mapillary-sequences",
-    //     "layout": {
-    //         "line-cap": "round",
-    //         "line-join": "round"
-    //     },
-    //     "paint": {
-    //         "line-opacity": 0.6,
-    //         "line-color": "rgb(53, 175, 109)",
-    //         "line-width": 2
-    //     }
-    // }, 'waterway-label');
     map.addControl(new MapboxInspect({
       showMapPopup: true,
       showMapPopupOnHover: false,
