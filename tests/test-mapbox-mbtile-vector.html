@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8' />
+    <title>Add a raster tile source</title>
+    <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+    <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.52.0/mapbox-gl.js'></script>
+    <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.52.0/mapbox-gl.css' rel='stylesheet' />
+    <script src='http://mapbox-gl-inspect.lukasmartinelli.ch/dist/mapbox-gl-inspect.min.js'></script>
+    <link href='http://mapbox-gl-inspect.lukasmartinelli.ch/dist/mapbox-gl-inspect.css' rel='stylesheet' />
+
+    <style>
+        body { margin:0; padding:0; }
+        #map { position:absolute; top:0; bottom:0; width:100%; }
+    </style>
+</head>
+<body>
+
+<div id='map'></div>
+<script>
+mapboxgl.accessToken = 'pk.eyJ1IjoibGxiMDUzNiIsImEiOiJjamhneW5nb2Exc2NpM2RuMzd2MDIzN3JzIn0.iKiHre34Vadlif1cOOSG9A';
+var map = new mapboxgl.Map({
+    container: 'map', // container id
+    style: 'mapbox://styles/mapbox/streets-v9',
+    center: [29.7, 8], // starting position
+    zoom: 5 // starting zoom
+});
+
+map.on('load', function() {
+    map.addSource("vector-tiles", {
+            "type": "vector",
+            "tiles": ["http://127.0.0.1:7890/b1/{z}/{x}/{y}.pbf"]
+            // "tiles": ["http://52.90.74.236:65532/data/f9a36bd83beacc40fd2089c16996bbb3/{z}/{x}/{y}.pbf"]
+        });
+    map.addLayer({
+            "id": "simple-tiles",
+            "type": "fill",
+            "source": "vector-tiles",
+            "source-layer": "South_Sudan_population_density",
+            "layout": {
+                'visibility': 'visible'
+            },
+            "paint": {
+                "fill-opacity": 1.0,
+                "fill-color": ["interpolate", ["linear"],["get", "value"],0.0,"#2ffcfd",56.6206420898436,"#18ecf4",113.2412841796872,"#5bd3e6",169.86192626953078,"#3abcda",226.4825683593744,"#2896c6",283.103210449218,"#286bb1",339.72385253906157,"#24419d",396.3444946289052,"#1d0f7c",471.83868408203,"#07004b"]
+            }
+        });
+    // map.addLayer({
+    //     "id": "mapillary",
+    //     "type": "line",
+    //     "source": {
+    //         "type": "vector",
+    //         "tiles": ["https://d25uarhxywzl1j.cloudfront.net/v0.1/{z}/{x}/{y}.mvt"],
+    //         "minzoom": 6,
+    //         "maxzoom": 14
+    //     },
+    //     "source-layer": "mapillary-sequences",
+    //     "layout": {
+    //         "line-cap": "round",
+    //         "line-join": "round"
+    //     },
+    //     "paint": {
+    //         "line-opacity": 0.6,
+    //         "line-color": "rgb(53, 175, 109)",
+    //         "line-width": 2
+    //     }
+    // }, 'waterway-label');
+    map.addControl(new MapboxInspect({
+      showMapPopup: true,
+      showMapPopupOnHover: false,
+      showInspectMapPopupOnHover: false,
+      queryParameters: {
+        layers: ['simple-tiles']
+      }
+    }));
+});
+</script>
+
+</body>
+</html>
