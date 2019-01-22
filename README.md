@@ -5,7 +5,6 @@
 ![Published by Adam Vaccaro](https://img.shields.io/badge/Adam%20Vaccaro-Author-blue.svg)
 
 
-
 ### Config/postgres_config.py
 
 ```
@@ -28,49 +27,62 @@ database = ''
 	- with hotspot geojson object
 	- with a series data loading 
 	- time slide desc data
-- Consistence
-	- filename
-	- only use Json file instead of `metadata.json`
-	- timeseries source-layer
-	- layer name and source name, make them consistent
-- Timeseries Play
-	- frame request
-	- play/pause button
-	- slide bar redesign
+- Consistence √
+	- filename √
+	- only use Json file instead of `metadata.json` √
+	- timeseries source-layer √
+	- layer name and source name, make them consistent √
+- Timeseries Play √
+	- frame request √
+	- play/pause button √
+	- slide bar redesign 
 - Postgres
-	- No show all
+	- No show all √
 	- Add one flag if it changed
 		- `0` not changed
 		- `1` changing
 		- `2` changed
-	- New structure
-		- no metadata.json
-		- only seperate files
-		- md5 file
-	- Search without metadata.json
-		- Search using redis
-		- Search via AJAX
-		- redis: name: md5
-	- Increment
+	- New structure √
+		- no metadata.json √
+		- only seperate files √
+		- md5 file √
+	- Search without metadata.json √
+		- Search using redis √
+		- Search via AJAX √
+		- redis: name: md5 √
+	- Increment 
 		- Postgresql with timeseries flag => md5
 		- Generate into the same json file with the same timeseries flag
 		- **each file is one seperated record**
-- the reason still using Json file not DB
-	- faster to send the response
-	- more secure
-	- without connect and join tables
-	- Json file structure
-		- move `metadata.json` to seperated json files
+- the reason still using Json file not DB √
+	- faster to send the response √
+	- more secure √
+	- without connect and join tables √
+	- Json file structure √
+		- move `metadata.json` to seperated json files √
 - Hotspot data generating
 	- Geojson object 
 	- store data into Postgresql for each file
 	- when generate json file merge them into one geojson object
 - Map
-	- a new variable to fly to a new area
-	- remove metadata.json
-	- remove `show all dataset`
-	- move search to redis
+	- a new variable to fly to a new area 
+	- remove metadata.json √
+	- remove `show all dataset` √
+	- move search to redis  √
 	
+### Tileserver Selection
+
+[Ref](http://www.paulnorman.ca/blog/2016/11/serving-vector-tiles/)
+
+|Server|Full planet|Diff updates|Non-OSM data|GeoJSON|TopoJSON|Mapbox Vector Tiles|
+|--- |--- |--- |--- |--- |--- |--- |
+|node-mapnik|Yes|Yes|Yes|Some|No|Yes|
+|Tilezen tileserver|Yes|Yes|Yes|Yes|Yes|Yes|
+|Tegola|Yes|Yes|Yes|No|No|Yes|
+|t-rex|Yes|Yes|Yes|No|No|Yes|
+|TileStache|Yes|Yes|Yes|Yes|No|Yes|
+|Tilemaker|No|No|Yes|No|No|Yes|
+|VectorTileCreator|Unknown|No|No|No|No|No|
 
 ## Time series convention
 
