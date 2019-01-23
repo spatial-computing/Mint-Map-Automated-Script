@@ -106,6 +106,7 @@ def toJson(row):
     layerJson['md5vector'] = row['md5']
     layerJson['md5raster'] = md5(row['md5'].encode('utf-8')).hexdigest()
     layerJson['dcid'] = row['dcid']
+    
 
     autokey = row['sourcelayer'].replace('/','_').replace(' ', '_').replace('.','_')
     autoComplete[autokey] = row['md5']
