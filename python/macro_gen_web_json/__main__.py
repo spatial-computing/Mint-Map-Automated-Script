@@ -118,7 +118,7 @@ def toJson(row):
             'mapping':'', 
             "axis":"slider",
             "stepType":"Time",
-            "stepOption":{"type":"string", "format": row['stepoption_type']}, #change this
+            "stepOption":{"type":"string", "format": row['stepoption_format']}, #change this
             "step": step_array
             }
 
