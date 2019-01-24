@@ -79,7 +79,6 @@ def update(identifier):
 def toJson(row):
 
     layerJson = {}
-    autoComplete = {'type': 'mintmap-autocomplete'}
     if row['type'] == 'raster':
         # TODO
         return
@@ -105,11 +104,8 @@ def toJson(row):
     layerJson['hasTimeline'] = False if row['hastimeline'] == 0 else True
     layerJson['md5vector'] = row['md5']
     layerJson['md5raster'] = md5(row['md5'].encode('utf-8')).hexdigest()
-    layerJson['dcid'] = row['dcid']
-    
+    layerJson['dcid'] = row['dcid'].strip()
 
-    autokey = row['sourcelayer'].replace('/','_').replace(' ', '_').replace('.','_')
-    autoComplete[autokey] = row['md5']
 
     if row['hastimeline'] == 1:
         # import pdb; pdb.set_trace()
@@ -131,15 +127,22 @@ def toJson(row):
     layerJsonStr = json.dumps(layerJson, indent=4)
     # print(layerJsonStr)
     mongo_metadata = mongo_db["metadata"]
+
+    autoComplete = {'type': 'mintmap-autocomplete'}
+    autokey = row['name'].replace('/','_').replace(' ', '_').replace('.','_')
+    autoComplete[autokey] = row['dcid'] if len(layerJson['dcid']) > 1 else row['md5']
+
     ftmp = mongo_metadata.find_one({'type': 'mintmap-autocomplete'})
     if ftmp:
         mongo_metadata.update_one({'type': 'mintmap-autocomplete'}, { '$set': autoComplete })
+        # mongo_metadata.replace_one({'type': 'mintmap-autocomplete'}, autoComplete)
     else:
         mongo_metadata.insert_one(autoComplete)
 
     ftmp = mongo_col.find_one({'md5vector': row['md5']})
     if ftmp:
-        mongo_col.update_one({'md5vector': row['md5']}, { '$set': layerJson })
+        # mongo_col.update_one({'md5vector': row['md5']}, { '$set': layerJson })
+        mongo_col.replace_one({'md5vector': row['md5']}, layerJson)
     else:
         
         mongo_col.insert_one(layerJson)
@@ -156,6 +159,8 @@ def toJson(row):
 def updateAll():
     conn = getConn()
     c = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+
+    mongo_db["metadata"].delete_one({'type': 'mintmap-autocomplete'})
     try:
         c.execute('SELECT * FROM mintcast.layer')
         for row in c.fetchall():
@@ -170,7 +175,8 @@ def updateAll():
     mongo_metadata = mongo_db["metadata"]
     ftmp = mongo_metadata.find_one({'type': 'mintmap-metadata'})
     if ftmp:
-        mongo_metadata.update_one({'type': 'mintmap-metadata'}, { '$set': metadataJson })
+        # mongo_metadata.update_one({'type': 'mintmap-metadata'}, { '$set': metadataJson })
+        mongo_metadata.replace_one({'type': 'mintmap-metadata'}, metadataJson )
     else:
         mongo_metadata.insert_one(metadataJson)
     try:
