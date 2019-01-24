@@ -42,7 +42,7 @@ def get_maxmin(file, single_dataset_for_netcdf):
         return (md[single_dataset_for_netcdf +"#vmin"], md[single_dataset_for_netcdf +"#vmax"])
     else:
         srcband = src.GetRasterBand(1)
-        stats = srcband.GetStatistics(True, True)
+        stats = srcband.GetStatistics(True, True) if srcband else 0, 0.02
         return (stats[0], stats[0])
         # print(stats[1]) #max
         # print(stats[0]) #min
@@ -51,13 +51,12 @@ def daterange(start_date, end_date, delta):
     # days = (end_date - start_date).days
     date_diff = end_date - start_date
     if delta == "days":
-        for n in range(date_diff.days):
+        for n in range(date_diff.days + 1):
             yield start_date
             start_date += timedelta(days=1)
     elif delta == "months":
         sdm = 0
         month_delta = monthdelta_dict[sdm]
-
         while date_diff - month_delta >= timedelta(0):
             yield start_date + month_delta
             start_date += month_delta
