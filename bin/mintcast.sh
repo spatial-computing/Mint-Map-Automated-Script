@@ -82,8 +82,10 @@ TILESERVER_ROOT="/data"
 TILESERVER_PORT="80"
 # store mbtiles in a specific folder and read by website
 VERBOSE="NO"
+if [[ -z "$MINTCAST_IS_ON_SERVER" ]]; then # set it in env
+	MINTCAST_IS_ON_SERVER="NO"  # if YES, change TARGET_MBTILES_PATH below	
+fi
 
-ON_SERVER="NO"  # if YES, change TARGET_MBTILES_PATH below
 
 # TILESERVER_DEFAULT_SERVER="root@52.90.74.236"
 # TILESERVER_RESTART_CMD="/mintcast/bin/tileserver.sh restart"
@@ -101,7 +103,7 @@ fi
 echo $START_TIME
 
 if [[ "$DEV_MODE" != 'YES' ]]; then
-	if [[ "$ON_SERVER" == 'YES' ]]; then
+	if [[ "$MINTCAST_IS_ON_SERVER" == 'YES' ]]; then
 		export TARGET_MBTILES_PATH='/data/dist'
 		export TILESTACHE_CONFIG_PATH='/data'
 	fi
@@ -230,7 +232,7 @@ fi
 	# --dev-mode-off --target-mbtiles-path "/data/dist" --tile-server-root ""
 IFS=$oldIFS
 if [[ "$DEV_MODE" != "YES" ]]; then
-	if [[ "$ON_SERVER" == "NO" ]]; then
+	if [[ "$MINTCAST_IS_ON_SERVER" == "NO" ]]; then
 		if [[ ! -z "$SCP_TO_SERVER" ]]; then
 			echo "Running scp -r $OUT_DIR $SCP_TO_SERVER ..."
 			scp -r $OUT_DIR $SCP_TO_SERVER"/dist/"
