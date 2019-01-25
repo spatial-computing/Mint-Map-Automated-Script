@@ -30,15 +30,12 @@ handle_tiled_tiff(){
 
 	echo "MINTCAST_PATH: $MINTCAST_PATH"
 	# Hard-coded paths (passed from mintcast.sh?):
-	OUT_DIR="$MINTCAST_PATH/dist"
+	OUT_DIR="$TARGET_MBTILES_PATH"
 	echo "OUT_DIR: $OUT_DIR"
 	if [[ ! -d "$OUT_DIR" ]]; then
 		mkdir -p "$OUT_DIR"
 	fi
-	if [[ $DEV_MODE != 'YES' ]]; then
-		echo "TARGET_MBTILES_PATH: $TARGET_MBTILES_PATH"
-		OUT_DIR=$TARGET_MBTILES_PATH
-	fi	#OUT_DIR=$MINTCAST_PATH/dist
+
 	TEMP_DIR=$OUT_DIR
 	echo "TEMP_DIR: $TEMP_DIR"
 

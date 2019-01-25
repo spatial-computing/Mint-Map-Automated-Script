@@ -33,7 +33,7 @@ handle_netcdf(){
 			if [[ -z "$LAYER_NAME" ]]; then
 				LAYER_NAME="${SUBDATASET_LAYERS_ARRAY[$index]}"
 			fi
-			OUT_DIR="$MINTCAST_PATH/dist/$PARTIAL_PATH"
+			OUT_DIR="$TARGET_MBTILES_PATH/$PARTIAL_PATH"
 			echo "OUT_DIR: $OUT_DIR"
 			LAYER_ID_SUFFIX=$(python3 $MINTCAST_PATH/python/macro_string path_to_suffix $PARTIAL_PATH)
 			echo "LAYER_ID_SUFFIX: $LAYER_ID_SUFFIX"
@@ -44,7 +44,7 @@ handle_netcdf(){
 		done
 
 		# reset out dir
-		OUT_DIR="$MINTCAST_PATH/dist/"$(python3 $MINTCAST_PATH/python/macro_path toplevel $PARTIAL_PATH)
+		OUT_DIR="$TARGET_MBTILES_PATH"$(python3 $MINTCAST_PATH/python/macro_path toplevel $PARTIAL_PATH)
 
 
 		# if [[ "$DEV_MODE" != "YES" ]]; then

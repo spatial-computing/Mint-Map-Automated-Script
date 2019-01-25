@@ -20,7 +20,7 @@ handle_tiff_timeseries(){
 		echo "##### $geotiff_file"
 		LAYER_NAME="$LAYER_NAME"
 		DATAFILE_PATH="$geotiff_file"
-		OUT_DIR="$MINTCAST_PATH/dist/$OUTPUT_DIR_STRUCTURE_FOR_TIMESERIES/$PARTIAL_PATH"
+		OUT_DIR="$TARGET_MBTILES_PATH/$OUTPUT_DIR_STRUCTURE_FOR_TIMESERIES/$PARTIAL_PATH"
 		LAYER_ID_SUFFIX=$(python3 $MINTCAST_PATH/python/macro_string path_to_suffix $PARTIAL_PATH)
 
 		echo "######### $LAYER_ID_SUFFIX ### $PARTIAL_PATH"

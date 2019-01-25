@@ -36,11 +36,7 @@ handle_tiff(){
 	if [[ ! -d "$TEMP_DIR" ]]; then
 		mkdir -p "$TEMP_DIR"
 	fi
-	if [[ $DEV_MODE != 'YES' ]]; then
-		if [[ ! -z $TARGET_MBTILES_PATH ]]; then
-			OUT_DIR=$TARGET_MBTILES_PATH
-		fi
-	fi
+
 	#OUT_DIR=$MINTCAST_PATH/dist
 	#TEMP_DIR=$OUT_DIR
 	#TEMP_DIR=$MINTCAST_PATH/tmp
@@ -252,6 +248,7 @@ handle_tiff(){
 		echo "Making vector tiles..."
 		proc_geojson2mbtiles $POLY_OUT $VECTOR_MBTILES $VECTOR_SOURCE_LAYER_NAME #Make .mbtiles
 	fi
+	
 	if [[ "$DEV_MODE" != "YES" ]]; then
 		if [[ ! -z "$SCP_TO_SERVER" ]]; then
 			if [[ $DATASET_TYPE == "tiff" ]]; then

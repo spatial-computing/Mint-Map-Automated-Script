@@ -40,7 +40,6 @@ START_TIME=""               		# If dataset has timeseries, start time string, li
 END_TIME=""                 		# Same as start time
 LAYER_NAME=""               		# Layer name could be a string or a json file, as input of tippecanoe
 VECTOR_MD5=""						# unique md5hash for each dataset, can be input or generated from standard name
-TARGET_MBTILES_PATH=""      		# Production mode: path to store mbtiles files and config files
 TARGET_JSON_PATH=""         		# Production mode: path to store json files
 TILESEVER_PROG=""           		# Path of tileserver program
 TILESEVER_PORT="8082"       		# Used by tileserver
@@ -84,9 +83,14 @@ TILESERVER_PORT="80"
 # store mbtiles in a specific folder and read by website
 VERBOSE="NO"
 
-TILESERVER_DEFAULT_SERVER="root@52.90.74.236"
-TILESERVER_RESTART_CMD="/mintcast/bin/tileserver.sh restart"
-TILESERVER_CHECK_CMD="docker ps"
+ON_SERVER="NO"  # if YES, change TARGET_MBTILES_PATH below
+
+# TILESERVER_DEFAULT_SERVER="root@52.90.74.236"
+# TILESERVER_RESTART_CMD="/mintcast/bin/tileserver.sh restart"
+# TILESERVER_CHECK_CMD="docker ps"
+
+export TARGET_MBTILES_PATH="$MINTCAST_PATH/dist"  # Production mode: path to store mbtiles files and config files
+export TILESTACHE_CONFIG_PATH="$MINTCAST_PATH/dist"
 
 helper_parameter $@
 
@@ -96,6 +100,13 @@ fi
 
 echo $START_TIME
 
+if [[ "$DEV_MODE" != 'YES' ]]; then
+	if [[ "$ON_SERVER" == 'YES' ]]; then
+		export TARGET_MBTILES_PATH='/data/dist'
+		export TILESTACHE_CONFIG_PATH='/data'
+	fi
+	OUT_DIR=$TARGET_MBTILES_PATH
+fi
 
 if [[ "$DATASET_TYPE" != "single-netcdf" ]]; then
 	if [[ -z "$LAYER_NAME" ]]; then
@@ -219,11 +230,13 @@ fi
 	# --dev-mode-off --target-mbtiles-path "/data/dist" --tile-server-root ""
 IFS=$oldIFS
 if [[ "$DEV_MODE" != "YES" ]]; then
-	if [[ ! -z "$SCP_TO_SERVER" ]]; then
-		echo "Running scp -r $OUT_DIR $SCP_TO_SERVER ..."
-		scp -r $OUT_DIR $SCP_TO_SERVER"/dist/"
-		echo "Running scp config/config.json $SCP_TO_SERVER ..."
-		scp config/tilestache.json $SCP_TO_SERVER
+	if [[ "$ON_SERVER" == "NO" ]]; then
+		if [[ ! -z "$SCP_TO_SERVER" ]]; then
+			echo "Running scp -r $OUT_DIR $SCP_TO_SERVER ..."
+			scp -r $OUT_DIR $SCP_TO_SERVER"/dist/"
+			echo "Running scp config/config.json $SCP_TO_SERVER ..."
+			scp config/tilestache.json $SCP_TO_SERVER
+		fi
 	fi
 	
 	echo "Deleting $MINTCAST_PATH/tmp/* ..."

@@ -37,9 +37,6 @@ handle_tiff_time(){
 	if [[ ! -d "$TEMP_DIR" ]]; then
 		mkdir -p "$TEMP_DIR"
 	fi
-	if [[ $DEV_MODE != 'YES' ]]; then
-		OUT_DIR=$TARGET_MBTILES_PATH
-	fi
 	#OUT_DIR=$MINTCAST_PATH/dist
 	#TEMP_DIR=$OUT_DIR
 	#TEMP_DIR=$MINTCAST_PATH/tmp

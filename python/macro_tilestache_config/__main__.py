@@ -4,6 +4,7 @@ import sys, json, os, psycopg2, pymongo
 import psycopg2.extras
 MINTCAST_PATH = os.environ.get('MINTCAST_PATH')
 config_path = MINTCAST_PATH + "/config/"
+TILESTACHE_CONFIG_PATH = os.environ.get('TILESTACHE_CONFIG_PATH')
 sys.path.append(config_path)
 
 from postgres_config import hostname, username, password, database, MONGODB_CONNECTION
@@ -57,7 +58,7 @@ def main(base_dir="/data", enable_mongo=True):
             else:
                 mongo_metadata.insert_one(config)
         jsonStr = json.dumps(config, indent=4)
-        f = open(MINTCAST_PATH + "/config/tilestache.json",'w')
+        f = open(TILESTACHE_CONFIG_PATH + "/tilestache.json",'w')
         f.write(jsonStr)
         f.close()
     except Exception as e:
