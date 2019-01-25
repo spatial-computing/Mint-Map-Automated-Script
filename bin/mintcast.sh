@@ -229,24 +229,24 @@ if [[ "$DEV_MODE" != "YES" ]]; then
 	echo "Deleting $MINTCAST_PATH/tmp/* ..."
 	rm -rf "$MINTCAST_PATH/tmp/"*
 
-	if [[ "$RESTART_TILESERVER" == "YES" ]]; then
-		echo "Restarting tileserver ..." 
-		if [[ ! -z "$SCP_TO_SERVER" ]]; then
-			ssh $TILESERVER_DEFAULT_SERVER "$TILESERVER_RESTART_CMD"
-			ssh $TILESERVER_DEFAULT_SERVER "$TILESERVER_CHECK_CMD"
-		else
-			sh $MINTCAST_PATH/bin/tileserver.sh restart
-		fi
-	fi
+	# if [[ "$RESTART_TILESERVER" == "YES" ]]; then
+	# 	echo "Restarting tileserver ..." 
+	# 	if [[ ! -z "$SCP_TO_SERVER" ]]; then
+	# 		ssh $TILESERVER_DEFAULT_SERVER "$TILESERVER_RESTART_CMD"
+	# 		ssh $TILESERVER_DEFAULT_SERVER "$TILESERVER_CHECK_CMD"
+	# 	else
+	# 		sh $MINTCAST_PATH/bin/tileserver.sh restart
+	# 	fi
+	# fi
 fi
 
-if [[ "$RESTART_TILESERVER" != "YES" ]]; then
-	if [[ "$DEV_MODE" != "YES" ]]; then
-		echo "\033[31;5;148mRun on server needed\033[39m: /mintcast/bin/tileserver.sh restart"
-	else
-		echo "\033[31;5;148mRun on local needed\033[39m: $MINTCAST_PATH/bin/tileserver.sh restart"
-	fi
-fi
+# if [[ "$RESTART_TILESERVER" != "YES" ]]; then
+# 	if [[ "$DEV_MODE" != "YES" ]]; then
+# 		echo "\033[31;5;148mRun on server needed\033[39m: /mintcast/bin/tileserver.sh restart"
+# 	else
+# 		echo "\033[31;5;148mRun on local needed\033[39m: $MINTCAST_PATH/bin/tileserver.sh restart"
+# 	fi
+# fi
 # # scp MBtiles and json to jonsnow
 # if [[ "$DEV_MODE" != "YES" ]]; then
 # 	#JONSNOW_STR="$SSH_USER@jonsnow.usc.edu"
