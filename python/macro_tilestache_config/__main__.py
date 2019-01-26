@@ -2,6 +2,8 @@
 
 import sys, json, os, psycopg2, pymongo
 import psycopg2.extras
+import os.path
+
 MINTCAST_PATH = os.environ.get('MINTCAST_PATH')
 config_path = MINTCAST_PATH + "/config/"
 TILESTACHE_CONFIG_PATH = os.environ.get('TILESTACHE_CONFIG_PATH')
@@ -38,10 +40,18 @@ def main(base_dir="/data", enable_mongo=True):
     try:
         c.execute('SELECT * FROM mintcast.tileserverconfig where layer_name in (select name from mintcast.layer) or layer_name = \'\'')
         for row in c.fetchall():
+            tileset_path = None
+            if row['mbtiles'][0] == '.':
+                tileset_path = base_dir + row['mbtiles'].lstrip('.')
+            elif row['mbtiles'].startswith(base_dir) and os.path.isfile(row['mbtiles']):
+                tileset_path = row['mbtiles']
+            else:
+                tileset_path = base_dir + row['mbtiles']
+
             config['layers'][row['md5']] = {
                       "provider": {
                         "name": "mbtiles", 
-                        "tileset": base_dir + row['mbtiles'].lstrip('.').lstrip(base_dir)
+                        "tileset": tileset_path
                       },
                       "allowed origin": "*",
                       "cache lifespan": "604800"
