@@ -13,7 +13,7 @@ def store(chartType, layerName, datasetId, csvFile):
         return
     if len(csvFile) == 1:
         csvFile = csvFile[0].strip(';').split(';')
-    data = {"type":chartType, "title": layerName, "dataset_id": datasetId, "count": len(csvFile)}
+    data = {"type":chartType, "title": layerName.replace('-_-', ' '), "dataset_id": datasetId, "count": len(csvFile)}
     for i in range(len(csvFile)):
         label = "data"
         if i != 0:
