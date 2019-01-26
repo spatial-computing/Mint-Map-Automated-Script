@@ -1,4 +1,4 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 
 ### proc_tif2mbtiles.sh
 # Convert TIFF to MBTiles

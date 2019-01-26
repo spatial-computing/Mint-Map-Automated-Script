@@ -1,4 +1,4 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 
 ### proc_clip.sh
 # Clips data layer to South Sudan boundary as defined by input shapefile, 

@@ -1,4 +1,4 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 
 ### proc_geojson2mbtiles.sh
 # Generate zoom levels while converting GeoJSON file to MBTiles.

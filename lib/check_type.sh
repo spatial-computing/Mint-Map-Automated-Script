@@ -1,4 +1,4 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 
 ### check_type.sh
 # Checks the type of a dataset (Byte, Int16, Float32) and assigns an

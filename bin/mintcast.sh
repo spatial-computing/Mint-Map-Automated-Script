@@ -1,4 +1,4 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 
 # export MINTCAST_PATH='/usr/local/bin/mintcast'
 oldIFS=$IFS

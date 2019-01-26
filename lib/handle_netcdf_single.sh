@@ -1,4 +1,4 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 
 source $MINTCAST_PATH/lib/proc_getnetcdf_subdataset.sh
 #source $MINTCAST_PATH/lib/handle_tiff.sh

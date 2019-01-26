@@ -1,4 +1,4 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 helper_parameter(){
     POSITIONAL=()
     while [[ $# -gt 0 ]]

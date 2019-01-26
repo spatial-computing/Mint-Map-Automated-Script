@@ -1,4 +1,4 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 
 ### check_projection.sh
 # Checks to see if a data file is projected into WGS 84 
