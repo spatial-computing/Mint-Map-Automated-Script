@@ -41,7 +41,7 @@ def main(base_dir="/data", enable_mongo=True):
             config['layers'][row['md5']] = {
                       "provider": {
                         "name": "mbtiles", 
-                        "tileset": base_dir + row['mbtiles'].lstrip('.')
+                        "tileset": base_dir + row['mbtiles'].lstrip('.').lstrip(base_dir)
                       },
                       "allowed origin": "*",
                       "cache lifespan": "604800"
