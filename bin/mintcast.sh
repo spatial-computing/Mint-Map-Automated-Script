@@ -136,6 +136,7 @@ fi
 
 COL_LAYER_TITLE=$(python3 $MINTCAST_PATH/python/macro_string get_layer_title $LAYER_NAME)
 COL_LAYER_NAME=$(python3 $MINTCAST_PATH/python/macro_string gen_layer_name $LAYER_NAME)
+LAYER_NAME="$COL_LAYER_NAME"
 
 if [[ $DATASET_TYPE == "tiff" ]]; then
 	if [[ -z "$START_TIME" ]]; then
