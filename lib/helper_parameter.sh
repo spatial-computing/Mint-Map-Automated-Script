@@ -30,7 +30,7 @@ helper_parameter(){
         shift
         shift
         ;;
-        -u|--structure)
+        -u|--directory-structure)
         DATASET_DIR_STRUCTURE="$2"
         shift 
         shift 
@@ -55,7 +55,7 @@ helper_parameter(){
         shift
         shift
         ;;
-        --single-subdataset)
+        --netcdf-subdataset)
         NETCDF_SINGLE_SUBDATASET="$2"
         shift
         shift
