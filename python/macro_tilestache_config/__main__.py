@@ -43,7 +43,7 @@ def main(base_dir="/data", enable_mongo=True):
                         "name": "mbtiles", 
                         "tileset": base_dir + row['mbtiles'].lstrip('.')
                       },
-                      "allowed origin": "*",
+                      # "allowed origin": "*",
                       "cache lifespan": "604800"
                 }
             if row['layerid'].find('vector_pbf') != -1 :
