@@ -105,7 +105,7 @@ def toJson(row):
     layerJson['md5vector'] = row['md5']
     layerJson['md5raster'] = md5(row['md5'].encode('utf-8')).hexdigest()
     layerJson['dcid'] = row['dcid'].strip()
-
+    layerJson['title'] = row['title']
 
     if row['hastimeline'] == 1:
         # import pdb; pdb.set_trace()
@@ -129,8 +129,8 @@ def toJson(row):
     mongo_metadata = mongo_db["metadata"]
 
     autoComplete = {'type': 'mintmap-autocomplete'}
-    autokey = row['name'].replace('/','_').replace(' ', '_').replace('.','_')
-    autoComplete[autokey] = row['dcid'] if len(layerJson['dcid']) > 1 else row['md5']
+    autokey = row['dcid'] if len(layerJson['dcid']) > 1 else row['md5']
+    autoComplete[autokey] = row['title']
 
     ftmp = mongo_metadata.find_one({'type': 'mintmap-autocomplete'})
     if ftmp:

@@ -134,6 +134,7 @@ if [[ ! -d "$TARGET_JSON_PATH" ]]; then
 	mkdir -p $TARGET_JSON_PATH
 fi
 
+COL_LAYER_TITLE=$(python3 $MINTCAST_PATH/python/macro_string get_layer_title $LAYER_NAME)
 COL_LAYER_NAME=$(python3 $MINTCAST_PATH/python/macro_string gen_layer_name $LAYER_NAME)
 
 if [[ $DATASET_TYPE == "tiff" ]]; then

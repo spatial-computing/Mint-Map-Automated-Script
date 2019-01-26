@@ -4,6 +4,10 @@ import re
 import random
 import math
 
+def strip_name(s):
+	regex = re.compile('[^a-zA-Z0-9_]')
+	return regex.sub('_',s)
+	
 def main():
 	method = sys.argv[1]
 	string = sys.argv[2]
@@ -20,7 +24,9 @@ def main():
 	elif method == 'underline':
 		print(string.replace(' ',  '_'))
 	elif method == 'gen_layer_name':
-		print('%s_%s' % (string.replace(' ', '_'), math.ceil(random.random() * 100000)))
+		print('%s_%s' % (strip_name(string), math.ceil(random.random() * 100000)))
+	elif method == 'get_layer_title':
+		print('%s_%s' % (string.replace('-_-',' '), math.ceil(random.random() * 100000)))
 
 USAGE = '''
 USAGE:
