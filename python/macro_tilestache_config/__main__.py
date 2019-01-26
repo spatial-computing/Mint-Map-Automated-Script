@@ -47,7 +47,7 @@ def main(base_dir="/data", enable_mongo=True):
                 tileset_path = row['mbtiles']
             else:
                 tileset_path = base_dir + row['mbtiles']
-
+            tileset_path = tileset_path.replace('//','/')
             config['layers'][row['md5']] = {
                       "provider": {
                         "name": "mbtiles", 
@@ -71,6 +71,7 @@ def main(base_dir="/data", enable_mongo=True):
         f = open(TILESTACHE_CONFIG_PATH + "/tilestache.json",'w')
         f.write(jsonStr)
         f.close()
+        print('1')
     except Exception as e:
         raise e
     finally:

@@ -117,6 +117,7 @@ handle_tiff(){
 			python3 $MINTCAST_PATH/python/macro_postgres_curd update tileserverconfig \
 				"layerid='$RASTER_LAYER_ID', mbtiles='$RASTER_MBTILES', md5='$RASTER_LAYER_ID_MD5', layer_name='$COL_LAYER_NAME'" \
 				"id=$HAS_LAYER"
+			python3 $MINTCAST_PATH/python/macro_tilestache_cache flush '$RASTER_LAYER_ID_MD5'
 		fi
 
 		#HAS_LAYER=$(python3 $MINTCAST_PATH/python/macro_sqlite_curd has_tileserver_config $VECTOR_LAYER_ID)
@@ -131,6 +132,7 @@ handle_tiff(){
 			python3 $MINTCAST_PATH/python/macro_postgres_curd update tileserverconfig \
 				"layerid='$VECTOR_LAYER_ID', mbtiles='$VECTOR_MBTILES', md5='$VECTOR_LAYER_ID_MD5', layer_name='$COL_LAYER_NAME'" \
 				"id=$HAS_LAYER"
+			python3 $MINTCAST_PATH/python/macro_tilestache_cache flush '$VECTOR_LAYER_ID_MD5'
 		fi
 	fi
 	echo "LAYER_ID_SUFFIX: $LAYER_ID_SUFFIX"
