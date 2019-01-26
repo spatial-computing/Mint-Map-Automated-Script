@@ -105,7 +105,7 @@ handle_tiff(){
 	
 	if [[ "$DEV_MODE" != "YES" ]]; then
 		#HAS_LAYER=$(python3 $MINTCAST_PATH/python/macro_sqlite_curd has_tileserver_config $RASTER_LAYER_ID)
-		HAS_LAYER=$(python3 $MINTCAST_PATH/python/macro_postgres_curd has_tileserver_config $RASTER_LAYER_ID)
+		HAS_LAYER=$(python3 $MINTCAST_PATH/python/macro_postgres_curd has_tileserver_config $RASTER_LAYER_ID_MD5)
 		if [[ "$HAS_LAYER" = "None" ]]; then
 			#python3 $MINTCAST_PATH/python/macro_sqlite_curd insert tileserverconfig \
 			python3 $MINTCAST_PATH/python/macro_postgres_curd insert tileserverconfig \
@@ -120,7 +120,7 @@ handle_tiff(){
 		fi
 
 		#HAS_LAYER=$(python3 $MINTCAST_PATH/python/macro_sqlite_curd has_tileserver_config $VECTOR_LAYER_ID)
-		HAS_LAYER=$(python3 $MINTCAST_PATH/python/macro_postgres_curd has_tileserver_config $VECTOR_LAYER_ID)
+		HAS_LAYER=$(python3 $MINTCAST_PATH/python/macro_postgres_curd has_tileserver_config $VECTOR_LAYER_ID_MD5)
 		if [[ "$HAS_LAYER" = "None" ]]; then
 			#python3 $MINTCAST_PATH/python/macro_sqlite_curd insert tileserverconfig \
 			python3 $MINTCAST_PATH/python/macro_postgres_curd insert tileserverconfig \

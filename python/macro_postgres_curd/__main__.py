@@ -47,14 +47,14 @@ def main():
         elif method == 'delete':
             c.execute("DELETE FROM %s WHERE %s" % (tableName, sys.argv[3], sys.argv[4]))
         elif method == 'has_layer':
-            c.execute("SELECT id FROM mintcast.layer WHERE layerid = '%s'" % sys.argv[2])
+            c.execute("SELECT id FROM mintcast.layer WHERE md5 = '%s'" % sys.argv[2])
             row = c.fetchone()
             if row == None:
                 print("None")
             else:
                 print(row[0])
         elif method == 'has_tileserver_config':
-            c.execute("SELECT id FROM mintcast.tileserverconfig WHERE layerid = '%s'" % sys.argv[2])
+            c.execute("SELECT id FROM mintcast.tileserverconfig WHERE md5 = '%s'" % sys.argv[2])
             row = c.fetchone()
             if row == None:
                 print("None")
