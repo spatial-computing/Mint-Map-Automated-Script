@@ -7,6 +7,7 @@ import osr
 def main():
     method = sys.argv[1]
     file = sys.argv[2]
+    print(file, file=sys.stderr)
     src = gdal.Open(file)
     ulx, xres, xskew, uly, yskew, yres  = src.GetGeoTransform()
     sizeX = src.RasterXSize

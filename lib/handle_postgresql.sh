@@ -137,7 +137,7 @@ handle_postgresql() {
 
 	if [[ "$HAS_LAYER" = "None" ]]; then
 		echo "DOES NOT HAVE LAYER"
-		echo "COL_LAYER_ID: $COL_LAYER_ID"
+		echo "COL_LAYER_ID: $COL_MD5"
 		if [[ -z "$START_TIME" && $DATASET_TYPE != "tiff-time" ]]; then
 			python3 $MINTCAST_PATH/python/macro_postgres_curd insert layer \
 				"layerid, type, tileformat, name, sourceLayer, hasData, hasTimeline, bounds, mbfilename, directory_format, json_filename, server, tileurl, legend_type, legend, valueArray, vector_json, colormap, original_dataset_bounds, mapping, stdname, md5, original_id , minzoom, maxzoom, title"\
