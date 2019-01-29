@@ -64,7 +64,7 @@ TIME_STAMP=""						# Time stamp for TIFF time series
 TIME_STEPS=""						# Time steps for TIFF time series
 TIME_FORMAT="YYYYMMDD"				# Time format for metadata JSON
 SCP_TO_SERVER=""
-SCP_TO_SERVER_DEFAULT="root@52.90.74.236:/data/"
+SCP_TO_SERVER_DEFAULT="root@mintviz.org:/data/"
 RESTART_TILESERVER="NO"
 
 CHART_TYPE=""
@@ -87,7 +87,7 @@ if [[ -z "$MINTCAST_IS_ON_SERVER" ]]; then # set it in env
 fi
 
 
-# TILESERVER_DEFAULT_SERVER="root@52.90.74.236"
+# TILESERVER_DEFAULT_SERVER="root@mintviz.org"
 # TILESERVER_RESTART_CMD="/mintcast/bin/tileserver.sh restart"
 # TILESERVER_CHECK_CMD="docker ps"
 

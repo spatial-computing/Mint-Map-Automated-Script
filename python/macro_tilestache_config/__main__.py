@@ -12,7 +12,7 @@ sys.path.append(config_path)
 from postgres_config import hostname, username, password, database, MONGODB_CONNECTION
 
 #DATABASE_PATH = '/sql/database.sqlite'
-MINTY_SERVER_URL = "http://52.90.74.236:65533/minty"
+MINTY_SERVER_URL = "http://minty.mintviz.org/"
 
 mongo_client = pymongo.MongoClient(MONGODB_CONNECTION) # defaults to port 27017
 mongo_db = mongo_client["mintcast"]
@@ -21,7 +21,7 @@ mongo_metadata = mongo_db["metadata"]
 def main(base_dir="/data", enable_mongo=True):
     config = {
       "type": "tilestache-config",
-      "index": MINTY_SERVER_URL + "/tilestache/index.html",
+      "index": MINTY_SERVER_URL + "minty/tilestache/index.html",
       "cache": {
         "name": "Redis",
         "host": "localhost",

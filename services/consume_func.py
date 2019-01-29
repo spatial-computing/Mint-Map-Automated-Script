@@ -10,7 +10,7 @@ from datetime import datetime
 #MINTCAST_PATH = os.environ.get('MINTCAST_PATH')
 MINTCAST_path = '/usr/share/mintcast'
 #'/Users/ADV/Mint-Map-Automated-Script'
-hostname = '52.90.74.236'
+hostname = 'mintviz.org'
 username = 'mintcast'
 password = 'mintCast654321'
 database = 'mintcast'

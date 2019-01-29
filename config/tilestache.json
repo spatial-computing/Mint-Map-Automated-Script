@@ -1,6 +1,6 @@
 {
     "type": "tilestache-config",
-    "index": "http://52.90.74.236:65533/minty/tilestache/index.html",
+    "index": "http://minty.mintviz.org/minty/tilestache/index.html",
     "cache": {
         "name": "Redis",
         "host": "localhost",
