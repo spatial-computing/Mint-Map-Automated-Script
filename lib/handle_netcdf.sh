@@ -38,9 +38,16 @@ handle_netcdf(){
 			LAYER_ID_SUFFIX=$(python3 $MINTCAST_PATH/python/macro_string path_to_suffix $PARTIAL_PATH)
 			echo "LAYER_ID_SUFFIX: $LAYER_ID_SUFFIX"
 
-			handle_tiff
+			handle_tiff &
 			index=$((index+1))
 			LAYER_INDEX="$index"
+
+			
+		    if [[ $(($index % 6)) -eq 1 ]]; then
+		    	echo "$((index-1)) milestone wait"
+		    	wait
+		    	echo "$index milestone start"
+		    fi
 		done
 
 		# reset out dir
@@ -55,6 +62,8 @@ handle_netcdf(){
 		# fi
 		
 	done
+	wait
+	echo "Multiple jobs have done."
 	# xargs -I % proc_getnetcdf_subdataset %
 }
 # test
