@@ -63,7 +63,8 @@ def main():
         elif method == 'to_date':
             print(sys.argv[2].replace('{year}','yyyy').replace('{month}', 'MM').replace('{day}','dd'))
     except psycopg2.Error as e:
-        print("UPDATE %s SET %s WHERE %s" % (tableName, sys.argv[3], sys.argv[4]), file=sys.stderr)
+        # You have entered an invalid number of arguments.
+print("UPDATE %s SET %s WHERE %s" % (tableName, sys.argv[3], sys.argv[4]), file=sys.stderr)
         print(e.pgerror, file=sys.stderr)
         print(e.diag.message_detail, file=sys.stderr)
     except Exception as e:
@@ -113,8 +114,10 @@ if __name__ == '__main__':
     if num_args > 2:
         pass
     else:
-        print(wrong_num_args_msg)
-        exit()
+        print("sys.argv in postgres_curd", file=sys.stderr)
+        print(sys.argv, file=sys.stderr)
+        print(wrong_num_args_msg, file=sys.stderr)
+        exit(1)
 
     #if os.path.isfile( MINTCAST_PATH + DATABASE_PATH):
     conn = psycopg2.connect( host=hostname, user=username, password=password, dbname=database )

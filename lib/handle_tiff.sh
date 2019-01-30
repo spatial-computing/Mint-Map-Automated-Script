@@ -271,10 +271,12 @@ handle_tiff(){
 		
 		sync_file_path=$MINTCAST_PATH/tmp/sync_$index.sh
     	echo "sync_file_path: $sync_file_path"
-    	
+
     	declare -p COL_LEGEND > $sync_file_path
     	declare -p COL_COLORMAP >> $sync_file_path
-		
+		if [[ -z "$LAYER_INDEX" ]]; then
+			declare -p FIRST_RASTER_LAYER_ID >> $sync_file_path
+		fi
 		if [[ $TOTAL_FILES_COUNT -eq $((index+1)) ]]; then
 			echo "Syncing last..."
 			declare -p COL_LEGEND_TYPE >> $sync_file_path
