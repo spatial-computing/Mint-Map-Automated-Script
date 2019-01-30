@@ -203,32 +203,32 @@ handle_tiff(){
 		# if [[ ! -z "$START_TIME" ]]; then
 			if [[ "$GENERATE_NEW_RES" == "YES" ]]; then
 				# with new res proc
-				MAX_VAL=$(python3 $MINTCAST_PATH/python/macro_gdal max-value $RES_OUT $NETCDF_SINGLE_SUBDATASET)
-		    	MIN_VAL=$(python3 $MINTCAST_PATH/python/macro_gdal min-value $RES_OUT $NETCDF_SINGLE_SUBDATASET)
+				export MAX_VAL=$(python3 $MINTCAST_PATH/python/macro_gdal max-value $RES_OUT $NETCDF_SINGLE_SUBDATASET)
+		    	export MIN_VAL=$(python3 $MINTCAST_PATH/python/macro_gdal min-value $RES_OUT $NETCDF_SINGLE_SUBDATASET)
 			else
 				# use proj out since GENERATE_NEW_RES=no
-				MAX_VAL=$(python3 $MINTCAST_PATH/python/macro_gdal max-value $PROJ_OUT $NETCDF_SINGLE_SUBDATASET)
-		    	MIN_VAL=$(python3 $MINTCAST_PATH/python/macro_gdal min-value $PROJ_OUT $NETCDF_SINGLE_SUBDATASET)
+				export MAX_VAL=$(python3 $MINTCAST_PATH/python/macro_gdal max-value $PROJ_OUT $NETCDF_SINGLE_SUBDATASET)
+		    	export MIN_VAL=$(python3 $MINTCAST_PATH/python/macro_gdal min-value $PROJ_OUT $NETCDF_SINGLE_SUBDATASET)
 			fi
 
 			if [[ "$COLORMAP_USE_LOADED" == "YES" ]]; then
 	    		# extract from COLOR_TABLE
-	    		COL_LEGEND_TYPE=$(python3 $MINTCAST_PATH/python/macro_extract_legend legend-type colormap $MIN_VAL $MAX_VAL $COLOR_TABLE)
+	    		export COL_LEGEND_TYPE=$(python3 $MINTCAST_PATH/python/macro_extract_legend legend-type colormap $MIN_VAL $MAX_VAL $COLOR_TABLE)
 		    	if [[ -z "$COL_LEGEND" ]]; then
-		    		COL_LEGEND=$(python3 $MINTCAST_PATH/python/macro_extract_legend legend colormap $MIN_VAL $MAX_VAL $COLOR_TABLE)	
-		    		COL_COLORMAP=$(python3 $MINTCAST_PATH/python/macro_extract_legend colormap colormap $MIN_VAL $MAX_VAL $COLOR_TABLE)	
+		    		export COL_LEGEND=$(python3 $MINTCAST_PATH/python/macro_extract_legend legend colormap $MIN_VAL $MAX_VAL $COLOR_TABLE)	
+		    		export COL_COLORMAP=$(python3 $MINTCAST_PATH/python/macro_extract_legend colormap colormap $MIN_VAL $MAX_VAL $COLOR_TABLE)	
 		    	else
-		    		COL_LEGEND=$COL_LEGEND"|"$(python3 $MINTCAST_PATH/python/macro_extract_legend legend colormap $MIN_VAL $MAX_VAL $COLOR_TABLE)
-			    	COL_COLORMAP=$COL_COLORMAP"|"$(python3 $MINTCAST_PATH/python/macro_extract_legend colormap colormap $MIN_VAL $MAX_VAL $COLOR_TABLE)	
+		    		export COL_LEGEND=$COL_LEGEND"|"$(python3 $MINTCAST_PATH/python/macro_extract_legend legend colormap $MIN_VAL $MAX_VAL $COLOR_TABLE)
+			    	export COL_COLORMAP=$COL_COLORMAP"|"$(python3 $MINTCAST_PATH/python/macro_extract_legend colormap colormap $MIN_VAL $MAX_VAL $COLOR_TABLE)	
 		    	fi
 	    	else
-		    	COL_LEGEND_TYPE=$(python3 $MINTCAST_PATH/python/macro_extract_legend legend-type noqml $MIN_VAL $MAX_VAL)
+		    	export COL_LEGEND_TYPE=$(python3 $MINTCAST_PATH/python/macro_extract_legend legend-type noqml $MIN_VAL $MAX_VAL)
 		    	if [[ -z "$COL_LEGEND" ]]; then
-		    		COL_LEGEND=$(python3 $MINTCAST_PATH/python/macro_extract_legend legend noqml $MIN_VAL $MAX_VAL)	
-		    		COL_COLORMAP=$(python3 $MINTCAST_PATH/python/macro_extract_legend colormap noqml $MIN_VAL $MAX_VAL)	
+		    		export COL_LEGEND=$(python3 $MINTCAST_PATH/python/macro_extract_legend legend noqml $MIN_VAL $MAX_VAL)	
+		    		export COL_COLORMAP=$(python3 $MINTCAST_PATH/python/macro_extract_legend colormap noqml $MIN_VAL $MAX_VAL)	
 		    	else
-		    		COL_LEGEND=$COL_LEGEND"|"$(python3 $MINTCAST_PATH/python/macro_extract_legend legend noqml $MIN_VAL $MAX_VAL)
-			    	COL_COLORMAP=$COL_COLORMAP"|"$(python3 $MINTCAST_PATH/python/macro_extract_legend colormap noqml $MIN_VAL $MAX_VAL)	
+		    		export COL_LEGEND=$COL_LEGEND"|"$(python3 $MINTCAST_PATH/python/macro_extract_legend legend noqml $MIN_VAL $MAX_VAL)
+			    	export COL_COLORMAP=$COL_COLORMAP"|"$(python3 $MINTCAST_PATH/python/macro_extract_legend colormap noqml $MIN_VAL $MAX_VAL)	
 		    	fi
 	    	fi
 		# fi
