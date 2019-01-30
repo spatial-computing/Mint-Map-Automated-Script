@@ -43,7 +43,7 @@ def main():
             elif num_args == 5:
                 c.execute("INSERT INTO %s (%s) VALUES (%s)" % (tableName, sys.argv[3], sys.argv[4]))
         elif method == 'update':
-            c.execute("UPDATE %s SET %s WHERE %s" % (tableName, sys.argv[3], sys.argv[4]))
+                c.execute("UPDATE %s SET %s WHERE %s" % (tableName, sys.argv[3], sys.argv[4]))
         elif method == 'delete':
             c.execute("DELETE FROM %s WHERE %s" % (tableName, sys.argv[3], sys.argv[4]))
         elif method == 'has_layer':
@@ -62,6 +62,10 @@ def main():
                 print(row[0])
         elif method == 'to_date':
             print(sys.argv[2].replace('{year}','yyyy').replace('{month}', 'MM').replace('{day}','dd'))
+    except psycopg2.Error as e:
+        print("UPDATE %s SET %s WHERE %s" % (tableName, sys.argv[3], sys.argv[4]), file=sys.stderr)
+        print(e.pgerror, file=sys.stderr)
+        print(e.diag.message_detail, file=sys.stderr)
     except Exception as e:
         print(e,file=sys.stderr)
     finally:
