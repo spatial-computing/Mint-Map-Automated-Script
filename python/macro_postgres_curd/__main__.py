@@ -64,7 +64,7 @@ def main():
             print(sys.argv[2].replace('{year}','yyyy').replace('{month}', 'MM').replace('{day}','dd'))
     except psycopg2.Error as e:
         # You have entered an invalid number of arguments.
-print("UPDATE %s SET %s WHERE %s" % (tableName, sys.argv[3], sys.argv[4]), file=sys.stderr)
+        # print("UPDATE %s SET %s WHERE %s" % (tableName, sys.argv[3], sys.argv[4]), file=sys.stderr)
         print(e.pgerror, file=sys.stderr)
         print(e.diag.message_detail, file=sys.stderr)
     except Exception as e:
