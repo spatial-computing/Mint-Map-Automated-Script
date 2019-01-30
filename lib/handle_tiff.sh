@@ -203,35 +203,36 @@ handle_tiff(){
 		# if [[ ! -z "$START_TIME" ]]; then
 			if [[ "$GENERATE_NEW_RES" == "YES" ]]; then
 				# with new res proc
-				export MAX_VAL=$(python3 $MINTCAST_PATH/python/macro_gdal max-value $RES_OUT $NETCDF_SINGLE_SUBDATASET)
-		    	export MIN_VAL=$(python3 $MINTCAST_PATH/python/macro_gdal min-value $RES_OUT $NETCDF_SINGLE_SUBDATASET)
+				MAX_VAL=$(python3 $MINTCAST_PATH/python/macro_gdal max-value $RES_OUT $NETCDF_SINGLE_SUBDATASET)
+		    	MIN_VAL=$(python3 $MINTCAST_PATH/python/macro_gdal min-value $RES_OUT $NETCDF_SINGLE_SUBDATASET)
 			else
 				# use proj out since GENERATE_NEW_RES=no
-				export MAX_VAL=$(python3 $MINTCAST_PATH/python/macro_gdal max-value $PROJ_OUT $NETCDF_SINGLE_SUBDATASET)
-		    	export MIN_VAL=$(python3 $MINTCAST_PATH/python/macro_gdal min-value $PROJ_OUT $NETCDF_SINGLE_SUBDATASET)
+				MAX_VAL=$(python3 $MINTCAST_PATH/python/macro_gdal max-value $PROJ_OUT $NETCDF_SINGLE_SUBDATASET)
+		    	MIN_VAL=$(python3 $MINTCAST_PATH/python/macro_gdal min-value $PROJ_OUT $NETCDF_SINGLE_SUBDATASET)
 			fi
 
 			if [[ "$COLORMAP_USE_LOADED" == "YES" ]]; then
 	    		# extract from COLOR_TABLE
-	    		export COL_LEGEND_TYPE=$(python3 $MINTCAST_PATH/python/macro_extract_legend legend-type colormap $MIN_VAL $MAX_VAL $COLOR_TABLE)
+	    		COL_LEGEND_TYPE=$(python3 $MINTCAST_PATH/python/macro_extract_legend legend-type colormap $MIN_VAL $MAX_VAL $COLOR_TABLE)
 		    	if [[ -z "$COL_LEGEND" ]]; then
-		    		export COL_LEGEND=$(python3 $MINTCAST_PATH/python/macro_extract_legend legend colormap $MIN_VAL $MAX_VAL $COLOR_TABLE)	
-		    		export COL_COLORMAP=$(python3 $MINTCAST_PATH/python/macro_extract_legend colormap colormap $MIN_VAL $MAX_VAL $COLOR_TABLE)	
+		    		COL_LEGEND=$(python3 $MINTCAST_PATH/python/macro_extract_legend legend colormap $MIN_VAL $MAX_VAL $COLOR_TABLE)	
+		    		COL_COLORMAP=$(python3 $MINTCAST_PATH/python/macro_extract_legend colormap colormap $MIN_VAL $MAX_VAL $COLOR_TABLE)	
 		    	else
-		    		export COL_LEGEND=$COL_LEGEND"|"$(python3 $MINTCAST_PATH/python/macro_extract_legend legend colormap $MIN_VAL $MAX_VAL $COLOR_TABLE)
-			    	export COL_COLORMAP=$COL_COLORMAP"|"$(python3 $MINTCAST_PATH/python/macro_extract_legend colormap colormap $MIN_VAL $MAX_VAL $COLOR_TABLE)	
+		    		COL_LEGEND=$COL_LEGEND"|"$(python3 $MINTCAST_PATH/python/macro_extract_legend legend colormap $MIN_VAL $MAX_VAL $COLOR_TABLE)
+			    	COL_COLORMAP=$COL_COLORMAP"|"$(python3 $MINTCAST_PATH/python/macro_extract_legend colormap colormap $MIN_VAL $MAX_VAL $COLOR_TABLE)	
 		    	fi
 	    	else
 		    	export COL_LEGEND_TYPE=$(python3 $MINTCAST_PATH/python/macro_extract_legend legend-type noqml $MIN_VAL $MAX_VAL)
 		    	if [[ -z "$COL_LEGEND" ]]; then
-		    		export COL_LEGEND=$(python3 $MINTCAST_PATH/python/macro_extract_legend legend noqml $MIN_VAL $MAX_VAL)	
-		    		export COL_COLORMAP=$(python3 $MINTCAST_PATH/python/macro_extract_legend colormap noqml $MIN_VAL $MAX_VAL)	
+		    		COL_LEGEND=$(python3 $MINTCAST_PATH/python/macro_extract_legend legend noqml $MIN_VAL $MAX_VAL)	
+		    		COL_COLORMAP=$(python3 $MINTCAST_PATH/python/macro_extract_legend colormap noqml $MIN_VAL $MAX_VAL)	
 		    	else
-		    		export COL_LEGEND=$COL_LEGEND"|"$(python3 $MINTCAST_PATH/python/macro_extract_legend legend noqml $MIN_VAL $MAX_VAL)
-			    	export COL_COLORMAP=$COL_COLORMAP"|"$(python3 $MINTCAST_PATH/python/macro_extract_legend colormap noqml $MIN_VAL $MAX_VAL)	
+		    		COL_LEGEND=$COL_LEGEND"|"$(python3 $MINTCAST_PATH/python/macro_extract_legend legend noqml $MIN_VAL $MAX_VAL)
+			    	COL_COLORMAP=$COL_COLORMAP"|"$(python3 $MINTCAST_PATH/python/macro_extract_legend colormap noqml $MIN_VAL $MAX_VAL)	
 		    	fi
 	    	fi
 		# fi
+		echo "MIN, MAX, COL_LEGEND: $MIN_VAL, $MAX_VAL, $COL_LEGEND"
 		echo "Making raster tiles..."
 		proc_tif2mbtiles $COLOR_OUT $RASTER_MBTILES #Make .mbtiles
 		echo "Generating zoom levels..."
@@ -264,6 +265,20 @@ handle_tiff(){
 			fi			
 		fi
 	fi
+	if [[ "$MULTIPLE_THREADS_ENABLED" == "YES" ]]; then
+		echo "MULTIPLE_THREADS_ENABLED..."
+		if [[ $TOTAL_FILES_COUNT -eq $index ]]; then
+			echo "SYNCing..."
+	    	declare -p MAX_VAL > $MINTCAST_PATH/tmp/sync.sh
+	    	declare -p MIN_VAL >> $MINTCAST_PATH/tmp/sync.sh
+	    	declare -p COL_LEGEND_TYPE >> $MINTCAST_PATH/tmp/sync.sh
+	    	declare -p COL_LEGEND >> $MINTCAST_PATH/tmp/sync.sh
+	    	declare -p COL_COLORMAP >> $MINTCAST_PATH/tmp/sync.sh
+	    	declare -p CLIP_OUT >> $MINTCAST_PATH/tmp/sync.sh
+	    	declare -p DATAFILE_PATH >> $MINTCAST_PATH/tmp/sync.sh
+	    	declare -p OUT_DIR >> $MINTCAST_PATH/tmp/sync.sh
+    	fi
+    fi
 	#TODO by Libo
 	# if [[ $DEV_MODE != 'NO' ]]; then
 	# 	# move to OUT_DIR=$TARGET_MBTILES_PATH

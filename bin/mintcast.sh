@@ -78,6 +78,8 @@ COLOR_TABLE=""
 COLORMAP_USE_LOADED="NO"
 DATAFILE_PATH=""            		# Single file path like tiff
 
+MULTIPLE_THREADS_ENABLED="NO"       # Multiple threads flag
+
 TILESERVER_ROOT="/data"
 TILESERVER_PORT="80"
 # store mbtiles in a specific folder and read by website
@@ -142,12 +144,14 @@ if [[ $DATASET_TYPE == "tiff" ]]; then
 	if [[ -z "$START_TIME" ]]; then
 		handle_tiff
 	else
+		MULTIPLE_THREADS_ENABLED="YES"
 		handle_tiff_timeseries
 	fi
 elif [[ $DATASET_TYPE == "tiled" ]]; then
 	handle_tiled_tiff
 elif [[ $DATASET_TYPE == "netcdf" ]]; then
 	# proc_getnetcdf_subdataset $DATAFILE_PATH
+	MULTIPLE_THREADS_ENABLED="YES"
 	handle_netcdf
 	# echo "hi"
 	# exit

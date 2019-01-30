@@ -21,6 +21,7 @@ handle_netcdf(){
 	SUBDATASET_LAYERS_ARRAY=()
 	LAYER_INDEX=''
 	let index=0
+	TOTAL_FILES_COUNT=${#NETCDF_FILES[@]}
 	for netcdf_file in "${NETCDF_FILES[@]}"; do
 		# echo $netcdf_file
 		proc_getnetcdf_subdataset "$netcdf_file"

@@ -3,7 +3,9 @@
 # store data to postgresql
 
 handle_postgresql() {
-
+	if [[ "$MULTIPLE_THREADS_ENABLED" == "YES" ]]; then
+		source $MINTCAST_PATH/tmp/sync.sh
+	fi
 	if [[ ! -z "$LAYER_ID_SUFFIX" ]]; then
 		LAYER_ID_SUFFIX=''
 	fi
@@ -26,7 +28,7 @@ handle_postgresql() {
 
 	COL_MD5=$FIRST_RASTER_LAYER_ID
 	COL_TILE_FORMAT='png'
-	if [[ $COL_RASTER_OR_VECTOR_TYPE = 'vector' ]]; then
+	if [[ "$COL_RASTER_OR_VECTOR_TYPE" == 'vector' ]]; then
 		COL_TILE_FORMAT='pbf'
 		# COL_MD5=$VECTOR_LAYER_ID_MD5
 		COL_MD5=$VECTOR_MD5
@@ -122,6 +124,10 @@ handle_postgresql() {
 	fi
 
 	COL_JSON_FILENAME="$COL_LAYER_ID.json"
+
+	echo "CLIP_OUT: $CLIP_OUT"
+	echo "NETCDF_SINGLE_SUBDATASET: $NETCDF_SINGLE_SUBDATASET"
+
 	if [[ -z "$MAX_VAL" ]]; then
 		if [[ -z "$QML_FILE" ]]; then
 			# ------TODO-------Apply to different occassion like: netcdf??or only tiff
@@ -140,6 +146,7 @@ handle_postgresql() {
 	fi
 	COL_ORIGINAL_DATASET_BOUNDS=$(python3 $MINTCAST_PATH/python/macro_gdal bounds-geojson-format $DATAFILE_PATH)
 	echo "COL_ORIGINAL_DATASET_BOUNDS: $COL_ORIGINAL_DATASET_BOUNDS"
+	echo "COL_LEGEND: $COL_LEGEND"
 	# HAS_LAYER=$(python3 $MINTCAST_PATH/python/macro_sqlite_curd has_layer $COL_LAYER_ID)
 	HAS_LAYER=$(python3 $MINTCAST_PATH/python/macro_postgres_curd has_layer $COL_MD5)	
 	# echo "null, '$COL_LAYER_ID', '$COL_RASTER_OR_VECTOR_TYPE', '$COL_TILE_FORMAT', '$COL_LAYER_NAME', '$COL_SOURCE_LAYER', $COL_ORIGINAL_ID, $COL_HAS_DATA, $COL_HAS_TIMELINE, $COL_MAXZOOM, $COL_MINZOOM, '$COL_BOUNDS', '$COL_MBTILES_FILENAME', '$COL_DIRECTORY_FORMAT', '$COL_START_TIME', '$COL_END_TIME', '$COL_JSON_FILENAME', '$COL_SERVER', '$COL_TILE_URL', '$COL_STYLE_TYPE', '$COL_LEGEND_TYPE', '$COL_LEGEND', '$COL_VALUE_ARRAY', '$COL_VECTOR_JSON', '$COL_COLORMAP', '$COL_ORIGINAL_DATASET_BOUNDS', '$COL_MAPPING', '$COL_CKAN_URL', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP"
