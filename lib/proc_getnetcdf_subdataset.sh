@@ -5,14 +5,20 @@ proc_getnetcdf_subdataset(){
     SUBDATASET_LAYERS_ARRAY=()
     NETCDF_FILEPATH=$1
 
-    if [[ -z "$NETCDF_SINGLE_SUBDATASET" ]]; then
-        SUBDATASET_STRING="$(gdalinfo $NETCDF_FILEPATH | sed -nE 's/SUBDATASET_.{1,2}_NAME=(.*)/\1/p' | grep -o 'N.*')"  
-    else
-        pre="s/SUBDATASET_.{1,2}_NAME=(.*"
-        suc=")/\1/p"
-        SUBDATASET_STRING="$(gdalinfo $NETCDF_FILEPATH | sed -nE $pre$NETCDF_SINGLE_SUBDATASET$suc | grep -o 'N.*')"
-    fi
+    NETCDF4_CHECK=$(file $NETCDF_FILEPATH | grep "Hierarchical Data Format")
     
+    if [[ -z "$NETCDF4_CHECK" ]]; then
+
+        if [[ -z "$NETCDF_SINGLE_SUBDATASET" ]]; then
+            SUBDATASET_STRING="$(gdalinfo $NETCDF_FILEPATH | sed -nE 's/SUBDATASET_.{1,2}_NAME=(.*)/\1/p' | grep -o 'N.*')"  
+        else
+            pre="s/SUBDATASET_.{1,2}_NAME=(.*"
+            suc=")/\1/p"
+            SUBDATASET_STRING="$(gdalinfo $NETCDF_FILEPATH | sed -nE $pre$NETCDF_SINGLE_SUBDATASET$suc | grep -o 'N.*')"
+        fi    
+    else
+        SUBDATASET_STRING="HDF5:"$NETCDF_FILEPATH"://"$NETCDF_SINGLE_SUBDATASET
+    fi
     # helper_create_array "SUBDATASETS" "SUBDATASET_STRING" '\n'
     # SUBDATASETS=($(echo "$SUBDATASET_STRING" | awk -F='\n' '{print $1}' ))
     # SUBDATASETS=($(echo "$SUBDATASET_STRING" | tr ' ' '\n' ))
