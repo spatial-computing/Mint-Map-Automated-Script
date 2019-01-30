@@ -29,7 +29,14 @@ handle_tiff_timeseries(){
 		index=$((index+1))
 		LAYER_INDEX="$index"
 		# rm "$MINTCAST_PATH/tmp/*"
+		if [[ $(($index % 8)) -eq 1 ]]; then
+	    	echo "$((index-1)) milestone wait"
+	    	wait
+	    	echo "$index milestone start"
+	    fi
 	done
+	wait
+	echo "Multiple jobs have done."
 	# xargs -I % proc_getnetcdf_subdataset %
 }
 # test

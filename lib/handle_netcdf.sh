@@ -42,8 +42,7 @@ handle_netcdf(){
 			index=$((index+1))
 			LAYER_INDEX="$index"
 
-			
-		    if [[ $(($index % 6)) -eq 1 ]]; then
+		    if [[ $(($index % 8)) -eq 1 ]]; then
 		    	echo "$((index-1)) milestone wait"
 		    	wait
 		    	echo "$index milestone start"
