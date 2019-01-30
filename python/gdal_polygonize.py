@@ -264,8 +264,9 @@ if dst_layer is None:
         fd = ogr.FieldDefn(dst_fieldname, ogr.OFTInteger)
     else:
         fd = ogr.FieldDefn(dst_fieldname, ogr.OFTReal)
-
-    dst_layer.CreateField(fd)
+    
+    if dst_layer:
+        dst_layer.CreateField(fd)
     dst_field = 0
 else:
     if dst_fieldname is not None:
