@@ -266,9 +266,10 @@ handle_tiff(){
 		fi
 	fi
 	if [[ "$MULTIPLE_THREADS_ENABLED" == "YES" ]]; then
-		echo "MULTIPLE_THREADS_ENABLED...$LAYER_INDEX, $index, $TOTAL_FILES_COUNT"
-		if [[ $TOTAL_FILES_COUNT -eq $index ]]; then
-			echo "SYNCing..."
+		echo "MULTIPLE_THREADS_ENABLED..."
+		echo "LAYER_INDEX, index, TOTAL_FILES_COUNT: $LAYER_INDEX, $index, $TOTAL_FILES_COUNT"
+		if [[ $TOTAL_FILES_COUNT -eq $((index+1)) ]]; then
+			echo "Syncing..."
 	    	declare -p MAX_VAL > $MINTCAST_PATH/tmp/sync.sh
 	    	declare -p MIN_VAL >> $MINTCAST_PATH/tmp/sync.sh
 	    	declare -p COL_LEGEND_TYPE >> $MINTCAST_PATH/tmp/sync.sh
