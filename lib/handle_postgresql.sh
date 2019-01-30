@@ -3,9 +3,6 @@
 # store data to postgresql
 
 handle_postgresql() {
-	if [[ "$MULTIPLE_THREADS_ENABLED" == "YES" ]]; then
-		source $MINTCAST_PATH/tmp/sync.sh
-	fi
 	if [[ ! -z "$LAYER_ID_SUFFIX" ]]; then
 		LAYER_ID_SUFFIX=''
 	fi
@@ -128,7 +125,7 @@ handle_postgresql() {
 	echo "CLIP_OUT: $CLIP_OUT"
 	echo "NETCDF_SINGLE_SUBDATASET: $NETCDF_SINGLE_SUBDATASET"
 
-	if [[ -z "$MAX_VAL" ]]; then
+	if [[ -z "$COL_LEGEND" ]]; then
 		if [[ -z "$QML_FILE" ]]; then
 			# ------TODO-------Apply to different occassion like: netcdf??or only tiff
 			# MAX_VAL=$(python3 $MINTCAST_PATH/python/macro_gdal max-value $DATAFILE_PATH)

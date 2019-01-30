@@ -268,16 +268,20 @@ handle_tiff(){
 	if [[ "$MULTIPLE_THREADS_ENABLED" == "YES" ]]; then
 		echo "MULTIPLE_THREADS_ENABLED..."
 		echo "LAYER_INDEX, index, TOTAL_FILES_COUNT: $LAYER_INDEX, $index, $TOTAL_FILES_COUNT"
+		
+		sync_file_path=$MINTCAST_PATH/tmp/sync_$index.sh
+    	echo "sync_file_path: $sync_file_path"
+    	
+    	declare -p COL_LEGEND > $sync_file_path
+    	declare -p COL_COLORMAP >> $sync_file_path
+		
 		if [[ $TOTAL_FILES_COUNT -eq $((index+1)) ]]; then
-			echo "Syncing..."
-	    	declare -p MAX_VAL > $MINTCAST_PATH/tmp/sync.sh
-	    	declare -p MIN_VAL >> $MINTCAST_PATH/tmp/sync.sh
-	    	declare -p COL_LEGEND_TYPE >> $MINTCAST_PATH/tmp/sync.sh
-	    	declare -p COL_LEGEND >> $MINTCAST_PATH/tmp/sync.sh
-	    	declare -p COL_COLORMAP >> $MINTCAST_PATH/tmp/sync.sh
-	    	declare -p CLIP_OUT >> $MINTCAST_PATH/tmp/sync.sh
-	    	declare -p DATAFILE_PATH >> $MINTCAST_PATH/tmp/sync.sh
-	    	declare -p OUT_DIR >> $MINTCAST_PATH/tmp/sync.sh
+			echo "Syncing last..."
+			declare -p COL_LEGEND_TYPE >> $sync_file_path
+			declare -p RASTER_MBTILES >> $sync_file_path
+	    	declare -p VECTOR_MBTILES >> $sync_file_path
+	    	declare -p CLIP_OUT >> $sync_file_path
+	    	declare -p OUT_DIR >> $sync_file_path
     	fi
     fi
 	#TODO by Libo

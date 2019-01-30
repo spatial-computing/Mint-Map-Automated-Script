@@ -176,6 +176,22 @@ fi
 # if [[ $DATASET_TYPE == "single-netcdf" ]]; then 
 if [[ "$DEV_MODE" != "YES" ]]; then
 	# save raster
+	if [[ "$MULTIPLE_THREADS_ENABLED" == "YES" ]]; then
+		COL_LEGEND_SUM=""
+		COL_COLORMAP_SUM=""
+		for (( idx = 0; idx < $TOTAL_FILES_COUNT; idx++ )); do
+			source $MINTCAST_PATH/tmp/sync_$idx.sh
+			if [[ -z "$COL_LEGEND_SUM" ]]; then
+				COL_LEGEND_SUM="$COL_LEGEND"
+				COL_COLORMAP_SUM="$COL_COLORMAP"
+			else
+				COL_LEGEND_SUM=$COL_LEGEND_SUM"|""$COL_LEGEND"
+				COL_COLORMAP_SUM=$COL_COLORMAP_SUM"|""$COL_COLORMAP"
+			fi
+		done
+		COL_LEGEND="$COL_LEGEND_SUM"
+		COL_COLORMAP="$COL_COLORMAP_SUM"
+	fi
 	COL_RASTER_OR_VECTOR_TYPE="raster"
 	MBTILES_FILEPATH=$RASTER_MBTILES
 	#handle_sqlite
