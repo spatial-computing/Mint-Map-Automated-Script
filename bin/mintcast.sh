@@ -269,7 +269,7 @@ if [[ "$DEV_MODE" != "YES" ]]; then
 	fi
 	
 	echo "Deleting $TEMP_DIR ..."
-	rm -rf $TEMP_DIR
+	# rm -rf $TEMP_DIR
 	# "$MINTCAST_PATH/tmp/$LAYER_NAME"
 
 	# if [[ "$RESTART_TILESERVER" == "YES" ]]; then
