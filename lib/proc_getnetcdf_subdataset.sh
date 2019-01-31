@@ -24,7 +24,8 @@ proc_getnetcdf_subdataset(){
         suc=")/\1/p"
         SUBDATASET_STRING="$(gdalinfo $NETCDF_FILEPATH | sed -nE $pre$NETCDF_SINGLE_SUBDATASET$suc | grep -o 'N.*')"
         if [[ -z "$SUBDATASET_STRING" ]]; then
-            SUBDATASET_STRING="HDF5:"$NETCDF_FILEPATH"://"$NETCDF_SINGLE_SUBDATASET
+            # SUBDATASET_STRING="HDF5:"$NETCDF_FILEPATH"://"$NETCDF_SINGLE_SUBDATASET
+            SUBDATASET_STRING="NETCDF:"$NETCDF_FILEPAT":"$NETCDF_SINGLE_SUBDATASET
         fi
     fi
     # helper_create_array "SUBDATASETS" "SUBDATASET_STRING" '\n'
