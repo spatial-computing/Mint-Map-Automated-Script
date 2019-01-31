@@ -299,14 +299,14 @@ handle_tiff(){
             if [[ -f $CLIP_OUT ]]; then
                 rm $CLIP_OUT
             fi
-            # if [[ -f $INPUT ]]; then
-            #     rm -f $INPUT
-            # fi
+            if [[ -f $INPUT ]]; then
+                rm -f $INPUT
+            fi
         fi
         
-        # if [[ -f $PROJ_OUT ]]; then
-        #     rm -f $PROJ_OUT
-        # fi
+        if [[ -f $PROJ_OUT ]]; then
+            rm -f $PROJ_OUT
+        fi
         if [[ -f $RES_OUT ]]; then
             rm -f $RES_OUT
         fi
