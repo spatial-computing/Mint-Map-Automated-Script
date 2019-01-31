@@ -276,7 +276,7 @@ handle_tiff(){
 		echo "MULTIPLE_THREADS_ENABLED..."
 		echo "LAYER_INDEX, index, TOTAL_FILES_COUNT: $LAYER_INDEX, $index, $TOTAL_FILES_COUNT"
 		
-		sync_file_path=$MINTCAST_PATH/tmp/sync_$index.sh
+		sync_file_path=$TEMP_DIR/sync_$index.sh
     	echo "sync_file_path: $sync_file_path"
 
     	declare -p COL_LEGEND > $sync_file_path

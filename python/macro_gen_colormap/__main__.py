@@ -5,7 +5,7 @@ import os
 import tempfile
 
 MINTCAST_PATH = os.environ.get('MINTCAST_PATH')
-
+TEMP_DIR = os.environ.get('TEMP_DIR')
 ZERO_PERSENTAGE_LINE = '0% 0 0 0 255'
 HUNDRED_PERSENTAGE_LINE = '100% 255 255 255 255'
 
@@ -21,7 +21,7 @@ RGBA = {
 
 def main(type_of_colormap, valueList):
     temp_name = next(tempfile._get_candidate_names())
-    temp_name = MINTCAST_PATH + '/tmp/' + temp_name
+    temp_name = TEMP_DIR + "/" + temp_name
     with open(temp_name, 'w') as tmpfile:
         nvline = RGBA["NV_LINE"] + "\n"
         tmpfile.write(nvline)

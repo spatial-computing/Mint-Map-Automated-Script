@@ -9,7 +9,7 @@ from copy import copy
 import csv
 MINTCAST_PATH = os.environ.get('MINTCAST_PATH')
 dist_path = MINTCAST_PATH + '/dist/'
-temp_path = MINTCAST_PATH + '/tmp/'
+temp_path = os.environ.get('TEMP_DIR') + "/" #MINTCAST_PATH + '/tmp/'
 config_path = MINTCAST_PATH + "/config/"
 sys.path.append(config_path)
 from postgres_config import MONGODB_CONNECTION

@@ -10,7 +10,7 @@ import csv
 
 MINTCAST_PATH = os.environ.get('MINTCAST_PATH')
 dist_path = MINTCAST_PATH + '/dist/'
-temp_path = MINTCAST_PATH + '/tmp/'
+temp_path = os.environ.get('TEMP_DIR') + "/"
 
 # Calculate spatial average trend and export as csv
 

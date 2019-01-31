@@ -139,6 +139,11 @@ fi
 COL_LAYER_TITLE=$(python3 $MINTCAST_PATH/python/macro_string get_layer_title $LAYER_NAME)
 COL_LAYER_NAME=$(python3 $MINTCAST_PATH/python/macro_string gen_layer_name $LAYER_NAME)
 LAYER_NAME="$COL_LAYER_NAME"
+export TEMP_DIR=$MINTCAST_PATH/tmp/$LAYER_NAME
+
+if [[ ! -d "$TEMP_DIR" ]]; then
+	mkdir -p $TEMP_DIR
+fi
 
 if [[ $DATASET_TYPE == "tiff" ]]; then
 	if [[ -z "$START_TIME" ]]; then
@@ -263,8 +268,9 @@ if [[ "$DEV_MODE" != "YES" ]]; then
 		fi
 	fi
 	
-	echo "Deleting $MINTCAST_PATH/tmp/* ..."
-	rm -rf "$MINTCAST_PATH/tmp/"*
+	echo "Deleting $TEMP_DIR ..."
+	rm -rf $TEMP_DIR
+	# "$MINTCAST_PATH/tmp/$LAYER_NAME"
 
 	# if [[ "$RESTART_TILESERVER" == "YES" ]]; then
 	# 	echo "Restarting tileserver ..." 
