@@ -210,12 +210,16 @@ handle_tiff(){
         # if [[ ! -z "$START_TIME" ]]; then
             if [[ "$GENERATE_NEW_RES" == "YES" ]]; then
                 # with new res proc
-                MAX_VAL=$(python3 $MINTCAST_PATH/python/macro_gdal max-value $RES_OUT $NETCDF_SINGLE_SUBDATASET)
-                MIN_VAL=$(python3 $MINTCAST_PATH/python/macro_gdal min-value $RES_OUT $NETCDF_SINGLE_SUBDATASET)
+                # MAX_VAL=$(python3 $MINTCAST_PATH/python/macro_gdal max-value $RES_OUT $NETCDF_SINGLE_SUBDATASET)
+                # MIN_VAL=$(python3 $MINTCAST_PATH/python/macro_gdal min-value $RES_OUT $NETCDF_SINGLE_SUBDATASET)
+                MAX_VAL=$(python3 $MINTCAST_PATH/python/macro_gdal max-value $RES_OUT)
+                MIN_VAL=$(python3 $MINTCAST_PATH/python/macro_gdal min-value $RES_OUT)
             else
                 # use proj out since GENERATE_NEW_RES=no
-                MAX_VAL=$(python3 $MINTCAST_PATH/python/macro_gdal max-value $PROJ_OUT $NETCDF_SINGLE_SUBDATASET)
-                MIN_VAL=$(python3 $MINTCAST_PATH/python/macro_gdal min-value $PROJ_OUT $NETCDF_SINGLE_SUBDATASET)
+                # MAX_VAL=$(python3 $MINTCAST_PATH/python/macro_gdal max-value $PROJ_OUT $NETCDF_SINGLE_SUBDATASET)
+                # MIN_VAL=$(python3 $MINTCAST_PATH/python/macro_gdal min-value $PROJ_OUT $NETCDF_SINGLE_SUBDATASET)
+                MAX_VAL=$(python3 $MINTCAST_PATH/python/macro_gdal max-value $PROJ_OUT)
+                MIN_VAL=$(python3 $MINTCAST_PATH/python/macro_gdal min-value $PROJ_OUT)
             fi
 
             if [[ "$COLORMAP_USE_LOADED" == "YES" ]]; then

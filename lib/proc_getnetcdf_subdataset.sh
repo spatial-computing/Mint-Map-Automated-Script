@@ -24,8 +24,8 @@ proc_getnetcdf_subdataset(){
         suc=")/\1/p"
         SUBDATASET_STRING="$(gdalinfo $NETCDF_FILEPATH | sed -nE $pre$NETCDF_SINGLE_SUBDATASET$suc | grep -o 'N.*')"
         if [[ -z "$SUBDATASET_STRING" ]]; then
-            # SUBDATASET_STRING="HDF5:"$NETCDF_FILEPATH"://"$NETCDF_SINGLE_SUBDATASET
-            SUBDATASET_STRING="NETCDF:"$NETCDF_FILEPATH":"$NETCDF_SINGLE_SUBDATASET
+            SUBDATASET_STRING="HDF5:"$NETCDF_FILEPATH"://"$NETCDF_SINGLE_SUBDATASET
+            # SUBDATASET_STRING="NETCDF:"$NETCDF_FILEPATH":"$NETCDF_SINGLE_SUBDATASET
         fi
     fi
     # helper_create_array "SUBDATASETS" "SUBDATASET_STRING" '\n'
@@ -42,9 +42,10 @@ proc_getnetcdf_subdataset(){
         if [[ ${name[2]} != 'time_bnds' ]]; then
             echo "gdalwarp -t_srs EPSG:4326 \"$dataset\" \"$TEMP_DIR/$DATASET_NAME.subset.${name[2]}_$index.tif\""
             # gdalwarp -t_srs EPSG:4326  -to SRC_METHOD=NO_GEOTRANSFORM  "$dataset" "$TEMP_DIR/$DATASET_NAME.subset.${name[2]}_$index.tif"
-            gdalwarp -t_srs EPSG:4326 -to SRC_METHOD=NO_GEOTRANSFORM "$dataset" "$TEMP_DIR/$DATASET_NAME.subset.${name[2]}_$index.tif"
+            # gdalwarp -t_srs EPSG:4326 -to SRC_METHOD=NO_GEOTRANSFORM "$dataset" "$TEMP_DIR/$DATASET_NAME.subset.${name[2]}_$index.tif"
             # gdalwarp -t_srs EPSG:3857 "$dataset" "$MINTCAST_PATH/tmp/$DATASET_NAME.subset.${name[2]}.tif"
             SUBDATASETS_ARRAY+=("$TEMP_DIR/$DATASET_NAME.subset.${name[2]}_$index.tif")
+            # SUBDATASETS_ARRAY+=($dataset)
             SUBDATASET_LAYERS_ARRAY+=(${name[2]})
         fi        
         # gdalwarp -te 22.4 3.4 37.0 23.2 -cutline $MINTCAST_PATH/shp/ss.shp
