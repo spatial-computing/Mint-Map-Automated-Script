@@ -17,6 +17,14 @@ handle_netcdf(){
 
 	IFS=$'\n'
 	NETCDF_FILES=($NETCDF_FILES_STRING)
+
+	let NETCDF_FILES_LENGTH=${#NETCDF_FILES_STRING[@]}
+	if [[ $NETCDF_FILES_LENGTH -eq 0 ]]; then
+		echo "Cannot find files according to time steps; "
+		echo "DATASET directory structure is wrong"
+		echo "(try use tar vf or zip -l test it before register)."
+		exit 1
+	fi
 	SUBDATASETS_ARRAY=()
 	SUBDATASET_LAYERS_ARRAY=()
 	LAYER_INDEX=''
