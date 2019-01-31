@@ -41,7 +41,7 @@ proc_getnetcdf_subdataset(){
         name=($dataset)
         if [[ ${name[2]} != 'time_bnds' ]]; then
             echo "gdalwarp -t_srs EPSG:4326 \"$dataset\" \"$TEMP_DIR/$DATASET_NAME.subset.${name[2]}_$index.tif\""
-            gdalwarp -t_srs EPSG:4326 "$dataset" "$TEMP_DIR/$DATASET_NAME.subset.${name[2]}_$index.tif"
+            gdalwarp -t_srs EPSG:4326  -to SRC_METHOD=NO_GEOTRANSFORM  "$dataset" "$TEMP_DIR/$DATASET_NAME.subset.${name[2]}_$index.tif"
             # gdalwarp -t_srs EPSG:3857 "$dataset" "$MINTCAST_PATH/tmp/$DATASET_NAME.subset.${name[2]}.tif"
             SUBDATASETS_ARRAY+=("$TEMP_DIR/$DATASET_NAME.subset.${name[2]}_$index.tif")
             SUBDATASET_LAYERS_ARRAY+=(${name[2]})
