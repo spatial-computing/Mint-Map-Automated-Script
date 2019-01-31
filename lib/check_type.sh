@@ -23,17 +23,36 @@ check_type () {
     IS_INT=$(echo $GDALINFO | grep 'Type=Int')
     IS_FLOAT=$(echo $GDALINFO | grep 'Type=Float')
 
+    DST_NODATA=$(echo $gdalinfo | sed -n -e 's/.*missing_value[s]*=\(.*\)/\1/p' | head -1)
+
     if [[ ! -z "$IS_BYTE" ]]; then
         # mv $STATS $2 # Set temporary stats file as output
         echo "Data is already Byte type"
-        NODATAFLAG='-dstnodata 255 '
+        if [[ -z $DST_NODATA ]]; then
+            NODATAFLAG='-dstnodata 255 '
+        else
+            NODATAFLAG='-dstnodata $DST_NODATA '
+        fi
     elif [[ ! -z "$IS_FLOAT" ]]; then
-        NODATAFLAG='-dstnodata -9999 '
+        if [[ -z $DST_NODATA ]]; then
+            NODATAFLAG='-dstnodata -9999 '
+        else
+            NODATAFLAG='-dstnodata $DST_NODATA '
+        fi
         POLYGONIZE_FLOAT_FLAG="-float"
     elif [[ ! -z "$IS_INT" ]]; then
-        NODATAFLAG='-dstnodata 32222 '
+        if [[ -z $DST_NODATA ]]; then
+            NODATAFLAG='-dstnodata 32222 '
+        else
+            NODATAFLAG='-dstnodata $DST_NODATA '
+        fi
     else
-        NODATAFLAG='-dstnodata -9999 '
+        if [[ -z $DST_NODATA ]]; then
+            NODATAFLAG='-dstnodata -9999 '
+        else
+            NODATAFLAG='-dstnodata $DST_NODATA '
+        fi
+        # NODATAFLAG='-dstnodata -9999 '
         #statements
         # Extract min and max values from GDAL info:
         # tmp_min=${GDALINFO#*Minimum=}

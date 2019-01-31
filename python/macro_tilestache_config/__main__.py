@@ -71,7 +71,7 @@ def main(base_dir="/data", enable_mongo=True):
         f = open(TILESTACHE_CONFIG_PATH + "/tilestache.json",'w')
         f.write(jsonStr)
         f.close()
-        print('1')
+        print('Write into tilestache.json Done')
     except Exception as e:
         raise e
     finally:
@@ -84,10 +84,13 @@ USAGE:
 '''
 if __name__ == '__main__':
     num_args = len(sys.argv)
+    if not TILESTACHE_CONFIG_PATH:
+        print("Please set TILESTACHE_CONFIG_PATH first", file=sys.stderr)
+        exit(1)
     if num_args == 2:
         main(sys.argv[1])
     elif num_args == 3:
         main(sys.argv[1], False if sys.argv[1].lower() not in {'no','0','neg'} else True)
     else:
-        print(usage)
+        print(usage, file=sys.stderr)
         exit(1)
