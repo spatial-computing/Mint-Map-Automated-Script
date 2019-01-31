@@ -283,7 +283,7 @@ handle_tiff(){
 			declare -p RASTER_MBTILES >> $sync_file_path
 	    	declare -p VECTOR_MBTILES >> $sync_file_path
 	    	declare -p CLIP_OUT >> $sync_file_path
-	    	declare -p OUT_DIR >> $sync_file_path
+	    	# declare -p OUT_DIR >> $sync_file_path
     	fi
     fi
 	#TODO by Libo
