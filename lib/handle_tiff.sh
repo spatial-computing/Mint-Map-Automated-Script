@@ -51,6 +51,13 @@ handle_tiff(){
 	RES_OUT=${PROJ_OUT%.*}_newres.tif
 	COLOR_OUT=${RES_OUT%.*}_color.tif
 	POLY_OUT=${PROJ_OUT%.*}_poly.geojson
+	if [[ "$MULTIPLE_THREADS_ENABLED" == "YES" ]]; then
+		CLIP_OUT=$TEMP_DIR/${FILENAME%.*}_$index_clip.tif
+		PROJ_OUT=${CLIP_OUT%.*}_$index_proj.tif
+		RES_OUT=${PROJ_OUT%.*}_$index_newres.tif
+		COLOR_OUT=${RES_OUT%.*}_$index_color.tif
+		POLY_OUT=${PROJ_OUT%.*}_$index_poly.geojson
+	fi
 	if [[ -z "$LAYER_ID_SUFFIX" ]]; then
 		LAYER_ID_SUFFIX=''
 	fi
