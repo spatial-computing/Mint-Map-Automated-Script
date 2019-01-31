@@ -11,7 +11,8 @@ TILESTACHE_CACHE_REDIS_CONFIG = {
 def flush(md5):
     cache = Redis(**TILESTACHE_CACHE_REDIS_CONFIG)
     count = 0
-    tilestache_cache_key_pattern = 'tilestache/%s*' % (md5)
+    # tilestache_cache_key_pattern = 'tilestache/%s*' % (md5)
+    tilestache_cache_key_pattern = 'tilestache/*'
     for key in cache.scan_iter(tilestache_cache_key_pattern):
         cache.delete(key)
         count += 1
