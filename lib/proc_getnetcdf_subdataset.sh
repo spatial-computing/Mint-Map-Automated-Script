@@ -4,7 +4,7 @@ proc_getnetcdf_subdataset(){
     SUBDATASETS_ARRAY=()
     SUBDATASET_LAYERS_ARRAY=()
     NETCDF_FILEPATH=$1
-
+    HDF5_FLAG="NO"
     NETCDF4_CHECK=$(file $NETCDF_FILEPATH | grep "Hierarchical Data Format (version 5) data")
     
     if [[ -z "$NETCDF4_CHECK" ]]; then
@@ -24,6 +24,7 @@ proc_getnetcdf_subdataset(){
         suc=")/\1/p"
         SUBDATASET_STRING="$(gdalinfo $NETCDF_FILEPATH | sed -nE $pre$NETCDF_SINGLE_SUBDATASET$suc | grep -o 'N.*')"
         if [[ -z "$SUBDATASET_STRING" ]]; then
+            HDF5_FLAG="YES"
             SUBDATASET_STRING="HDF5:\""$NETCDF_FILEPATH"\"://"$NETCDF_SINGLE_SUBDATASET
             # SUBDATASET_STRING="NETCDF:"$NETCDF_FILEPATH":"$NETCDF_SINGLE_SUBDATASET
         fi
@@ -38,15 +39,20 @@ proc_getnetcdf_subdataset(){
     
     for dataset in "${SUBDATASETS[@]}"; do
         IFS=$':'
+        NAME_INDEX=2
+        if [[ "$HDF5_FLAG" == "YES" ]]; then
+            IFS=$'://'
+            NAME_INDEX=3
+        fi
         name=($dataset)
-        if [[ ${name[2]} != 'time_bnds' ]]; then
-            echo "gdalwarp -t_srs EPSG:4326 \"$dataset\" \"$TEMP_DIR/$DATASET_NAME.subset.${name[2]}_$index.tif\""
+        if [[ ${name[$NAME_INDEX]} != 'time_bnds' ]]; then
+            echo "gdalwarp -t_srs EPSG:4326 \"$dataset\" \"$TEMP_DIR/$DATASET_NAME.subset.${name[$NAME_INDEX]}_$index.tif\""
             # gdalwarp -t_srs EPSG:4326  -to SRC_METHOD=NO_GEOTRANSFORM  "$dataset" "$TEMP_DIR/$DATASET_NAME.subset.${name[2]}_$index.tif"
-            gdalwarp -t_srs EPSG:4326 -to SRC_METHOD=NO_GEOTRANSFORM "$dataset" "$TEMP_DIR/$DATASET_NAME.subset.${name[2]}_$index.tif"
+            gdalwarp -t_srs EPSG:4326 -to SRC_METHOD=NO_GEOTRANSFORM "$dataset" "$TEMP_DIR/$DATASET_NAME.subset.${name[$NAME_INDEX]}_$index.tif"
             # gdalwarp -t_srs EPSG:3857 "$dataset" "$MINTCAST_PATH/tmp/$DATASET_NAME.subset.${name[2]}.tif"
-            SUBDATASETS_ARRAY+=("$TEMP_DIR/$DATASET_NAME.subset.${name[2]}_$index.tif")
+            SUBDATASETS_ARRAY+=("$TEMP_DIR/$DATASET_NAME.subset.${name[$NAME_INDEX]}_$index.tif")
             # SUBDATASETS_ARRAY+=($dataset)
-            SUBDATASET_LAYERS_ARRAY+=(${name[2]})
+            SUBDATASET_LAYERS_ARRAY+=(${name[$NAME_INDEX]})
         fi        
         # gdalwarp -te 22.4 3.4 37.0 23.2 -cutline $MINTCAST_PATH/shp/ss.shp
         # gdal_translate -a_srs EPSG:3857 -tr 0.01 0.01 "$dataset" "$MINTCAST_PATH/tmp/${name[2]}.tif"
