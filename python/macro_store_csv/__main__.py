@@ -20,7 +20,7 @@ def store(chartType, layerName, datasetId, csvFile):
         "title": layerName.replace('-_-', ' '), 
         "dataset_id": datasetId, 
         "count": len(csvFile),
-        "modified_at": datetime.strftime(datetime.now(), '%Y-%m-%d %H:%M:%S')
+        "modified_at": datetime.strftime(datetime.utcnow(), '%Y-%m-%d %H:%M:%S')
     }
     for i in range(len(csvFile)):
         label = "data"
