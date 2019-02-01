@@ -3,6 +3,7 @@ import sys
 import pymongo
 import os
 from os.path import expanduser
+from datetime import datetime
 MINTCAST_PATH = os.environ.get('MINTCAST_PATH')
 config_path = MINTCAST_PATH + "/config/"
 sys.path.append(config_path)
