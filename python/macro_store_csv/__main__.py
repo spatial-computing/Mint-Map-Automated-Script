@@ -14,7 +14,13 @@ def store(chartType, layerName, datasetId, csvFile):
     if len(csvFile) == 1:
         csvFile = csvFile[0].strip(';').split(';')
     print("Handling csv file for mint-chart...")
-    data = {"type":chartType, "title": layerName.replace('-_-', ' '), "dataset_id": datasetId, "count": len(csvFile)}
+    data = {
+        "type":chartType, 
+        "title": layerName.replace('-_-', ' '), 
+        "dataset_id": datasetId, 
+        "count": len(csvFile),
+        "modified_at": datetime.strftime(datetime.now(), '%Y-%m-%d %H:%M:%S')
+    }
     for i in range(len(csvFile)):
         label = "data"
         if i != 0:
