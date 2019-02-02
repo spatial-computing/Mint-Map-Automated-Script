@@ -112,6 +112,14 @@ if [[ "$DEV_MODE" != 'YES' ]]; then
 	OUT_DIR=$TARGET_MBTILES_PATH
 fi
 
+
+trap 'echo "Terminating" && trap - SIGTERM && kill -- -$$' SIGINT SIGTERM EXIT
+# shutdown(){
+#  kill $(jobs -p)
+#  exit 0
+# }
+# trap shutdown SIGINT SIGTERM EXIT
+
 if [[ "$DATASET_TYPE" != "single-netcdf" ]]; then
 	if [[ -z "$LAYER_NAME" ]]; then
 		echo "Please set up -l|--layer-name which is the LAYER_NAME and also part of Layer ID"
