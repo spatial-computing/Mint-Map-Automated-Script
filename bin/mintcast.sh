@@ -102,7 +102,7 @@ if [[ "$VERBOSE" == "YES" ]]; then
 	set -x
 fi
 
-echo $START_TIME
+# echo $START_TIME
 
 if [[ "$DEV_MODE" != 'YES' ]]; then
 	if [[ "$MINTCAST_IS_ON_SERVER" == 'YES' ]]; then

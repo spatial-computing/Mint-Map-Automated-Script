@@ -20,9 +20,9 @@ handle_netcdf(){
 
 	let TOTAL_FILES_COUNT=${#NETCDF_FILES[@]}
 	if [[ $TOTAL_FILES_COUNT -eq 0 ]]; then
-		echo "Cannot find files according to time steps; "
-		echo "DATASET directory structure is wrong"
-		echo "(try use tar vf or zip -l test it before register)."
+		>&2 echo "Cannot find files according to time steps; "
+		>&2 echo "DATASET directory structure is wrong"
+		>&2 echo "(try use tar vf or zip -l test it before register)."
 		exit 1
 	fi
 	SUBDATASETS_ARRAY=()
