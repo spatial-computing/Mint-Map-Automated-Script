@@ -7,25 +7,36 @@ handle_tiff_timeseries(){
 	TIFF_FILES_STRING=$(python3 $MINTCAST_PATH/python/macro_traversal path "$DATASET_DIR/" "$DATASET_DIR_STRUCTURE" "$START_TIME" "$END_TIME" "$DATATIME_FORMAT")
 
 	TIME_STEPS=$(python3 $MINTCAST_PATH/python/macro_traversal step "$DATASET_DIR/" "$DATASET_DIR_STRUCTURE" "$START_TIME" "$END_TIME" "$DATATIME_FORMAT")
-	echo $TIME_STEPS
+	# echo $TIME_STEPS
+	
 	IFS=$'\n'
 	TIFF_FILES=($TIFF_FILES_STRING)
 	
-	echo ${TIFF_FILES[@]}
-	let index=0
+	# echo ${TIFF_FILES[@]}
+	let TOTAL_FILES_COUNT=${#TIFF_FILES[@]}
+	if [[ $TOTAL_FILES_COUNT -eq 0 ]]; then
+		echo "Cannot find files according to time steps; "
+		echo "DATASET directory structure is wrong"
+		echo "(try use tar vf or zip -l test it before register)."
+		exit 1
+	fi
 
+	let index=0
+	LAYER_INDEX=''
 	for geotiff_file in "${TIFF_FILES[@]}"; do
 		# echo $netcdf_file
-		PARTIAL_PATH=$(python3 $MINTCAST_PATH/python/macro_path diff "$geotiff_file" "$DATASET_DIR")
 		echo "##### $geotiff_file"
+		PARTIAL_PATH=$(python3 $MINTCAST_PATH/python/macro_path diff "$geotiff_file" "$DATASET_DIR")
+		echo "PARTIAL_PATH:### $PARTIAL_PATH"
 		LAYER_NAME="$LAYER_NAME"
 		DATAFILE_PATH="$geotiff_file"
-		OUT_DIR="$TARGET_MBTILES_PATH/$OUTPUT_DIR_STRUCTURE_FOR_TIMESERIES/$PARTIAL_PATH"
+		OUT_DIR="$TARGET_MBTILES_PATH/$PARTIAL_PATH"
+		echo "OUT_DIR: $OUT_DIR"
 		LAYER_ID_SUFFIX=$(python3 $MINTCAST_PATH/python/macro_string path_to_suffix $PARTIAL_PATH)
-
-		echo "######### $LAYER_ID_SUFFIX ### $PARTIAL_PATH"
+		echo "LAYER_ID_SUFFIX:######### $LAYER_ID_SUFFIX"
 		
-		handle_tiff
+		
+		handle_tiff &
 		index=$((index+1))
 		LAYER_INDEX="$index"
 		# rm "$MINTCAST_PATH/tmp/*"
@@ -35,6 +46,8 @@ handle_tiff_timeseries(){
 	    	echo "$index milestone start"
 	    fi
 	done
+	# reset out dir
+	OUT_DIR="$TARGET_MBTILES_PATH"$(python3 $MINTCAST_PATH/python/macro_path toplevel $PARTIAL_PATH)
 	wait
 	echo "Multiple jobs have done."
 	# xargs -I % proc_getnetcdf_subdataset %
