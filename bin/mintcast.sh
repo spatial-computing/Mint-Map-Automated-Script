@@ -113,8 +113,8 @@ if [[ "$DEV_MODE" != 'YES' ]]; then
 fi
 
 
-# trap 'echo "Terminating" && trap - SIGTERM && kill -- -$$' SIGINT SIGTERM EXIT
-trap 'kill $(jobs -p)' SIGINT SIGTERM EXIT
+trap 'echo "Terminating" && trap - SIGTERM && kill -- -$$' SIGINT SIGTERM EXIT
+# trap 'kill $(jobs -p)' SIGINT SIGTERM EXIT
 # shutdown(){
 #  kill $(jobs -p)
 #  exit 0
