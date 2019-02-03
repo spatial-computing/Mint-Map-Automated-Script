@@ -20,7 +20,7 @@ check_projection() {
 	# Make temporary text file:
 	TEMP=${1%.*}_temp.txt
 	touch $TEMP
-	gdalinfo $INPUT >> $TEMP
+	gdalinfo $INPUT > $TEMP
 
 	# Check to see if data is projected:
 	if ! grep -q 'PROJCS\["WGS 84 / Pseudo-Mercator"' $TEMP; then
