@@ -35,14 +35,18 @@ handle_netcdf(){
 		proc_getnetcdf_subdataset "$netcdf_file"
 		PARTIAL_PATH=$(python3 $MINTCAST_PATH/python/macro_path diff "$netcdf_file" "$DATASET_DIR")
 		echo "PARTIAL_PATH: $PARTIAL_PATH"
-
+		OUT_DIR="$TARGET_MBTILES_PATH/$PARTIAL_PATH"
+		if [[ -d $OUT_DIR ]]; then
+			rm -rf $OUT_DIR
+		fi
+		
 		for subset_tiff in "${SUBDATASETS_ARRAY[@]}"; do
 			echo "subset_tiff: $subset_tiff"
 			DATAFILE_PATH="$subset_tiff"
 			if [[ -z "$LAYER_NAME" ]]; then
 				LAYER_NAME="${SUBDATASET_LAYERS_ARRAY[$index]}"
 			fi
-			OUT_DIR="$TARGET_MBTILES_PATH/$PARTIAL_PATH"
+
 			echo "OUT_DIR: $OUT_DIR"
 			LAYER_ID_SUFFIX=$(python3 $MINTCAST_PATH/python/macro_string path_to_suffix $PARTIAL_PATH)
 			echo "LAYER_ID_SUFFIX: $LAYER_ID_SUFFIX"

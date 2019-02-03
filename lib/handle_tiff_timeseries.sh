@@ -31,10 +31,12 @@ handle_tiff_timeseries(){
 		LAYER_NAME="$LAYER_NAME"
 		DATAFILE_PATH="$geotiff_file"
 		OUT_DIR="$TARGET_MBTILES_PATH/$PARTIAL_PATH"
+		if [[ -d $OUT_DIR ]]; then
+			rm -rf $OUT_DIR
+		fi
 		echo "OUT_DIR: $OUT_DIR"
 		LAYER_ID_SUFFIX=$(python3 $MINTCAST_PATH/python/macro_string path_to_suffix $PARTIAL_PATH)
 		echo "LAYER_ID_SUFFIX:######### $LAYER_ID_SUFFIX"
-		
 		
 		handle_tiff &
 		index=$((index+1))
