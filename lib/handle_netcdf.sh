@@ -39,7 +39,7 @@ handle_netcdf(){
 		if [[ -d $OUT_DIR ]]; then
 			rm -rf $OUT_DIR
 		fi
-		
+
 		for subset_tiff in "${SUBDATASETS_ARRAY[@]}"; do
 			echo "subset_tiff: $subset_tiff"
 			DATAFILE_PATH="$subset_tiff"
@@ -55,7 +55,7 @@ handle_netcdf(){
 			index=$((index+1))
 			LAYER_INDEX="$index"
 
-		    if [[ $(( $index % $THREADS_NUM )) -eq 1 ]]; then
+		    if [[ $(( $index % $THREADS_NUM )) -eq 0 ]]; then
 		    	echo "$((index-1)) milestone wait"
 		    	wait
 		    	echo "$index milestone start"
