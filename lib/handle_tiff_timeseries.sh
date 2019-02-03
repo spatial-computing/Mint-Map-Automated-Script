@@ -40,7 +40,7 @@ handle_tiff_timeseries(){
 		index=$((index+1))
 		LAYER_INDEX="$index"
 		# rm "$MINTCAST_PATH/tmp/*"
-		if [[ $(($index % 8)) -eq 1 ]]; then
+		if [[ $(( $index % $THREADS_NUM )) -eq 1 ]]; then
 	    	echo "$((index-1)) milestone wait"
 	    	wait
 	    	echo "$index milestone start"
