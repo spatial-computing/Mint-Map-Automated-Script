@@ -18,7 +18,10 @@ check_type () {
     # gdal_translate -stats $1 $STATS
 
     # Get gdalinfo of stats:
-    GDALINFO="$(gdalinfo $STATS)"
+    #######################
+    # There is a IFS error if using echo $GDALINFO
+    # GDALINFO="$(gdalinfo $STATS)"
+    #######################
     IS_BYTE=$(gdalinfo $STATS | grep 'Type=Byte')
     IS_INT=$(gdalinfo $STATS | grep 'Type=Int')
     IS_FLOAT=$(gdalinfo $STATS | grep 'Type=Float')
