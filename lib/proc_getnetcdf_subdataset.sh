@@ -24,7 +24,7 @@ proc_getnetcdf_subdataset(){
         suc=")/\1/p"
         SUBDATASET_STRING="$(gdalinfo $NETCDF_FILEPATH | sed -nE $pre$NETCDF_SINGLE_SUBDATASET$suc | grep -o 'N.*')"
         if [[ -z "$SUBDATASET_STRING" ]]; then
-            # HDF5_FLAG="YES"
+            HDF5_FLAG="NO"
             # SUBDATASET_STRING="HDF5:\""$NETCDF_FILEPATH"\"://"$NETCDF_SINGLE_SUBDATASET
             SUBDATASET_STRING="NETCDF:"$NETCDF_FILEPATH":"$NETCDF_SINGLE_SUBDATASET
         fi
@@ -46,6 +46,7 @@ proc_getnetcdf_subdataset(){
         fi
         name=($dataset)
         echo "$dataset"
+        IFS=$'\n'
         if [[ ${name[$NAME_INDEX]} != 'time_bnds' ]]; then
             echo "gdalwarp -t_srs EPSG:4326 \"$dataset\" \"$TEMP_DIR/$DATASET_NAME.subset.${name[$NAME_INDEX]}_$index.tif\""
             # gdalwarp -t_srs EPSG:4326  -to SRC_METHOD=NO_GEOTRANSFORM  "$dataset" "$TEMP_DIR/$DATASET_NAME.subset.${name[2]}_$index.tif"
