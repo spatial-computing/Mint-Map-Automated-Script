@@ -40,7 +40,7 @@ handle_tiff(){
     #OUT_DIR=$MINTCAST_PATH/dist
     #TEMP_DIR=$OUT_DIR
     #TEMP_DIR=$MINTCAST_PATH/tmp
-
+    >&2 echo "Start handle_tiff"
     # Remove path from inpust:
     echo "INPUT: $INPUT"
     FILENAME=$(basename $INPUT)
