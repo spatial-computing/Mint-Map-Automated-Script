@@ -51,6 +51,7 @@ proc_getnetcdf_subdataset(){
             echo "gdalwarp -t_srs EPSG:4326 \"$dataset\" \"$TEMP_DIR/$DATASET_NAME.subset.${name[$NAME_INDEX]}_$index.tif\""
             # gdalwarp -t_srs EPSG:4326  -to SRC_METHOD=NO_GEOTRANSFORM  "$dataset" "$TEMP_DIR/$DATASET_NAME.subset.${name[2]}_$index.tif"
             echo $(which gdalwarp)
+            echo $(whoami)
             gdalwarp -t_srs EPSG:4326 '$dataset' '$TEMP_DIR/$DATASET_NAME.subset.${name[$NAME_INDEX]}_$index.tif'
             # gdalwarp -t_srs EPSG:3857 "$dataset" "$MINTCAST_PATH/tmp/$DATASET_NAME.subset.${name[2]}.tif"
             SUBDATASETS_ARRAY+=("$TEMP_DIR/$DATASET_NAME.subset.${name[$NAME_INDEX]}_$index.tif")
