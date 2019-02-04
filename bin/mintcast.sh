@@ -21,6 +21,7 @@ source $MINTCAST_PATH/lib/handle_netcdf_single.sh
 source $MINTCAST_PATH/lib/handle_postgresql.sh
 source $MINTCAST_PATH/lib/handle_sqlite.sh
 source $MINTCAST_PATH/lib/proc_getnetcdf_subdataset.sh
+source $MINTCAST_PATH/lib/handle_geojson.sh
 
 VERSION="$(cat package.json | sed -nE 's/.+@ver.*:.*\"(.*)\".*/\1/p' | tr -d '\r')"
 
@@ -182,6 +183,8 @@ elif [[ $DATASET_TYPE == "csv" ]]; then
 	fi
 	IFS=$oldIFS
 	exit 0
+elif [[ $DATASET_TYPE == 'geojson' ]]; then
+	handle_geojson
 else
 	echo "$DATASET_TYPE is an invalid dataset type." 
 	echo "Valid choices include: tiff, tiled, tiff-time, netcdf, and single-netcdf"
