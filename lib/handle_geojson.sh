@@ -19,7 +19,30 @@ handle_geojson() {
 
 	# add layer 
 	# without raster data
-
-	
+		# fill in the COLs
+		# set a no raster flag?
+	# Change python code to generate mongo layers
+		# add layer_type key
+		# we only need vector record in database!
+	# Change postgresql layer
+		# we only need vector record in database!
+		# Add one column layer_type
+			# 100 from raster, will have raster and vector data
+				# 101 mint-map
+				# 102 mint-map-timeseries
+			# 200 from simple geojson, load geojson directly from mongodb
+				# 201 one simple geojson
+					# also could receive a simple shapefile convert to geojson
+				# 202 simple geojson timeseries
+					# Yijun's dot map
+			# 300 from large geojson, load only vector data
+				# 301 large geojson convert to vector mbtiles
+				# 302 large geojson timeseries
+	# for mint-map
+		# change mongodb, add layer_type 
+		# add load method according different layer_type
+	# minty
+		# add viz_type
+		# add new job
 
 }	
