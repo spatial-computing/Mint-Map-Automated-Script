@@ -19,11 +19,11 @@ check_type () {
 
     # Get gdalinfo of stats:
     GDALINFO="$(gdalinfo $STATS)"
-    IS_BYTE=$(gdalinfo $STATS | grep 'Type=Byte')
-    IS_INT=$(gdalinfo $STATS | grep 'Type=Int')
-    IS_FLOAT=$(gdalinfo $STATS | grep 'Type=Float')
+    IS_BYTE=$(echo $GDALINFO | grep 'Type=Byte')
+    IS_INT=$(echo $GDALINFO | grep 'Type=Int')
+    IS_FLOAT=$(echo $GDALINFO | grep 'Type=Float')
 
-    DST_NODATA=$(gdalinfo $STATS | sed -n -e 's/.*missing_value[s]*=\(.*\)/\1/p' | head -1)
+    DST_NODATA=$(echo $gdalinfo | sed -n -e 's/.*missing_value[s]*=\(.*\)/\1/p' | head -1)
 
     if [[ ! -z "$IS_BYTE" ]]; then
         # mv $STATS $2 # Set temporary stats file as output
