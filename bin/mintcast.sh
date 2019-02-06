@@ -112,8 +112,8 @@ fi
 
 if [[ "$DEV_MODE" != 'YES' ]]; then
 	if [[ "$MINTCAST_IS_ON_SERVER" == 'YES' ]]; then
-		export TARGET_MBTILES_PATH='/data/dist/$VECTOR_MD5'
-		export TILESTACHE_CONFIG_PATH='/data'
+		export TARGET_MBTILES_PATH="/data/dist/$VECTOR_MD5"
+		export TILESTACHE_CONFIG_PATH="/data"
 	fi
 	OUT_DIR=$TARGET_MBTILES_PATH
 fi
