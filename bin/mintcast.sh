@@ -151,6 +151,12 @@ COL_LAYER_NAME=$(python3 $MINTCAST_PATH/python/macro_string gen_layer_name $LAYE
 LAYER_NAME="$COL_LAYER_NAME"
 export TEMP_DIR=$MINTCAST_PATH/tmp/$LAYER_NAME
 
+if [[ "$DEV_MODE" != 'YES' ]]; then
+	if [[ "$MINTCAST_IS_ON_SERVER" == 'YES' ]]; then
+		export TEMP_DIR=/tmp/mintcast/$LAYER_NAME
+	fi
+fi
+
 if [[ ! -d "$TEMP_DIR" ]]; then
 	mkdir -p $TEMP_DIR
 fi
