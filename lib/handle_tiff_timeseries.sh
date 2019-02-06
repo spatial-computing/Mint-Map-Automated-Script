@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 source $MINTCAST_PATH/lib/handle_tiff.sh
+source $MINTCAST_PATH/lib/check_idle_cpu.sh
 
 handle_tiff_timeseries(){
 	# python3 $MINTCAST_PATH/python/macro_traversal "/Users/liber/Documents/South_Sudan/RawData/Forcing/FLDAS_NOAH01_A_EA_D/" "{year}/{month}/*.nc" "2001 01" "2001 03"
@@ -46,6 +47,7 @@ handle_tiff_timeseries(){
 	    	echo "$((index-1)) milestone wait"
 	    	wait
 	    	echo "$index milestone start"
+	    	check_idle_cpu
 	    fi
 	done
 	# reset out dir

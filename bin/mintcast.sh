@@ -21,6 +21,7 @@ source $MINTCAST_PATH/lib/handle_netcdf_single.sh
 source $MINTCAST_PATH/lib/handle_postgresql.sh
 source $MINTCAST_PATH/lib/handle_sqlite.sh
 source $MINTCAST_PATH/lib/proc_getnetcdf_subdataset.sh
+source $MINTCAST_PATH/lib/check_idle_cpu.sh
 
 VERSION="$(cat package.json | sed -nE 's/.+@ver.*:.*\"(.*)\".*/\1/p' | tr -d '\r')"
 
@@ -79,10 +80,14 @@ COLORMAP_USE_LOADED="NO"
 DATAFILE_PATH=""            		# Single file path like tiff
 
 MULTIPLE_THREADS_ENABLED="NO"       # Multiple threads flag
-THREADS_NUM=6
+THREADS_NUM=1
+MIN_TRHEAD_NUM=4
+USAGE_UNDER_PERCENTAGE_CONSIDERED_AS_IDLE=50
+check_idle_cpu
 
 TILESERVER_ROOT="/data"
 TILESERVER_PORT="80"
+
 # store mbtiles in a specific folder and read by website
 VERBOSE="NO"
 if [[ -z "$MINTCAST_IS_ON_SERVER" ]]; then # set it in env
