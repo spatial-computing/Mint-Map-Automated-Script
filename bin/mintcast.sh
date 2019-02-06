@@ -81,7 +81,7 @@ DATAFILE_PATH=""            		# Single file path like tiff
 
 MULTIPLE_THREADS_ENABLED="NO"       # Multiple threads flag
 THREADS_NUM=1
-MIN_TRHEAD_NUM=4
+MIN_TRHEAD_NUM=8
 USAGE_UNDER_PERCENTAGE_CONSIDERED_AS_IDLE=50
 check_idle_cpu
 
