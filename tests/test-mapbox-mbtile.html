@@ -26,7 +26,7 @@ var map = new mapboxgl.Map({
 map.on('load', function() {
     map.addSource("raster-tiles", {
             "type": "raster",
-            "tiles": ["http://127.0.0.1:7890/a1/{z}/{x}/{y}.png"],
+            "tiles": ["http://127.0.0.1:7890/raster/{z}/{x}/{y}.png"],
             "tileSize": 256
         });
     map.addLayer({
