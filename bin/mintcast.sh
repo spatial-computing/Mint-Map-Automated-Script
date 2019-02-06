@@ -79,7 +79,7 @@ COLORMAP_USE_LOADED="NO"
 DATAFILE_PATH=""            		# Single file path like tiff
 
 MULTIPLE_THREADS_ENABLED="NO"       # Multiple threads flag
-THREADS_NUM=5
+THREADS_NUM=6
 
 TILESERVER_ROOT="/data"
 TILESERVER_PORT="80"
