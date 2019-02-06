@@ -94,7 +94,7 @@ fi
 # TILESERVER_RESTART_CMD="/mintcast/bin/tileserver.sh restart"
 # TILESERVER_CHECK_CMD="docker ps"
 
-export TARGET_MBTILES_PATH="$MINTCAST_PATH/dist"  # Production mode: path to store mbtiles files and config files
+export TARGET_MBTILES_PATH="$MINTCAST_PATH/dist/$VECTOR_MD5"  # Production mode: path to store mbtiles files and config files
 export TILESTACHE_CONFIG_PATH="$MINTCAST_PATH/dist"
 
 helper_parameter $@
@@ -107,7 +107,7 @@ fi
 
 if [[ "$DEV_MODE" != 'YES' ]]; then
 	if [[ "$MINTCAST_IS_ON_SERVER" == 'YES' ]]; then
-		export TARGET_MBTILES_PATH='/data/dist'
+		export TARGET_MBTILES_PATH='/data/dist/$VECTOR_MD5'
 		export TILESTACHE_CONFIG_PATH='/data'
 	fi
 	OUT_DIR=$TARGET_MBTILES_PATH
@@ -282,6 +282,7 @@ if [[ "$DEV_MODE" != "YES" ]]; then
 			echo "Running scp config/config.json $SCP_TO_SERVER ..."
 			scp config/tilestache.json $SCP_TO_SERVER
 		fi
+		date +%Y%m%d%H%M%S > /data/uwsgi_tilestache_touch_reload.trigger
 	fi
 	
 	echo "Deleting $TEMP_DIR ..."
