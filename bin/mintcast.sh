@@ -287,9 +287,12 @@ if [[ "$DEV_MODE" != "YES" ]]; then
 			echo "Running scp config/config.json $SCP_TO_SERVER ..."
 			scp config/tilestache.json $SCP_TO_SERVER
 		fi
-		date +%Y%m%d%H%M%S > /data/uwsgi_tilestache_touch_reload.trigger
 	fi
 	
+	# Use touch reload to restart tilestache
+	echo "Touch reload initiating..."
+	date +%Y%m%d%H%M%S > /data/uwsgi_tilestache_touch_reload.trigger
+
 	echo "Deleting $TEMP_DIR ..."
 	rm -rf $TEMP_DIR
 	# "$MINTCAST_PATH/tmp/$LAYER_NAME"
