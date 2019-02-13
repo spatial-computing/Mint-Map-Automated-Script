@@ -183,8 +183,15 @@ elif [[ $DATASET_TYPE == "csv" ]]; then
 	fi
 	IFS=$oldIFS
 	exit 0
-elif [[ $DATASET_TYPE == 'geojson' ]]; then
+elif [[ $DATASET_TYPE == "geojson" ]]; then
+	# handle one simple geojson/shapefile and one large geojson
+	# geojson could be timeseries in (yijun geojson format) one file with timesteps format
+	# handle multiple simple geojson timeseries > convert to one geojson
 	handle_geojson
+elif [[ $DATASET_TYPE == "multiple-geojson-timeseries" ]]
+	# handle a large geojson timeseries
+	>&2 echo "This feature have not been implemented yet"
+	exit 0
 else
 	echo "$DATASET_TYPE is an invalid dataset type." 
 	echo "Valid choices include: tiff, tiled, tiff-time, netcdf, and single-netcdf"
@@ -210,11 +217,13 @@ if [[ "$DEV_MODE" != "YES" ]]; then
 		COL_LEGEND="$COL_LEGEND_SUM"
 		COL_COLORMAP="$COL_COLORMAP_SUM"
 	fi
-	COL_RASTER_OR_VECTOR_TYPE="raster"
-	MBTILES_FILEPATH=$RASTER_MBTILES
-	#handle_sqlite
-	handle_postgresql
 
+# remove raster layer which is no use for now
+	# COL_RASTER_OR_VECTOR_TYPE="raster"
+	# MBTILES_FILEPATH=$RASTER_MBTILES
+	# #handle_sqlite
+	# handle_postgresql
+# need to be tested
 	# save vector
 	COL_RASTER_OR_VECTOR_TYPE="vector"
 	MBTILES_FILEPATH=$VECTOR_MBTILES
