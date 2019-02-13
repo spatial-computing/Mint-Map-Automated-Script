@@ -5,7 +5,7 @@ import csv
 import json
 
 
-USAGE = """python3 ./python/macro_csv_timeseries_geojson csv_filepath output_dir"""
+USAGE = """python3 ./python/macro_dot_csv_to_geojson csv_filepath output_dir"""
 
 
 def main(csv_file, contain_header, output_file):
@@ -42,7 +42,7 @@ def generate_point_geojson(data, times, values):
         feature = {}
         feature['type'] = 'Feature'
         feature['properties'] = {}
-        feature['properties']['mint_values'] = [] 
+        feature['properties']['mint_value'] = [] 
         feature['properties']['mint_id'] = mint_id
         feature['geometry'] = {}
         feature['geometry']['type'] = 'Point'
@@ -50,7 +50,7 @@ def generate_point_geojson(data, times, values):
         feature['geometry']['coordinates'] = [lon, lat]
         feature['properties']['values'] = {}
         for item in v:
-            feature['properties']['mint_values'].append([item[1],item[2]])
+            feature['properties']['mint_value'].append([item[1], 1 if item[2] else 0])
         geojson['features'].append(feature)
         mint_id += 1
     return geojson

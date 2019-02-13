@@ -158,22 +158,28 @@ fi
 
 if [[ $DATASET_TYPE == "tiff" ]]; then
 	if [[ -z "$START_TIME" ]]; then
+		LAYER_TYPE=101
 		handle_tiff
 	else
 		MULTIPLE_THREADS_ENABLED="YES"
+		LAYER_TYPE=102
 		handle_tiff_timeseries
 	fi
 elif [[ $DATASET_TYPE == "tiled" ]]; then
+	LAYER_TYPE=101
 	handle_tiled_tiff
 elif [[ $DATASET_TYPE == "netcdf" ]]; then
 	# proc_getnetcdf_subdataset $DATAFILE_PATH
 	MULTIPLE_THREADS_ENABLED="YES"
+	LAYER_TYPE=102
 	handle_netcdf
 	# echo "hi"
 	# exit
 elif [[ $DATASET_TYPE == "single-netcdf" ]]; then
+	LAYER_TYPE=101
 	handle_netcdf_single
 elif [[ $DATASET_TYPE == "tiff-time" ]]; then
+	LAYER_TYPE=101
 	handle_tiff_time
 elif [[ $DATASET_TYPE == "csv" ]]; then
 	python3 $MINTCAST_PATH/python/macro_store_csv "$CHART_TYPE" "$COL_LAYER_TITLE" "$VECTOR_MD5" "$DATAFILE_PATH"
@@ -187,9 +193,11 @@ elif [[ $DATASET_TYPE == "geojson" ]]; then
 	# handle one simple geojson/shapefile and one large geojson
 	# geojson could be timeseries in (yijun geojson format) one file with timesteps format
 	# handle multiple simple geojson timeseries > convert to one geojson
+	# LAYER_TYPE is handled inside check_geojson_type and python/macro_generalize_geojson
 	handle_geojson
 elif [[ $DATASET_TYPE == "multiple-geojson-timeseries" ]]
 	# handle a large geojson timeseries
+	LAYER_TYPE=203
 	>&2 echo "This feature have not been implemented yet"
 	exit 0
 else

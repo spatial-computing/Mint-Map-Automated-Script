@@ -19,6 +19,7 @@ handle_geojson() {
     VECTOR_MBTILES_OUTPUT=$VECTOR_MBTILES_DIR/$VECTOR_FILENAME
 
     proc_simple_geojson_direct_to_mbtiles $GEOJSON_INPUT $VECTOR_MBTILES_OUTPUT $LAYER_NAME
+
     if [[ -z $VECTOR_MD5 ]]; then
         export VECTOR_LAYER_ID_MD5=$(python3 $MINTCAST_PATH/python/macro_md5 $VECTOR_LAYER_ID)
     elif [[ ! -z $VECTOR_MD5 ]]; then
@@ -26,6 +27,7 @@ handle_geojson() {
     fi
     # insert into tileserver
     # no need for simple geojson
+    # add layer
     if [[ "$DEV_MODE" != "YES" ]]; then
         HAS_LAYER=$(python3 $MINTCAST_PATH/python/macro_postgres_curd has_tileserver_config $VECTOR_LAYER_ID_MD5)
         if [[ "$HAS_LAYER" = "None" ]]; then
@@ -41,14 +43,18 @@ handle_geojson() {
             python3 $MINTCAST_PATH/python/macro_tilestache_cache flush '$VECTOR_LAYER_ID_MD5'
         fi
     fi
-    # add layer
-    
+
+    # Fill in the vector layer data
+    COL_RASTER_OR_VECTOR_TYPE="vector"
+    MBTILES_FILEPATH=$VECTOR_MBTILES_OUTPUT
     # without raster data
-        # fill in the COLs
-        # set a no raster flag?
+    #     fill in the COLs
+    #     set a no raster flag?
+
     # Change python code to generate mongo layers
         # add layer_type key
         # we only need vector record in database!
+
     # Change postgresql layer
         # we only need vector record in database!
         # Add one column layer_type
@@ -62,9 +68,9 @@ handle_geojson() {
                     # Yijun's dot map
                 # 203 multiple geojson timeseries 
                     # => convert to 202
-                # 301 large geojson convert to vector mbtiles
-                # 302 large geojson timeseries
-                # 303 multiple geojson timeseries  
+                # 201 large geojson convert to vector mbtiles
+                # 202 large geojson timeseries
+                # 203 multiple geojson timeseries  
                     # will not implement this time
     # for mint-map
         # change mongodb, add layer_type 

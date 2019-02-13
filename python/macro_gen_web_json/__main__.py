@@ -106,6 +106,8 @@ def toJson(row):
     layerJson['md5raster'] = md5(row['md5'].encode('utf-8')).hexdigest()
     layerJson['dcid'] = row['dcid'].strip()
     layerJson['title'] = row['title']
+    layerJson['layer_type'] = row['layer_type']
+    layerJson['vector_json'] = row['vector_json']
 
     if row['hastimeline'] == 1:
         # import pdb; pdb.set_trace()
