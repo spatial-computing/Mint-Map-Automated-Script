@@ -78,5 +78,7 @@ handle_geojson() {
     # minty
         # add viz_type
         # add new job
+        # change job metadata setting
+        # add api to get batch json
 
 }   

@@ -49,8 +49,9 @@ def generate_point_geojson(data, times, values):
         lon, lat = get_lon_lat(k)
         feature['geometry']['coordinates'] = [lon, lat]
         feature['properties']['values'] = {}
-        for item in v:
-            feature['properties']['mint_value'].append([item[1], 1 if item[2] else 0])
+        for idx, item in enumerate(v):
+            feature['properties']['v_' + str(idx)] = item[1]
+            feature['properties']['i_' + str(idx)] = item[2]
         geojson['features'].append(feature)
         mint_id += 1
     return geojson
