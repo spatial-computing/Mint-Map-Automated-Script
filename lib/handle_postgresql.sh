@@ -100,9 +100,14 @@ handle_postgresql() {
 	COL_VALUE_ARRAY=''
 	COL_VECTOR_JSON=''
 	if [[ $COL_RASTER_OR_VECTOR_TYPE = 'vector' ]]; then
-		COL_VALUE_ARRAY=$(python3 $MINTCAST_PATH/python/macro_mbtiles values $MBTILES_FILEPATH)
-		if [[ -z "$COL_VECTOR_JSON" ]]; then
-			COL_VECTOR_JSON=$(python3 $MINTCAST_PATH/python/macro_mbtiles vector_json $MBTILES_FILEPATH)	
+		if [[ "$DATASET_TYPE" == "geojson" ]]; then
+			COL_VALUE_ARRAY=""
+			COL_VECTOR_JSON=""
+		else
+			COL_VALUE_ARRAY=$(python3 $MINTCAST_PATH/python/macro_mbtiles values $MBTILES_FILEPATH)
+			if [[ -z "$COL_VECTOR_JSON" ]]; then
+				COL_VECTOR_JSON=$(python3 $MINTCAST_PATH/python/macro_mbtiles vector_json $MBTILES_FILEPATH)	
+			fi
 		fi
 	fi
 	echo "COL_VALUE_ARRAY: $COL_VALUE_ARRAY"
@@ -143,7 +148,12 @@ handle_postgresql() {
 			COL_COLORMAP=$(python3 $MINTCAST_PATH/python/macro_extract_legend colormap $QML_FILE)
 		fi
 	fi
-	COL_ORIGINAL_DATASET_BOUNDS=$(python3 $MINTCAST_PATH/python/macro_gdal bounds-geojson-format $DATAFILE_PATH)
+	if [[ "$DATASET_TYPE" == "geojson" ]]; then
+		COL_ORIGINAL_DATASET_BOUNDS=""
+	else
+		COL_ORIGINAL_DATASET_BOUNDS=$(python3 $MINTCAST_PATH/python/macro_gdal bounds-geojson-format $DATAFILE_PATH)	
+	fi
+	
 	echo "COL_ORIGINAL_DATASET_BOUNDS: $COL_ORIGINAL_DATASET_BOUNDS"
 	echo "COL_LEGEND: $COL_LEGEND"
 	# HAS_LAYER=$(python3 $MINTCAST_PATH/python/macro_sqlite_curd has_layer $COL_LAYER_ID)

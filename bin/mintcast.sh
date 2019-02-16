@@ -195,7 +195,7 @@ elif [[ $DATASET_TYPE == "geojson" ]]; then
 	# handle multiple simple geojson timeseries > convert to one geojson
 	# LAYER_TYPE is handled inside check_geojson_type and python/macro_generalize_geojson
 	handle_geojson
-elif [[ $DATASET_TYPE == "multiple-geojson-timeseries" ]]
+elif [[ $DATASET_TYPE == "multiple-geojson-timeseries" ]]; then
 	# handle a large geojson timeseries
 	LAYER_TYPE=203
 	>&2 echo "This feature have not been implemented yet"

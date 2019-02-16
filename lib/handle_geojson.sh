@@ -46,7 +46,9 @@ handle_geojson() {
 
     # Fill in the vector layer data
     COL_RASTER_OR_VECTOR_TYPE="vector"
+    echo "VECTOR_MBTILES_OUTPUT: $VECTOR_MBTILES_OUTPUT"
     MBTILES_FILEPATH=$VECTOR_MBTILES_OUTPUT
+    VECTOR_MBTILES=$VECTOR_MBTILES_OUTPUT
     # without raster data
     #     fill in the COLs
     #     set a no raster flag?

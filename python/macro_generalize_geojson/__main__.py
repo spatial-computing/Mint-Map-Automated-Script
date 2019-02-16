@@ -37,6 +37,7 @@ def generalize(md5, input_geojson, output_geojson):
                 
                 shell_communication += "\nSTART_TIME='%s'" % geojson['mint_properties']['start_time']
                 shell_communication += "\nEND_TIME='%s'" % geojson['mint_properties']['end_time']
+                shell_communication += "\nDATATIME_FORMAT='%s'" % geojson['mint_properties']['time_format']
                 shell_communication += "\nCOL_LEGEND_TYPE=linear"
                 shell_communication += "\nCOL_LEGEND='[{\"label\":\"%s\", \"value\": %s, \"color\":\"#FCA107\"}, {\"label\":\"%s\", \"value\":%s, \"color\":\"#7F3121\"}]'" % (min_value,min_value,max_value,max_value)
                 shell_communication += "\nCOL_COLORMAP='{\"circle-color\":[\"interpolate\",[\"linear\"],[\"get\",\"v_0\"],%s,\"#FCA107\",%s,\"#7F3121\"],\"circle-stroke-color\":\"#FF851B\",\"circle-stroke-width\":[\"case\",[\"get\",\"i_0\"],1,[\"!\",[\"get\",\"i_0\"]],0,0],\"circle-opacity\":0.8,\"circle-radius\":[\"interpolate\",[\"linear\"],[\"get\",\"v_0\"],%s,2,%s,20]}'" % (min_value, max_value, min_value, max_value)

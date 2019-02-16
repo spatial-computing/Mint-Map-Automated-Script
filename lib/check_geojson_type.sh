@@ -17,7 +17,7 @@ check_geojson_type() {
     fi
     
     GEOJSON_INPUT="$TEMP_DIR/$COL_LAYER_NAME""_generalized.geojson"
-    python3 $MINTCAST_PATH/python/macro_generalize_geojson $TEMP_DIR/$COL_LAYER_NAME.geojson $GEOJSON_INPUT
+    python3 $MINTCAST_PATH/python/macro_generalize_geojson --md5 $VECTOR_MD5 $TEMP_DIR/$COL_LAYER_NAME.geojson $GEOJSON_INPUT
 
     source $TEMP_DIR/geojson_generalized.sh
     # geojson_filesize_kb=$(du -k "$filename" | cut -f1)
