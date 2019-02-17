@@ -317,6 +317,14 @@ handle_tiff(){
             rm -f $POLY_OUT
         fi
     fi
+    
+    if [[ "$DEV_MODE" != "YES" ]]; then
+        if  [[ ! -z "$TOTAL_FILES_COUNT" ]]; then
+            if  [[ $TOTAL_FILES_COUNT -gt 0 ]]; then
+                python3 $MINTCAST_PATH/python/macro_postgres_curd progress bash $VECTOR_MD5 $TOTAL_FILES_COUNT
+            fi
+        fi    
+    fi
     #TODO by Libo
     # if [[ $DEV_MODE != 'NO' ]]; then
     #   # move to OUT_DIR=$TARGET_MBTILES_PATH
