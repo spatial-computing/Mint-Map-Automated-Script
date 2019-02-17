@@ -22,6 +22,7 @@ source $MINTCAST_PATH/lib/handle_postgresql.sh
 source $MINTCAST_PATH/lib/handle_sqlite.sh
 source $MINTCAST_PATH/lib/proc_getnetcdf_subdataset.sh
 source $MINTCAST_PATH/lib/check_idle_cpu.sh
+source $MINTCAST_PATH/lib/handle_geojson.sh
 
 VERSION="$(cat package.json | sed -nE 's/.+@ver.*:.*\"(.*)\".*/\1/p' | tr -d '\r')"
 
@@ -168,22 +169,28 @@ fi
 
 if [[ $DATASET_TYPE == "tiff" ]]; then
 	if [[ -z "$START_TIME" ]]; then
+		LAYER_TYPE=101
 		handle_tiff
 	else
 		MULTIPLE_THREADS_ENABLED="YES"
+		LAYER_TYPE=102
 		handle_tiff_timeseries
 	fi
 elif [[ $DATASET_TYPE == "tiled" ]]; then
+	LAYER_TYPE=101
 	handle_tiled_tiff
 elif [[ $DATASET_TYPE == "netcdf" ]]; then
 	# proc_getnetcdf_subdataset $DATAFILE_PATH
 	MULTIPLE_THREADS_ENABLED="YES"
+	LAYER_TYPE=102
 	handle_netcdf
 	# echo "hi"
 	# exit
 elif [[ $DATASET_TYPE == "single-netcdf" ]]; then
+	LAYER_TYPE=101
 	handle_netcdf_single
 elif [[ $DATASET_TYPE == "tiff-time" ]]; then
+	LAYER_TYPE=101
 	handle_tiff_time
 elif [[ $DATASET_TYPE == "csv" ]]; then
 	python3 $MINTCAST_PATH/python/macro_store_csv "$CHART_TYPE" "$COL_LAYER_TITLE" "$VECTOR_MD5" "$DATAFILE_PATH"
@@ -192,6 +199,17 @@ elif [[ $DATASET_TYPE == "csv" ]]; then
 		set +x
 	fi
 	IFS=$oldIFS
+	exit 0
+elif [[ $DATASET_TYPE == "geojson" ]]; then
+	# handle one simple geojson/shapefile and one large geojson
+	# geojson could be timeseries in (yijun geojson format) one file with timesteps format
+	# handle multiple simple geojson timeseries > convert to one geojson
+	# LAYER_TYPE is handled inside check_geojson_type and python/macro_generalize_geojson
+	handle_geojson
+elif [[ $DATASET_TYPE == "multiple-geojson-timeseries" ]]; then
+	# handle a large geojson timeseries
+	LAYER_TYPE=203
+	>&2 echo "This feature have not been implemented yet"
 	exit 0
 else
 	echo "$DATASET_TYPE is an invalid dataset type." 
@@ -218,11 +236,13 @@ if [[ "$DEV_MODE" != "YES" ]]; then
 		COL_LEGEND="$COL_LEGEND_SUM"
 		COL_COLORMAP="$COL_COLORMAP_SUM"
 	fi
-	COL_RASTER_OR_VECTOR_TYPE="raster"
-	MBTILES_FILEPATH=$RASTER_MBTILES
-	#handle_sqlite
-	handle_postgresql
 
+# remove raster layer which is no use for now
+	# COL_RASTER_OR_VECTOR_TYPE="raster"
+	# MBTILES_FILEPATH=$RASTER_MBTILES
+	# #handle_sqlite
+	# handle_postgresql
+# need to be tested
 	# save vector
 	COL_RASTER_OR_VECTOR_TYPE="vector"
 	MBTILES_FILEPATH=$VECTOR_MBTILES

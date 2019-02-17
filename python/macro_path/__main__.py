@@ -15,6 +15,9 @@ def main():
 			path2 = path
 			path = sys.argv[3]
 		print(path2[len(path):])
+	elif method == 'ext':
+		_name, _ext = os.path.splitext(path)
+		print(_ext,file=sys.stdout)
 	elif method == 'toplevel':
 		path_split = path.split('/')
 		if len(path_split) == 0:

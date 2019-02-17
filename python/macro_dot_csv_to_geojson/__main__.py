@@ -5,46 +5,57 @@ import csv
 import json
 
 
-USAGE = """python3 ./python/macro_csv_timeseries_geojson csv_filepath output_dir"""
+USAGE = """python3 ./python/macro_dot_csv_to_geojson csv_filepath output_dir"""
 
 
 def main(csv_file, contain_header, output_file):
-    data, start_time, end_time = read_csv(csv_file, contain_header)
-    geojson = generate_point_geojson(data, start_time, end_time)
+    data, times, values = read_csv(csv_file, contain_header)
+    sorted_time = sorted(times)
+    geojson = generate_point_geojson(data, sorted_time, values)
 
     with open(output_file, 'w') as f:
         json.dump(geojson, f)
+    print("Dot CSV has been converted to GeoJSON.")
 
 
-def generate_point_geojson(data, start_time, end_time):
+def generate_point_geojson(data, times, values):
     geojson = {}
     geojson['type'] = 'FeatureCollection'
-    geojson['properties'] = {}
-    geojson['properties']['start_time'] = start_time
-    geojson['properties']['end_time'] = end_time
-    geojson['properties']['time_format'] = 'YYYY-MM-DD'
+    geojson['crs'] = { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } }
+    geojson['mint_properties'] = {}
+    geojson['mint_properties']['type'] = 'from-dot-csv'
+    geojson['mint_properties']['steps'] = times
+    geojson['mint_properties']['max_value'] = max(values)
+    geojson['mint_properties']['min_value'] = min(values)
+    geojson['mint_properties']['start_time'] = times[0]
+    geojson['mint_properties']['end_time'] = times[-1]
+    geojson['mint_properties']['time_format'] = 'YYYY-MM-DD'
     geojson['features'] = []
-    feature = {}
-    feature['type'] = 'Feature'
-    feature['properties'] = {}
-    feature['properties']['values'] = {}
-    feature['geometry'] = {}
-    feature['geometry']['type'] = 'Point'
-
+    # feature = {}
+    # feature['type'] = 'Feature'
+    # feature['properties'] = {}
+    # feature['properties']['value'] = []
+    # feature['geometry'] = {}
+    # feature['geometry']['type'] = 'Point'
+    mint_id = 0
     for k, v in data.items():
         feature = {}
         feature['type'] = 'Feature'
         feature['properties'] = {}
-        feature['properties']['values'] = {}
+        feature['properties']['mint_value'] = [] 
+        feature['properties']['mint_id'] = mint_id
         feature['geometry'] = {}
         feature['geometry']['type'] = 'Point'
         lon, lat = get_lon_lat(k)
         feature['geometry']['coordinates'] = [lon, lat]
         feature['properties']['values'] = {}
-        for item in v:
-            feature['properties']['values'][item[0]] = {"value": item[1], "is_interpolation": item[2]}
+        for idx, item in enumerate(v):
+            feature['properties']['v_' + str(idx)] = item[1]
+            feature['properties']['i_' + str(idx)] = item[2]
         geojson['features'].append(feature)
+        mint_id += 1
     return geojson
+
 
 def get_lon_lat(point):
         left = point.find('(')
@@ -56,6 +67,7 @@ def get_lon_lat(point):
 def read_csv(csv_file, contain_header):
     data = {}
     times = []
+    values = []
     with open(csv_file) as f:
         reader = csv.reader(f)
         if contain_header:
@@ -64,14 +76,13 @@ def read_csv(csv_file, contain_header):
             # 2016-01-01,4.0,0, POINT (27.111772120892855 9.155444982492638) 
             time, value, is_interpolation, point = row[0], float(row[1]), bool(row[2]), row[3]
             times.append(time)
+            values.append(value)
             if data.get(point):
                 data[point].append([time, value, is_interpolation])
             else:
                 data[point] = [[time, value, is_interpolation]]
     times = list(set(times))
-    start_time = min(times)
-    end_time = max(times)
-    return data, start_time, end_time
+    return data, times, values
 
 
 if __name__ == "__main__":
@@ -83,3 +94,4 @@ if __name__ == "__main__":
     output_file = sys.argv[3]
 
     main(input_file, contain_header, output_file)
+    
