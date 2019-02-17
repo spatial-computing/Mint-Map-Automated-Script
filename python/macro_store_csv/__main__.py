@@ -22,14 +22,19 @@ def store(chartType, layerName, datasetId, csvFile):
         "count": len(csvFile),
         "modified_at": datetime.strftime(datetime.utcnow(), '%Y-%m-%d %H:%M:%S')
     }
+
     for i in range(len(csvFile)):
         label = "data"
         if i != 0:
             label = "data" + str(i)
         try:
             csvFile[i] = expanduser(csvFile[i])
+            filename, file_extension = os.path.splitext(csvFile[i])
             with open(csvFile[i], 'r') as file:
-                data[label] = file.read()
+                if file_extension == '.json':
+                    data[label] = json.load(file)
+                else:
+                    data[label] = file.read()
         except Exception as e:
             raise e
             exit(1)
