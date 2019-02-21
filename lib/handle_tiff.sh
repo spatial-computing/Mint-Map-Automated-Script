@@ -36,7 +36,15 @@ handle_tiff(){
     if [[ ! -d "$TEMP_DIR" ]]; then
         mkdir -p "$TEMP_DIR"
     fi
-
+    if [[ "$DEV_MODE" != "YES" ]]; then
+        if  [[ ! -z "$TOTAL_FILES_COUNT" ]]; then
+            if  [[ $TOTAL_FILES_COUNT -gt 0 ]]; then
+                if [[ $index -eq 0 ]]; then
+                    python3 $MINTCAST_PATH/python/macro_postgres_curd progress bash $VECTOR_MD5 $TOTAL_FILES_COUNT
+                fi
+            fi
+        fi    
+    fi
     #OUT_DIR=$MINTCAST_PATH/dist
     #TEMP_DIR=$OUT_DIR
     #TEMP_DIR=$MINTCAST_PATH/tmp

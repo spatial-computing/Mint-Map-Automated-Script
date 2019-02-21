@@ -244,13 +244,13 @@ if [[ "$DEV_MODE" != "YES" ]]; then
 	# handle_postgresql
 # need to be tested
 	# save vector
-	COL_RASTER_OR_VECTOR_TYPE="vector"
-	MBTILES_FILEPATH=$VECTOR_MBTILES
+	##COL_RASTER_OR_VECTOR_TYPE="vector"
+	##MBTILES_FILEPATH=$VECTOR_MBTILES
 
 	#handle_sqlite
-	handle_postgresql
+	##handle_postgresql
 
-	python3 $MINTCAST_PATH/python/macro_gen_web_json update-all 
+	##python3 $MINTCAST_PATH/python/macro_gen_web_json update-all 
 	#CKAN_URL=$(python3 $MINTCAST_PATH/python/macro_upload_ckan get "$TARGET_JSON_PATH/$COL_JSON_FILENAME")
 	#echo $CKAN_URL
 	# update database
@@ -259,7 +259,7 @@ if [[ "$DEV_MODE" != "YES" ]]; then
 	#python3 $MINTCAST_PATH/python/macro_postgres_curd update layer \
 	#"ckan_url='$CKAN_URL'" \
 	#"layerid='$Cmacro_tileserver_configOL_LAYER_ID'"
-	python3 $MINTCAST_PATH/python/macro_gen_web_json update-config
+	##python3 $MINTCAST_PATH/python/macro_gen_web_json update-config
 
 	# elif [[ $DATASET_TYPE == "netcdf" || $DATASET_TYPE == "single-netcdf" ]]; then
 	# 	MBTILES_DIR=$(dirname "${RASTER_MBTILES}")

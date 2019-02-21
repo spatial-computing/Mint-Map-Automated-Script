@@ -69,16 +69,21 @@ def main():
             if row == None:
                 print("None")
             else:
+                if row[0] == None:
+                    row = ('',)
                 p = str(row[0]).strip()
                 if p == '':
-                    u_index = 1
+                    u_index = 0
                     p = str(u_index) + '/' + sys.argv[4]
-                    print(p)
+                    #print(p)
                 else:
                     idx_total = p.split('/')
                     u_index = int(idx_total[0]) + 1
-                    p = str(u_index) + '/' + idx_total[1]
-                    print(p)
+                    if u_index > int(idx_total[1]):
+                        p = '1/' + idx_total[1]
+                    else:
+                        p = str(u_index) + '/' + idx_total[1]
+                    #print(p)
             c.execute("UPDATE %s SET progress='%s' WHERE md5vector='%s'" % (tableName, p, sys.argv[3]))
 
     except psycopg2.Error as e:
